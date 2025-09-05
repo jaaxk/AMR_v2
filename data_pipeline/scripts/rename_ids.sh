@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DBGWAS_DIR=/Users/jackvaska/Desktop/BMI/capstone_project/CAMDA_AMR/AMR_v2/data_pipeline/data/dbgwas/per_species
+DBGWAS_DIR=/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/data_pipeline/data/dbgwas/p0.05/per_species
 
 # Check if DBGWAS_DIR is set and exists
 if [ -z "$DBGWAS_DIR" ] || [ ! -d "$DBGWAS_DIR" ]; then

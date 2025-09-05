@@ -114,12 +114,16 @@ antibiotic_mapping = {'GEN': 0,
     'TET': 3,
 }
 
+label_map = {'Resistant': 0, 'Intermediate': 0, 'Susceptible': 1}
+
 # imports
 import os
 import argparse
 import subprocess
 import pandas as pd
-
+import csv
+from Bio import SeqIO
+from tqdm import tqdm
 
 
 
@@ -158,6 +162,22 @@ def get_hits(accessions_list, assemblies_dir, species_to_accessions, dbgwas_dir,
     #if leakage is True (default), aligns assemblies to their species-specific features
     #if leakage is False, aligns to all sig seqs (if grouping is full), or to all sig seqs in antibiotic grouping (if grouping is per_antibiotic)
 
+    def run_blast():
+        for accession in tqdm(accessions, desc=f'Running BLAST for {species}'):
+                assembly_path = os.path.join(assemblies_dir, f'{accession}.fasta')
+                db_dir = os.path.join('work', 'blast', 'dbs', accession, accession) #make db in subdirectory of accession name
+                hits_file = os.path.join('work', 'blast', 'hits', hits_subdir, f'{accession}_hits.tsv')
+                if not os.path.exists(hits_file):
+                    if not os.path.exists(db_dir):
+                        cmd = f'makeblastdb -in {assembly_path} -dbtype nucl -out {db_dir}'
+                        subprocess.run(cmd, shell=True)
+                    
+                    cmd = (f'blastn -query {sig_seqs_path} -db {db_dir} '
+                        f'-max_target_seqs {MAX_TARGET_SEQS} -outfmt "6 qseqid sseqid pident length '
+                        f'qstart qend sstart send sstrand bitscore" -perc_identity {BLAST_IDENTITY} '
+                        f'-out {hits_file}')
+                    subprocess.run(cmd, shell=True)
+
     if not os.path.exists('work/blast/dbs'):
         os.makedirs('work/blast/dbs')
     if not os.path.exists('work/blast/hits'):
@@ -165,9 +185,9 @@ def get_hits(accessions_list, assemblies_dir, species_to_accessions, dbgwas_dir,
 
     if LEAKAGE or grouping == 'per_species':
         for species in species_list:
-            accessions = species_to_accessions[species] and accessions_list
+            accessions = list(set(species_to_accessions[species]) & set(accessions_list))
             sig_seqs_path = os.path.join(dbgwas_dir, f'{species}_sig_sequences.fasta')
-            hits_subdir = 'species_specific'
+            hits_subdir = 'per_species' #should still use 'per_species' directory when doing full or per-antibiotic model unless LEAKAGE is False, when we're trying to do an abalation study
             if not os.path.exists(os.path.join('work/blast/hits', hits_subdir)):
                 os.makedirs(os.path.join('work/blast/hits', hits_subdir))
 
@@ -196,22 +216,97 @@ def get_hits(accessions_list, assemblies_dir, species_to_accessions, dbgwas_dir,
 
                 run_blast()
 
-    def run_blast():
-        for accession in accessions:
-                assembly_path = os.path.join(assemblies_dir, f'{accession}.fasta')
-                db_dir = os.path.join('work', 'blast', 'dbs', accession)
-                if not os.path.exists(db_dir):
-                    cmd = f'makeblastdb -in {assembly_path} -dbtype nucl -out {db_dir}'
-                    subprocess.run(cmd, shell=True)
-                hits_file = os.path.join('work', 'blast', 'hits', hits_subdir, f'{accession}_hits.tsv')
-                if not os.path.exists(hits_file):
-                    cmd = (f'blastn -query {sig_seqs_path} -db {db_dir} '
-                        f'-max_target_seqs {MAX_TARGET_SEQS} -outfmt "6 qseqid sseqid pident length '
-                        f'qstart qend sstart send sstrand bitscore" -perc_identity {BLAST_IDENTITY} '
-                        f'-out {hits_file}')
-                    subprocess.run(cmd, shell=True)
+def generate_sequence_dataset(accession_list, output_dir, grouping, train, accession_to_species, accession_to_antibiotic, accession_to_phenotype, assemblies_dir):
+    #generates full csv dataset with the following columns:
+    #sequence, accession, query_id, hit_count, species, antibiotic, and (if train =True) phenotype
+    #labels will be mapped to numerical value according to universal mappings
+    #hit_count is NOT normalized (as it will likely not be used as feature to DNABERT)
 
-       
+    def get_flanking_regions(accession, sseqids, sstarts, sends):
+        #get universal SEQ_LENGTH flanking regions around each hit
+        #read assembly file
+        assembly_path = os.path.join(assemblies_dir, f'{accession}.fasta')
+        contigs = {}
+        for record in SeqIO.parse(assembly_path, 'fasta'):
+            if record.id in set(sseqids):
+                contig = str(record.seq)
+                contigs[record.id] = contig
+
+        sequences = []
+        for sseqid, sstart, send in zip(sseqids, sstarts, sends):
+            midpoint = (int(sstart) + int(send)) // 2
+            contig = contigs[sseqid]
+            flanking_region = contig[max(0, midpoint - SEQ_LENGTH//2) : min(len(contig), midpoint + SEQ_LENGTH//2)] #get region around midpoint of blast hit, make sure to not go out of bounds of contig length
+            sequences.append(flanking_region)
+
+        return sequences
+
+
+
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    with open(os.path.join(output_dir, 'full_sequence_dataset.csv'), 'w') as dataset: #first generate full set, then split later based on grouping ( if grouping != 'full)
+        writer = csv.writer(dataset)
+        if train:
+            writer.writerow(['sequence', 'accession', 'query_id', 'hit_count', 'species', 'antibiotic', 'phenotype'])
+        else:
+            writer.writerow(['sequence', 'accession', 'query_id', 'hit_count', 'species', 'antibiotic'])
+        #iterate through accession list, find hit file, get query_id, hit_count, flanking regions (sequence), and map accession to species and antibiotic
+        for accession in tqdm(accession_list, desc='Generating sequence dataset'):
+            hit_file = os.path.join('work', 'blast', 'hits', 'per_species', f'{accession}_hits.tsv')
+            hit_counts = {} #hit counts for each query_id
+            sequences = []
+            sseqids = []
+            sstarts = []
+            sends = []
+            query_ids = []
+            with open(hit_file, 'r') as f:
+                for line in f:
+                    qseqid, sseqid, pident, length, qstart, qend, sstart, send, sstrand, bitscore = line.split('\t')
+                    query_ids.append(qseqid)
+                    sseqids.append(sseqid)
+                    sstarts.append(sstart)
+                    sends.append(send)
+                    if qseqid not in hit_counts.keys():
+                        hit_counts[qseqid] = 0
+                    hit_counts[qseqid] += 1
+
+            species = species_mapping[accession_to_species[accession]]
+            antibiotic = antibiotic_mapping[accession_to_antibiotic[accession]]
+            if train:
+                phenotype = label_map[accession_to_phenotype[accession]]
+
+            sequences = get_flanking_regions(accession, sseqids, sstarts, sends)
+            #write rows for accession by iterating through lists
+            for sequence, query_id in zip(sequences, query_ids):
+                if train:
+                    writer.writerow([sequence, accession, query_id, hit_counts[query_id], species, antibiotic, phenotype])
+                else:
+                    writer.writerow([sequence, accession, query_id, hit_counts[query_id], species, antibiotic])
+            #dataset.flush()
+
+def group_dataset(grouping, output_dir):
+    #group if not full model
+    #only for sequence-based grouping 
+
+    if grouping == 'per_species':
+        df = pd.read_csv(os.path.join(output_dir, 'full_sequence_dataset.csv'))
+        for species in species_list:
+            df_species = df[df['species'] == species_mapping[species]]
+            if not os.path.exists(os.path.join(output_dir, species)):
+                os.makedirs(os.path.join(output_dir, species))
+            df_species.to_csv(os.path.join(output_dir, species, f'{species}_sequence_dataset.csv'), index=False)
+            print(f'Wrote {len(df_species)} rows to {species}_sequence_dataset.csv')
+
+    elif grouping == 'per_antibiotic':
+        df = pd.read_csv(os.path.join(output_dir, 'full_sequence_dataset.csv'))
+        for antibiotic in antibiotic_list:
+            df_antibiotic = df[df['antibiotic'] == antibiotic_mapping[antibiotic]]
+            if not os.path.exists(os.path.join(output_dir, antibiotic)):
+                os.makedirs(os.path.join(output_dir, antibiotic))
+            df_antibiotic.to_csv(os.path.join(output_dir, antibiotic, '{antibiotic}_sequence_dataset.csv'), index=False)
+            print(f'Wrote {len(df_antibiotic)} rows to {antibiotic}_sequence_dataset.csv')
+                    
 
     
 def main():
@@ -226,6 +321,7 @@ def main():
     parser.add_argument('--grouping', type=str, help='Grouping', choices=['full', 'per_species', 'per_antibiotic'], default='per_species')
     parser.add_argument('--split', type=str, help='Path to directory containing train/test/dev accession lists (train.txt, test.txt, dev.txt)', default=None)
     parser.add_argument('--perspecies_dbgwas_dir', type=str, help='Path to directory containing significant sequences from DBGWAS', default=f'./data/dbgwas/p{DBGWAS_SIG_LEVEL}/per_species')
+    parser.add_argument('--train', type=bool, default=True)
     args = parser.parse_args()
     print(f'Arguments: {args}')
 
@@ -233,7 +329,7 @@ def main():
     base_output_dir = os.path.join(args.output_dir, args.model_type, args.grouping) #from here add /train or /test (official CAMDA split)
     if args.train:
         output_dir = os.path.join(base_output_dir, 'train')
-    if args.test:
+    if not args.train:
         output_dir = os.path.join(base_output_dir, 'test')
 
     # parse metadata
@@ -241,9 +337,16 @@ def main():
     #create dictionaty mapping genus_species to list of accessions
     #create accession lists for train and test
     metadata = pd.read_csv(args.metadata_path)
-    metadata['genus_species'] = metadata['genus'] + '_' + metadata['species']
+    metadata['genus_species'] = metadata['genus'].str.lower() + '_' + metadata['species']
     accessions = metadata['accession'].tolist()
+    accessions = list(set(accessions)) #remove duplicate accessions 
     species_to_accessions = metadata.groupby('genus_species')['accession'].apply(list).to_dict()
+    accession_to_species = metadata.set_index('accession')['genus_species'].to_dict()
+    accession_to_antibiotic = metadata.set_index('accession')['antibiotic'].to_dict()
+    if args.train:
+        accession_to_phenotype = metadata.set_index('accession')['phenotype'].to_dict()
+    else:
+        accession_to_phenotype = None
 
 
 
@@ -271,7 +374,14 @@ def main():
     
     # get datasets
     #run generate_matrix() for matrix-based models and generate_sequence_dataset() for sequence-based models
-    #
+    """if args.model_type == 'sequence_based':
+        generate_sequence_dataset(accession_list=accessions, output_dir=output_dir, grouping=args.grouping, train=args.train, accession_to_species=accession_to_species, accession_to_antibiotic=accession_to_antibiotic, accession_to_phenotype=accession_to_phenotype, assemblies_dir=args.assemblies_dir)
+    elif args.model_type == 'matrix_based':
+        generate_matrix_dataset()"""
+
+    #group dataset (if not full model):
+    if args.model_type == 'sequence_based':
+        group_dataset(args.grouping, output_dir)
 
 
     
