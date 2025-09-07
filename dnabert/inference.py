@@ -194,14 +194,14 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--output_format', type=str, choices=['random_forest', 'consensus'], default='random_forest')
     parser.add_argument('--dataset_dir', type=str, help='Path to directory containing datasets formatted by data_pipeline/pipeline.py', default=None)
-    parser.add_argument('--model_path', type=str, help='Path to DNABERT model', default=None)
+    parser.add_argument('--model_path', type=str, help='Path to DNABERT model, should take in ONLY "sequence", no num_hits, species, or antibiotic', default=None)
     parser.add_argument('--grouping', type=str, help='Grouping', choices=['full', 'per_species', 'per_antibiotic'], default='per_species')
     parser.add_argument('--train', type=bool, default=False)
     args = parser.parse_args()
     
 
     #load model
-    model, tokenizer = load_model(args.model_path)
+    model, tokenizer = load_model(args.model_path) #this current setup loads a full model and runs inference on all species/antibiotics on the same model (taking in only sequence). TODO: enable per-species/per-antibiotic models
 
     #loop through dataset depending on grouping
     if args.grouping == 'per_species':
