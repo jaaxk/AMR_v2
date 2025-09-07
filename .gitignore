@@ -2,3 +2,8 @@ data_pipeline/data/dbgwas/per_species
 data_pipeline/data/*
 data_pipeline/datasets/*
 data_pipeline/work/*
+dnabert/finetune/data/dnabert_finetune_dataset_v1
+dnabert/finetune/finetuned_models
+dnabert/finetune/pretrained_models
+dnabert/finetune/wandb
+dnabert/finetune/logs
