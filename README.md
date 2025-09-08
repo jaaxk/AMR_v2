@@ -1,6 +1,7 @@
 # AMR Prediction Pipeline using DNABERT and Random Forest
 
 ## Introduction
+- Find accepted ISMB/ECCB [extended abstract here](https://github.com/jaaxk/CAMDA_AMR/blob/main/AMR_extended_abstract.pdf)
 - This pipeline was developed for the CAMDA AMR Prediction Challenge 2025 with 9 pathogenic species each treated on one of 4 antibiotics (GEN, ERY, CAZ, TET)
 - 9 pathogenic species: `Neisseria gonorrhoeae, Staphylococcus aureus, Streptococcus pneumoniae, Salmonella enterica, Klebsiella pneumoniae, Escherichia coli, Pseudomonas aeruginosa, Acinetobacter baumannii, Campylobacter jejuni`
 - The train and test data can be found on the [official 2025 CAMDA challenges website](https://bipress.boku.ac.at/camda2025/the-camda-contest-challenges/#amr)
