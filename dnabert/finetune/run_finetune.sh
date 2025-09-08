@@ -15,24 +15,24 @@ conda activate dna
 
 # paths
 export DATA_PATH="data/dnabert_finetune_dataset_v1" #this needs to be a directory with train.csv, dev.csv, test.csv
-export RUN_NAME="full_model_species_only_v1" #name of run for wandb and output directory
+export RUN_NAME="full_model_species_only_v2" #name of run for wandb and output directory
 export OUT_DIR="finetuned_models/${RUN_NAME}"
 export MODEL_PATH="pretrained_models/bacteria_model"
 
 export WANDB_NAME=${RUN_NAME}
 
 # training params
-export EPOCHS=20
+export EPOCHS=10
 export MAX_LENGTH=250 #should be 1/4 of the length of the sequences
 export num_gpu=4
 export OMP_NUM_THREADS=16
-export EVAL_AND_SAVE_STEPS=400 
+export EVAL_AND_SAVE_STEPS=1000
 
 # hyperparams to tune
 export LR=3e-5
-export WARMUP_STEPS=100
+export WARMUP_STEPS=2000 #~5% of total steps
 export TRAIN_BATCH_SIZE=8 #limited by memory
-export GRADIENT_ACCUMULATION_STEPS=1
+export GRADIENT_ACCUMULATION_STEPS=4 #simulate larger batch size (effective batch size = batch_size*gradient_accumulation_steps*num_gpus)
 
 
 wandb login 0e16ac7c39d857e9bc3de95f06818dd4899bc8c1
@@ -65,7 +65,7 @@ torchrun --nproc_per_node=${num_gpu} train.py \
 export BEST_MODEL_DIR=$OUT_DIR/best
 echo "Best model directory: $BEST_MODEL_DIR"
 #move additional files to best model directory for inference
-cp ${MODEL_PATH}/bert_layers.py ${MODEL_PATH}/bert_padding.py ${MODEL_PATH}/configuration_bert.py ${MODEL_PATH}/flash_attention_triton.py ${MODEL_PATH}/__init__.py $BEST_MODEL_DIR
+cp ${MODEL_PATH}/bert_layers.py ${MODEL_PATH}/bert_padding.py ${MODEL_PATH}/configuration_bert.py ${MODEL_PATH}/flash_attn_triton.py ${MODEL_PATH}/__init__.py $BEST_MODEL_DIR
 
 cp $0 $BEST_MODEL_DIR/run_script.txt #copy this script to best model directory for record keeping
 

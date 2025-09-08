@@ -12,6 +12,15 @@ Paths to specigy:
     - "model_path": path to DNABERT model
 """
 
+# imports
+import pandas as pd
+import argparse
+import torch
+import transformers
+from tqdm import tqdm
+import os
+import csv
+
 # global parameters
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 MODEL_MAX_LENGTH = 250 # should be 1/4 * sequence length
@@ -86,7 +95,7 @@ def inference(dataset_path, preds_path, model, tokenizer):
     df = pd.read_csv(dataset_path)
     pred_phenos = []
     with torch.no_grad():
-        for start in tqdm(range(0, len(df), BATCH_SIZE)):
+        for start in tqdm(range(0, len(df), BATCH_SIZE), desc='Running DNABERT inference'):
             batch = df[start:start+BATCH_SIZE]
             enc = tokenizer(list(batch['sequence']), padding=True, truncation=True, return_tensors='pt', max_length=MODEL_MAX_LENGTH)
             #num_hits = batch['num_hits'].values #not using num_hits and species for DNABERT pass anymore, these should be given to the RF model
@@ -128,7 +137,7 @@ def get_rf_dataset(preds_path, output_path, train):
         writer.writerow(header)
 
         #iterate through accessions
-        for accession in df['accession'].unique():
+        for accession in tqdm(df['accession'].unique(), desc='Generating RF dataset'):
             #get species and antibiotic
             accession_df = df[df['accession'] == accession]
             species = accession_df['species'].iloc[0]
@@ -139,7 +148,7 @@ def get_rf_dataset(preds_path, output_path, train):
             for query_id in accession_df['query_id'].unique().tolist():
                 query_id_df = accession_df[accession_df['query_id'] == query_id] #this df now only has a single query id for a single accession
                 #get number predicted resistant for each query id
-                num_pred_resistant = query_id_df['pred_phenotype'].value_counts()[1] # need to flip because Susceptible is 1
+                num_pred_resistant = query_id_df['pred_phenotype'].map({0: 1, 1: 0}).sum() # need to flip because Susceptible is 1
                 query_id_to_hitcount[f'{query_id}_hit_count'] = query_id_df['hit_count'].iloc[0]
                 query_id_to_predresistant[f'{query_id}_pred_resistant'] = num_pred_resistant
 
@@ -166,25 +175,9 @@ def get_rf_dataset(preds_path, output_path, train):
 def get_consensus_preds(preds_path):
     pass
 
-            
-
-                
-
-                
-                
-            
         
-        
-    
 
 
-
-# imports
-import pandas as pd
-import argparse
-import torch
-import transformers
-from tqdm import tqdm
 
 
 
@@ -195,9 +188,11 @@ def main():
     parser.add_argument('--output_format', type=str, choices=['random_forest', 'consensus'], default='random_forest')
     parser.add_argument('--dataset_dir', type=str, help='Path to directory containing datasets formatted by data_pipeline/pipeline.py', default=None)
     parser.add_argument('--model_path', type=str, help='Path to DNABERT model, should take in ONLY "sequence", no num_hits, species, or antibiotic', default=None)
+    parser.add_arugment('--model_name', type=str, help='Name of trained DNABERT model', default='unspecified_model')
     parser.add_argument('--grouping', type=str, help='Grouping', choices=['full', 'per_species', 'per_antibiotic'], default='per_species')
     parser.add_argument('--train', type=bool, default=False)
     args = parser.parse_args()
+    train_test = 'train' if args.train else 'test'
     
 
     #load model
@@ -207,38 +202,38 @@ def main():
     if args.grouping == 'per_species':
         for species in species_list:
             dataset_path = os.path.join(args.dataset_dir, species, f'{species}_sequence_dataset.csv') #load sequence dataset
-            if args.train:
-                preds_path = f'./outputs/preds/{args.grouping}/train/{species}_preds.csv'
-            else:
-                preds_path = f'./outputs/preds/{args.grouping}/test/{species}_preds.csv'
-            if not os.path.exists(os.path.dirname(preds_path)):
-                os.makedirs(os.path.dirname(preds_path))
-            inference(dataset_path, preds_path, model, tokenizer)
+            preds_path = f'./outputs/preds/{args.model_name}/per_species/{train_test}/{species}_preds.csv'
+            if not os.path.exists(preds_path):
+                os.makedirs(os.path.dirname(preds_path), exist_ok=True)
+                print(f'Running DNABERT inference for {species}')
+                inference(dataset_path, preds_path, model, tokenizer)
             if args.output_format == 'random_forest':
-                output_path = f'./outputs/rf_datasets/per_species/{species}_rf_dataset.csv'
+                output_path = f'./outputs/rf_datasets/{args.model_name}/per_species/{train_test}/{species}_rf_dataset.csv'
                 if not os.path.exists(os.path.dirname(output_path)):
                     os.makedirs(os.path.dirname(output_path))
+                print(f'Getting RF dataset for {species}')
                 get_rf_dataset(preds_path, output_path, args.train)
             elif args.output_format == 'consensus':
+                print(f'Getting consensus preds for {species}')
                 get_consensus_preds(preds_path)
 
     if args.grouping == 'per_antibiotic':
         for antibiotic in antibiotic_list:
             dataset_path = os.path.join(args.dataset_dir, antibiotic, f'{antibiotic}_sequence_dataset.csv') #load sequence dataset
-            if args.train:
-                preds_path = f'./outputs/preds/{args.grouping}/train/{antibiotic}_preds.csv'
-            else:
-                preds_path = f'./outputs/preds/{args.grouping}/test/{antibiotic}_preds.csv'
-            if not os.path.exists(os.path.dirname(preds_path)):
-                os.makedirs(os.path.dirname(preds_path))
-            inference(dataset_path, preds_path, model, tokenizer)
+            preds_path = f'./outputs/preds/{args.model_name}/per_antibiotic/{train_test}/{antibiotic}_preds.csv'
+            if not os.path.exists(preds_path):
+                os.makedirs(os.path.dirname(preds_path), exist_ok=True)
+                print(f'Running DNABERT inference for {antibiotic}')
+                inference(dataset_path, preds_path, model, tokenizer)
             if args.output_format == 'random_forest':
-                output_path = f'./outputs/rf_datasets/per_antibiotic/{antibiotic}_rf_dataset.csv'
+                output_path = f'./outputs/rf_datasets/{args.model_name}/per_antibiotic/{train_test}/{antibiotic}_rf_dataset.csv'
                 if not os.path.exists(os.path.dirname(output_path)):
                     os.makedirs(os.path.dirname(output_path))
+                print(f'Getting RF dataset for {antibiotic}')
                 get_rf_dataset(preds_path, output_path, args.train)
 
             elif args.output_format == 'consensus':
+                print(f'Getting consensus preds for {antibiotic}')
                 get_consensus_preds(preds_path)
             
 

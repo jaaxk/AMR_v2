@@ -31,7 +31,8 @@ Paths to be specified:
 
 Outputs/Next Steps:
     - <output_dir>/<model_type>/<grouping>/<train/test (official CAMDA split)>/<[full]/[species]/[antibiotic].csv>
-    - sequence-based datasets should be sent to dnabert directory for finetuning/inference
+    - sequence-based datasets should be sent to dnabert/inference/inference.py for inference
+        - if finetuning is required, pass full dataset (<output_dir>/<model_type>/<grouping>/<train/test (official CAMDA split)>/full_sequence_dataset.csv) to dnabert/finetune/run_finetune.sh to get a model
     - matrix-based datasets should be sent to rf or xgboost directory for finetuning/inference
     - if "split" is specified, <train>/<test>/... can be passed to (TODO) evaluation script for accession-level evaluation before submission
 
