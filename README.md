@@ -23,6 +23,7 @@ To run with DNABERT and RF:
 3. Generate initial dataset: `data_pipeline/run_pipeline.sh` 
     - Fill out arguments including assembly path
 4. (train set only) Finetune DNABERT using full dataset generated from step 3: `dnabert/finetune/run_finetune.sh`
+    - Class balancing and train/dev split at `dnabert/finetune/data/dnabert_preprocessing.py`
     - Requires pretrained model path. This project used a microbiome-pretrained DNABERT model (DNABERT-MB) available [here](TODO).
     - Or [download finetuned model here](TODO) and place in `dnabert/finetune/finetuned_models/{MODEL_NAME}`
 5. Generate RF dataset by getting DNABERT preds and hit counts: `dnabert/inference/run_inference.sh`

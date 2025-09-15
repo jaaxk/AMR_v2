@@ -1,0 +1,221 @@
+WARNING:root:Perform single sequence classification (no additional features)...
+--- Logging error ---
+Traceback (most recent call last):
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 1085, in emit
+    msg = self.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 929, in format
+    return fmt.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 668, in format
+    record.message = record.getMessage()
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 373, in getMessage
+    msg = msg % self.args
+TypeError: not all arguments converted during string formatting
+Call stack:
+  File "../train.py", line 390, in <module>
+    train()
+  File "../train.py", line 299, in train
+    train_dataset = SupervisedDataset(tokenizer=tokenizer,
+  File "../train.py", line 169, in __init__
+    logging.warning("Number of labels:", self.num_labels)
+Message: 'Number of labels:'
+Arguments: (2,)
+WARNING:root:Perform single sequence classification (no additional features)...
+--- Logging error ---
+Traceback (most recent call last):
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 1085, in emit
+    msg = self.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 929, in format
+    return fmt.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 668, in format
+    record.message = record.getMessage()
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 373, in getMessage
+    msg = msg % self.args
+TypeError: not all arguments converted during string formatting
+Call stack:
+  File "../train.py", line 390, in <module>
+    train()
+  File "../train.py", line 302, in train
+    val_dataset = SupervisedDataset(tokenizer=tokenizer,
+  File "../train.py", line 169, in __init__
+    logging.warning("Number of labels:", self.num_labels)
+Message: 'Number of labels:'
+Arguments: (2,)
+WARNING:root:Perform single sequence classification (no additional features)...
+--- Logging error ---
+Traceback (most recent call last):
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 1085, in emit
+    msg = self.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 929, in format
+    return fmt.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 668, in format
+    record.message = record.getMessage()
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 373, in getMessage
+    msg = msg % self.args
+TypeError: not all arguments converted during string formatting
+Call stack:
+  File "../train.py", line 390, in <module>
+    train()
+  File "../train.py", line 305, in train
+    test_dataset = SupervisedDataset(tokenizer=tokenizer,
+  File "../train.py", line 169, in __init__
+    logging.warning("Number of labels:", self.num_labels)
+Message: 'Number of labels:'
+Arguments: (2,)
+Initializing CUSTOM BertForSequenceClassification
+/gpfs/scratch/jvaska/cache/modules/transformers_modules/bacteria_model/bert_layers.py:126: UserWarning: Unable to import Triton; defaulting MosaicBERT attention implementation to pytorch (this will reduce throughput when using this model).
+  warnings.warn(
+Dropout layer: Dropout(p=0.1, inplace=False)
+Dropout probability: 0.1
+Some weights of the model checkpoint at ../pretrained_models/bacteria_model were not used when initializing BertForSequenceClassification: ['cls.predictions.transform.dense.bias', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.decoder.bias', 'cls.predictions.decoder.weight', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.LayerNorm.bias']
+- This IS expected if you are initializing BertForSequenceClassification from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertForSequenceClassification from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of BertForSequenceClassification were not initialized from the model checkpoint at ../pretrained_models/bacteria_model and are newly initialized: ['classifier.2.weight', 'bert.pooler.dense.weight', 'classifier.0.bias', 'bert.pooler.dense.bias', 'classifier.2.bias', 'classifier.0.weight']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+Using cuda_amp half precision backend
+***** Running training *****
+  Num examples = 208,930
+  Num Epochs = 4
+  Instantaneous batch size per device = 8
+  Total train batch size (w. parallel, distributed & accumulation) = 128
+  Gradient Accumulation steps = 4
+  Total optimization steps = 6,528
+  Number of trainable parameters = 117,167,234
+Automatic Weights & Biases logging enabled, to disable set os.environ["WANDB_DISABLED"] = "true"
+ 15%|█▌        | 1000/6528 [03:16<18:01,  5.11it/s]***** Running Evaluation *****
+{'loss': 0.6903, 'learning_rate': 3e-06, 'epoch': 0.06}
+{'loss': 0.6629, 'learning_rate': 6e-06, 'epoch': 0.12}
+{'loss': 0.6066, 'learning_rate': 9e-06, 'epoch': 0.18}
+{'loss': 0.5517, 'learning_rate': 1.197e-05, 'epoch': 0.25}
+{'loss': 0.5254, 'learning_rate': 1.491e-05, 'epoch': 0.31}
+{'loss': 0.5093, 'learning_rate': 1.791e-05, 'epoch': 0.37}
+{'loss': 0.4995, 'learning_rate': 2.0909999999999998e-05, 'epoch': 0.43}
+{'loss': 0.4787, 'learning_rate': 2.3910000000000003e-05, 'epoch': 0.49}
+{'loss': 0.4722, 'learning_rate': 2.688e-05, 'epoch': 0.55}
+{'loss': 0.4726, 'learning_rate': 2.9880000000000002e-05, 'epoch': 0.61}
+  Num examples = 14993
+  Batch size = 16
+ 15%|█▌        | 1000/6528 [03:21<18:01,  5.11it/Saving model checkpoint to ../finetuned_models/per_species_models_v2/pseudomonas_aeruginosa/checkpoint-1000
+Configuration saved in ../finetuned_models/per_species_models_v2/pseudomonas_aeruginosa/checkpoint-1000/config.json
+{'eval_loss': 0.5258761644363403, 'eval_accuracy': 0.7383445607950376, 'eval_f1': 0.6785591214706772, 'eval_matthews_correlation': 0.36409460166305774, 'eval_precision': 0.6706056645113817, 'eval_recall': 0.6942562683071652, 'eval_confusion_matrix': [[8768, 2418], [1505, 2302]], 'eval_runtime': 4.5441, 'eval_samples_per_second': 3299.447, 'eval_steps_per_second': 51.715, 'epoch': 0.61}
+Model weights saved in ../finetuned_models/per_species_models_v2/pseudomonas_aeruginosa/checkpoint-1000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/pseudomonas_aeruginosa/checkpoint-1000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/pseudomonas_aeruginosa/checkpoint-1000/special_tokens_map.json
+ 31%|███       | 2000/6528 [06:38<14:43,  5.12it/s]***** Running Evaluation *****
+{'loss': 0.4605, 'learning_rate': 2.9479015918958033e-05, 'epoch': 0.67}
+{'loss': 0.4555, 'learning_rate': 2.8941751085383503e-05, 'epoch': 0.74}
+{'loss': 0.4409, 'learning_rate': 2.839905933429812e-05, 'epoch': 0.8}
+{'loss': 0.4456, 'learning_rate': 2.7856367583212734e-05, 'epoch': 0.86}
+{'loss': 0.4287, 'learning_rate': 2.731367583212735e-05, 'epoch': 0.92}
+{'loss': 0.4236, 'learning_rate': 2.677098408104197e-05, 'epoch': 0.98}
+{'loss': 0.4117, 'learning_rate': 2.6228292329956584e-05, 'epoch': 1.04}
+{'loss': 0.4136, 'learning_rate': 2.56856005788712e-05, 'epoch': 1.1}
+{'loss': 0.3994, 'learning_rate': 2.514290882778582e-05, 'epoch': 1.16}
+{'loss': 0.403, 'learning_rate': 2.4600217076700434e-05, 'epoch': 1.23}
+  Num examples = 14993
+  Batch size = 16
+ 31%|███       | 2000/6528 [06:42<14:43,  5.12it/Saving model checkpoint to ../finetuned_models/per_species_models_v2/pseudomonas_aeruginosa/checkpoint-2000
+Configuration saved in ../finetuned_models/per_species_models_v2/pseudomonas_aeruginosa/checkpoint-2000/config.json
+{'eval_loss': 0.6640734672546387, 'eval_accuracy': 0.6776495697992396, 'eval_f1': 0.6391017466082998, 'eval_matthews_correlation': 0.32107276648640565, 'eval_precision': 0.6416057406204851, 'eval_recall': 0.6819977794112129, 'eval_confusion_matrix': [[7530, 3656], [1177, 2630]], 'eval_runtime': 4.5238, 'eval_samples_per_second': 3314.274, 'eval_steps_per_second': 51.948, 'epoch': 1.23}
+Model weights saved in ../finetuned_models/per_species_models_v2/pseudomonas_aeruginosa/checkpoint-2000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/pseudomonas_aeruginosa/checkpoint-2000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/pseudomonas_aeruginosa/checkpoint-2000/special_tokens_map.json
+ 46%|████▌     | 3000/6528 [09:58<11:25,  5.15it/s]***** Running Evaluation *****
+{'loss': 0.3975, 'learning_rate': 2.405752532561505e-05, 'epoch': 1.29}
+{'loss': 0.3909, 'learning_rate': 2.3514833574529666e-05, 'epoch': 1.35}
+{'loss': 0.3838, 'learning_rate': 2.2972141823444284e-05, 'epoch': 1.41}
+{'loss': 0.385, 'learning_rate': 2.24294500723589e-05, 'epoch': 1.47}
+{'loss': 0.387, 'learning_rate': 2.1886758321273516e-05, 'epoch': 1.53}
+{'loss': 0.3836, 'learning_rate': 2.1344066570188134e-05, 'epoch': 1.59}
+{'loss': 0.3836, 'learning_rate': 2.080137481910275e-05, 'epoch': 1.65}
+{'loss': 0.3787, 'learning_rate': 2.0258683068017366e-05, 'epoch': 1.72}
+{'loss': 0.3701, 'learning_rate': 1.971599131693198e-05, 'epoch': 1.78}
+{'loss': 0.371, 'learning_rate': 1.91732995658466e-05, 'epoch': 1.84}
+  Num examples = 14993
+  Batch size = 16
+ 46%|████▌     | 3000/6528 [10:03<11:25,  5.15it/Saving model checkpoint to ../finetuned_models/per_species_models_v2/pseudomonas_aeruginosa/checkpoint-3000
+Configuration saved in ../finetuned_models/per_species_models_v2/pseudomonas_aeruginosa/checkpoint-3000/config.json
+{'eval_loss': 0.7788224220275879, 'eval_accuracy': 0.6746481691456013, 'eval_f1': 0.645087222066286, 'eval_matthews_correlation': 0.35446250246798366, 'eval_precision': 0.6548412483523808, 'eval_recall': 0.7028588425125764, 'eval_confusion_matrix': [[7221, 3965], [913, 2894]], 'eval_runtime': 4.5204, 'eval_samples_per_second': 3316.71, 'eval_steps_per_second': 51.986, 'epoch': 1.84}
+Model weights saved in ../finetuned_models/per_species_models_v2/pseudomonas_aeruginosa/checkpoint-3000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/pseudomonas_aeruginosa/checkpoint-3000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/pseudomonas_aeruginosa/checkpoint-3000/special_tokens_map.json
+ 61%|██████▏   | 4000/6528 [13:19<08:11,  5.14it/s]***** Running Evaluation *****
+{'loss': 0.37, 'learning_rate': 1.8630607814761216e-05, 'epoch': 1.9}
+{'loss': 0.3658, 'learning_rate': 1.808791606367583e-05, 'epoch': 1.96}
+{'loss': 0.3518, 'learning_rate': 1.754522431259045e-05, 'epoch': 2.02}
+{'loss': 0.3543, 'learning_rate': 1.7002532561505066e-05, 'epoch': 2.08}
+{'loss': 0.3459, 'learning_rate': 1.645984081041968e-05, 'epoch': 2.14}
+{'loss': 0.3392, 'learning_rate': 1.59171490593343e-05, 'epoch': 2.21}
+{'loss': 0.3426, 'learning_rate': 1.5374457308248916e-05, 'epoch': 2.27}
+{'loss': 0.3425, 'learning_rate': 1.4831765557163531e-05, 'epoch': 2.33}
+{'loss': 0.3478, 'learning_rate': 1.4289073806078148e-05, 'epoch': 2.39}
+{'loss': 0.3415, 'learning_rate': 1.3746382054992764e-05, 'epoch': 2.45}
+  Num examples = 14993
+  Batch size = 16
+ 61%|██████▏   | 4000/6528 [13:23<08:11,  5.14it/Saving model checkpoint to ../finetuned_models/per_species_models_v2/pseudomonas_aeruginosa/checkpoint-4000
+Configuration saved in ../finetuned_models/per_species_models_v2/pseudomonas_aeruginosa/checkpoint-4000/config.json
+{'eval_loss': 0.7681607007980347, 'eval_accuracy': 0.7133328886813847, 'eval_f1': 0.6737044815118809, 'eval_matthews_correlation': 0.38243989236768755, 'eval_precision': 0.6700632647787828, 'eval_recall': 0.715008619681127, 'eval_confusion_matrix': [[7960, 3226], [1072, 2735]], 'eval_runtime': 4.5191, 'eval_samples_per_second': 3317.728, 'eval_steps_per_second': 52.002, 'epoch': 2.45}
+Model weights saved in ../finetuned_models/per_species_models_v2/pseudomonas_aeruginosa/checkpoint-4000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/pseudomonas_aeruginosa/checkpoint-4000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/pseudomonas_aeruginosa/checkpoint-4000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_species_models_v2/pseudomonas_aeruginosa/checkpoint-2000] due to args.save_total_limit
+ 77%|███████▋  | 5000/6528 [16:39<04:57,  5.14it/s]***** Running Evaluation *****
+{'loss': 0.3439, 'learning_rate': 1.3203690303907381e-05, 'epoch': 2.51}
+{'loss': 0.3298, 'learning_rate': 1.2660998552821997e-05, 'epoch': 2.57}
+{'loss': 0.3375, 'learning_rate': 1.2118306801736614e-05, 'epoch': 2.63}
+{'loss': 0.3352, 'learning_rate': 1.1575615050651231e-05, 'epoch': 2.7}
+{'loss': 0.3307, 'learning_rate': 1.1032923299565847e-05, 'epoch': 2.76}
+{'loss': 0.3358, 'learning_rate': 1.0490231548480464e-05, 'epoch': 2.82}
+{'loss': 0.3318, 'learning_rate': 9.94753979739508e-06, 'epoch': 2.88}
+{'loss': 0.3363, 'learning_rate': 9.404848046309697e-06, 'epoch': 2.94}
+{'loss': 0.3209, 'learning_rate': 8.862156295224312e-06, 'epoch': 3.0}
+{'loss': 0.3112, 'learning_rate': 8.31946454413893e-06, 'epoch': 3.06}
+  Num examples = 14993
+  Batch size = 16
+ 77%|███████▋  | 5000/6528 [16:44<04:57,  5.14it/Saving model checkpoint to ../finetuned_models/per_species_models_v2/pseudomonas_aeruginosa/checkpoint-5000
+Configuration saved in ../finetuned_models/per_species_models_v2/pseudomonas_aeruginosa/checkpoint-5000/config.json
+{'eval_loss': 0.8273348808288574, 'eval_accuracy': 0.6893216834522777, 'eval_f1': 0.654902136002253, 'eval_matthews_correlation': 0.3596350189469667, 'eval_precision': 0.6580765757504631, 'eval_recall': 0.7045485648948311, 'eval_confusion_matrix': [[7535, 3651], [1007, 2800]], 'eval_runtime': 4.5177, 'eval_samples_per_second': 3318.703, 'eval_steps_per_second': 52.017, 'epoch': 3.06}
+Model weights saved in ../finetuned_models/per_species_models_v2/pseudomonas_aeruginosa/checkpoint-5000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/pseudomonas_aeruginosa/checkpoint-5000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/pseudomonas_aeruginosa/checkpoint-5000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_species_models_v2/pseudomonas_aeruginosa/checkpoint-3000] due to args.save_total_limit
+ 92%|█████████▏| 6000/6528 [20:00<01:42,  5.15it/s]***** Running Evaluation *****
+{'loss': 0.3161, 'learning_rate': 7.776772793053547e-06, 'epoch': 3.12}
+{'loss': 0.318, 'learning_rate': 7.2449348769898696e-06, 'epoch': 3.19}
+{'loss': 0.3224, 'learning_rate': 6.702243125904486e-06, 'epoch': 3.25}
+{'loss': 0.3192, 'learning_rate': 6.159551374819102e-06, 'epoch': 3.31}
+{'loss': 0.3199, 'learning_rate': 5.6168596237337196e-06, 'epoch': 3.37}
+{'loss': 0.3202, 'learning_rate': 5.074167872648336e-06, 'epoch': 3.43}
+{'loss': 0.3142, 'learning_rate': 4.531476121562952e-06, 'epoch': 3.49}
+{'loss': 0.3158, 'learning_rate': 3.988784370477569e-06, 'epoch': 3.55}
+{'loss': 0.3184, 'learning_rate': 3.446092619392185e-06, 'epoch': 3.61}
+{'loss': 0.3181, 'learning_rate': 2.903400868306802e-06, 'epoch': 3.68}
+  Num examples = 14993
+  Batch size = 16
+ 92%|█████████▏| 6000/6528 [20:04<01:42,  5.15it/Saving model checkpoint to ../finetuned_models/per_species_models_v2/pseudomonas_aeruginosa/checkpoint-6000
+Configuration saved in ../finetuned_models/per_species_models_v2/pseudomonas_aeruginosa/checkpoint-6000/config.json
+{'eval_loss': 0.8551663756370544, 'eval_accuracy': 0.7021276595744681, 'eval_f1': 0.6657695284522145, 'eval_matthews_correlation': 0.37500094185877125, 'eval_precision': 0.6655581111755224, 'eval_recall': 0.7123509766396708, 'eval_confusion_matrix': [[7736, 3450], [1016, 2791]], 'eval_runtime': 4.5141, 'eval_samples_per_second': 3321.352, 'eval_steps_per_second': 52.059, 'epoch': 3.68}
+Model weights saved in ../finetuned_models/per_species_models_v2/pseudomonas_aeruginosa/checkpoint-6000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/pseudomonas_aeruginosa/checkpoint-6000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/pseudomonas_aeruginosa/checkpoint-6000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_species_models_v2/pseudomonas_aeruginosa/checkpoint-4000] due to args.save_total_limit
+100%|██████████| 6528/6528 [21:49<00:00,  5.15it/s]
+{'loss': 0.3147, 'learning_rate': 2.3607091172214183e-06, 'epoch': 3.74}
+{'loss': 0.3208, 'learning_rate': 1.8180173661360347e-06, 'epoch': 3.8}
+{'loss': 0.3098, 'learning_rate': 1.280752532561505e-06, 'epoch': 3.86}
+{'loss': 0.3138, 'learning_rate': 7.380607814761216e-07, 'epoch': 3.92}
+{'loss': 0.3169, 'learning_rate': 1.9536903039073806e-07, 'epoch': 3.98}
+
+Training completed. Do not forget to share your model on huggingface.co/models =)
+
+
+Loading best model from ../finetuned_models/per_species_models_v2/pseudomonas_aeruginosa/checkpoint-1000 (score: 0.6785591214706772).
+100%|██████████| 6528/6528 [21:50<00:00,  4.98it/s]
+{'train_runtime': 1310.4136, 'train_samples_per_second': 637.753, 'train_steps_per_second': 4.982, 'train_loss': 0.38666125138600665, 'epoch': 4.0}
+***** Running Evaluation *****
+  Num examples = 14993
+  Batch size = 16
+100%|██████████| 235/235 [00:04<00:00, 50.57it/s]
+Configuration saved in ../finetuned_models/per_species_models_v2/pseudomonas_aeruginosa/best/config.json
+Model weights saved in ../finetuned_models/per_species_models_v2/pseudomonas_aeruginosa/best/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/pseudomonas_aeruginosa/best/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/pseudomonas_aeruginosa/best/special_tokens_map.json

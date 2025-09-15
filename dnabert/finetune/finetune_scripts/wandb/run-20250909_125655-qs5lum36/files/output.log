@@ -1,0 +1,245 @@
+WARNING:root:Perform single sequence classification (no additional features)...
+--- Logging error ---
+Traceback (most recent call last):
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 1085, in emit
+    msg = self.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 929, in format
+    return fmt.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 668, in format
+    record.message = record.getMessage()
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 373, in getMessage
+    msg = msg % self.args
+TypeError: not all arguments converted during string formatting
+Call stack:
+  File "../train.py", line 390, in <module>
+    train()
+  File "../train.py", line 299, in train
+    train_dataset = SupervisedDataset(tokenizer=tokenizer,
+  File "../train.py", line 169, in __init__
+    logging.warning("Number of labels:", self.num_labels)
+Message: 'Number of labels:'
+Arguments: (2,)
+WARNING:root:Perform single sequence classification (no additional features)...
+--- Logging error ---
+Traceback (most recent call last):
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 1085, in emit
+    msg = self.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 929, in format
+    return fmt.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 668, in format
+    record.message = record.getMessage()
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 373, in getMessage
+    msg = msg % self.args
+TypeError: not all arguments converted during string formatting
+Call stack:
+  File "../train.py", line 390, in <module>
+    train()
+  File "../train.py", line 302, in train
+    val_dataset = SupervisedDataset(tokenizer=tokenizer,
+  File "../train.py", line 169, in __init__
+    logging.warning("Number of labels:", self.num_labels)
+Message: 'Number of labels:'
+Arguments: (2,)
+WARNING:root:Perform single sequence classification (no additional features)...
+--- Logging error ---
+Traceback (most recent call last):
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 1085, in emit
+    msg = self.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 929, in format
+    return fmt.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 668, in format
+    record.message = record.getMessage()
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 373, in getMessage
+    msg = msg % self.args
+TypeError: not all arguments converted during string formatting
+Call stack:
+  File "../train.py", line 390, in <module>
+    train()
+  File "../train.py", line 305, in train
+    test_dataset = SupervisedDataset(tokenizer=tokenizer,
+  File "../train.py", line 169, in __init__
+    logging.warning("Number of labels:", self.num_labels)
+Message: 'Number of labels:'
+Arguments: (2,)
+Initializing CUSTOM BertForSequenceClassification
+/gpfs/scratch/jvaska/cache/modules/transformers_modules/bacteria_model/bert_layers.py:126: UserWarning: Unable to import Triton; defaulting MosaicBERT attention implementation to pytorch (this will reduce throughput when using this model).
+  warnings.warn(
+Dropout layer: Dropout(p=0.1, inplace=False)
+Dropout probability: 0.1
+Some weights of the model checkpoint at ../pretrained_models/bacteria_model were not used when initializing BertForSequenceClassification: ['cls.predictions.decoder.bias', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.dense.bias', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.decoder.weight', 'cls.predictions.transform.LayerNorm.bias']
+- This IS expected if you are initializing BertForSequenceClassification from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertForSequenceClassification from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of BertForSequenceClassification were not initialized from the model checkpoint at ../pretrained_models/bacteria_model and are newly initialized: ['bert.pooler.dense.weight', 'classifier.2.bias', 'classifier.2.weight', 'classifier.0.bias', 'classifier.0.weight', 'bert.pooler.dense.bias']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+Using cuda_amp half precision backend
+***** Running training *****
+  Num examples = 255,103
+  Num Epochs = 4
+  Instantaneous batch size per device = 8
+  Total train batch size (w. parallel, distributed & accumulation) = 128
+  Gradient Accumulation steps = 4
+  Total optimization steps = 7,972
+  Number of trainable parameters = 117,167,234
+Automatic Weights & Biases logging enabled, to disable set os.environ["WANDB_DISABLED"] = "true"
+ 13%|█▎        | 1000/7972 [03:15<22:37,  5.14it/s]***** Running Evaluation *****
+{'loss': 0.6871, 'learning_rate': 3e-06, 'epoch': 0.05}
+{'loss': 0.6345, 'learning_rate': 5.9700000000000004e-06, 'epoch': 0.1}
+{'loss': 0.5548, 'learning_rate': 8.97e-06, 'epoch': 0.15}
+{'loss': 0.5091, 'learning_rate': 1.197e-05, 'epoch': 0.2}
+{'loss': 0.462, 'learning_rate': 1.497e-05, 'epoch': 0.25}
+{'loss': 0.4257, 'learning_rate': 1.794e-05, 'epoch': 0.3}
+{'loss': 0.4185, 'learning_rate': 2.094e-05, 'epoch': 0.35}
+{'loss': 0.3948, 'learning_rate': 2.394e-05, 'epoch': 0.4}
+{'loss': 0.3869, 'learning_rate': 2.6940000000000003e-05, 'epoch': 0.45}
+{'loss': 0.3722, 'learning_rate': 2.994e-05, 'epoch': 0.5}
+  Num examples = 27817
+  Batch size = 16
+ 13%|█▎        | 1000/7972 [03:23<22:37,  5.14it/Saving model checkpoint to ../finetuned_models/per_species_models_v2/escherichia_coli/checkpoint-1000
+Configuration saved in ../finetuned_models/per_species_models_v2/escherichia_coli/checkpoint-1000/config.json
+{'eval_loss': 0.6341400146484375, 'eval_accuracy': 0.7048926915195743, 'eval_f1': 0.6576646468609122, 'eval_matthews_correlation': 0.36597806600493865, 'eval_precision': 0.7134598508117596, 'eval_recall': 0.6568678422281279, 'eval_confusion_matrix': [[4638, 6487], [1722, 14970]], 'eval_runtime': 8.0742, 'eval_samples_per_second': 3445.192, 'eval_steps_per_second': 53.876, 'epoch': 0.5}
+Model weights saved in ../finetuned_models/per_species_models_v2/escherichia_coli/checkpoint-1000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/escherichia_coli/checkpoint-1000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/escherichia_coli/checkpoint-1000/special_tokens_map.json
+ 25%|██▌       | 2000/7972 [06:38<19:19,  5.15it/s]***** Running Evaluation *****
+{'loss': 0.3653, 'learning_rate': 2.9582616179001722e-05, 'epoch': 0.55}
+{'loss': 0.3626, 'learning_rate': 2.9152323580034425e-05, 'epoch': 0.6}
+{'loss': 0.3461, 'learning_rate': 2.8722030981067128e-05, 'epoch': 0.65}
+{'loss': 0.3435, 'learning_rate': 2.8291738382099828e-05, 'epoch': 0.7}
+{'loss': 0.3289, 'learning_rate': 2.786144578313253e-05, 'epoch': 0.75}
+{'loss': 0.3271, 'learning_rate': 2.7431153184165235e-05, 'epoch': 0.8}
+{'loss': 0.3285, 'learning_rate': 2.7000860585197934e-05, 'epoch': 0.85}
+{'loss': 0.3154, 'learning_rate': 2.6570567986230638e-05, 'epoch': 0.9}
+{'loss': 0.3146, 'learning_rate': 2.614027538726334e-05, 'epoch': 0.95}
+{'loss': 0.3064, 'learning_rate': 2.570998278829604e-05, 'epoch': 1.0}
+  Num examples = 27817
+  Batch size = 16
+ 25%|██▌       | 2000/7972 [06:47<19:19,  5.15it/Saving model checkpoint to ../finetuned_models/per_species_models_v2/escherichia_coli/checkpoint-2000
+Configuration saved in ../finetuned_models/per_species_models_v2/escherichia_coli/checkpoint-2000/config.json
+{'eval_loss': 0.7583063840866089, 'eval_accuracy': 0.7209979508933386, 'eval_f1': 0.7030205977589068, 'eval_matthews_correlation': 0.40932128620621244, 'eval_precision': 0.7096537128954691, 'eval_recall': 0.6997864872360304, 'eval_confusion_matrix': [[6606, 4519], [3242, 13450]], 'eval_runtime': 8.0577, 'eval_samples_per_second': 3452.209, 'eval_steps_per_second': 53.985, 'epoch': 1.0}
+Model weights saved in ../finetuned_models/per_species_models_v2/escherichia_coli/checkpoint-2000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/escherichia_coli/checkpoint-2000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/escherichia_coli/checkpoint-2000/special_tokens_map.json
+ 38%|███▊      | 3000/7972 [10:01<15:58,  5.19it/s]***** Running Evaluation *****
+{'loss': 0.298, 'learning_rate': 2.5279690189328744e-05, 'epoch': 1.05}
+{'loss': 0.2986, 'learning_rate': 2.4849397590361447e-05, 'epoch': 1.1}
+{'loss': 0.2894, 'learning_rate': 2.4419104991394147e-05, 'epoch': 1.15}
+{'loss': 0.2914, 'learning_rate': 2.398881239242685e-05, 'epoch': 1.2}
+{'loss': 0.2805, 'learning_rate': 2.3558519793459553e-05, 'epoch': 1.25}
+{'loss': 0.2875, 'learning_rate': 2.3128227194492253e-05, 'epoch': 1.3}
+{'loss': 0.2734, 'learning_rate': 2.2697934595524957e-05, 'epoch': 1.35}
+{'loss': 0.2818, 'learning_rate': 2.226764199655766e-05, 'epoch': 1.4}
+{'loss': 0.2756, 'learning_rate': 2.183734939759036e-05, 'epoch': 1.46}
+{'loss': 0.2683, 'learning_rate': 2.1407056798623066e-05, 'epoch': 1.51}
+  Num examples = 27817
+  Batch size = 16
+ 38%|███▊      | 3000/7972 [10:09<15:58,  5.19it/Saving model checkpoint to ../finetuned_models/per_species_models_v2/escherichia_coli/checkpoint-3000
+Configuration saved in ../finetuned_models/per_species_models_v2/escherichia_coli/checkpoint-3000/config.json
+{'eval_loss': 0.8589903116226196, 'eval_accuracy': 0.738720926052414, 'eval_f1': 0.7207590116846386, 'eval_matthews_correlation': 0.44612871263307735, 'eval_precision': 0.7296500309987417, 'eval_recall': 0.7166675390485114, 'eval_confusion_matrix': [[6747, 4378], [2890, 13802]], 'eval_runtime': 8.0689, 'eval_samples_per_second': 3447.453, 'eval_steps_per_second': 53.911, 'epoch': 1.51}
+Model weights saved in ../finetuned_models/per_species_models_v2/escherichia_coli/checkpoint-3000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/escherichia_coli/checkpoint-3000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/escherichia_coli/checkpoint-3000/special_tokens_map.json
+ 50%|█████     | 4000/7972 [13:23<12:45,  5.19it/s]***** Running Evaluation *****
+{'loss': 0.2711, 'learning_rate': 2.098106712564544e-05, 'epoch': 1.56}
+{'loss': 0.2703, 'learning_rate': 2.0550774526678143e-05, 'epoch': 1.61}
+{'loss': 0.2644, 'learning_rate': 2.0120481927710843e-05, 'epoch': 1.66}
+{'loss': 0.2596, 'learning_rate': 1.9690189328743546e-05, 'epoch': 1.71}
+{'loss': 0.2557, 'learning_rate': 1.925989672977625e-05, 'epoch': 1.76}
+{'loss': 0.2468, 'learning_rate': 1.882960413080895e-05, 'epoch': 1.81}
+{'loss': 0.2491, 'learning_rate': 1.8399311531841652e-05, 'epoch': 1.86}
+{'loss': 0.2496, 'learning_rate': 1.7969018932874356e-05, 'epoch': 1.91}
+{'loss': 0.247, 'learning_rate': 1.7538726333907055e-05, 'epoch': 1.96}
+{'loss': 0.2473, 'learning_rate': 1.710843373493976e-05, 'epoch': 2.01}
+  Num examples = 27817
+  Batch size = 16
+ 50%|█████     | 4000/7972 [13:31<12:45,  5.19it/Saving model checkpoint to ../finetuned_models/per_species_models_v2/escherichia_coli/checkpoint-4000
+Configuration saved in ../finetuned_models/per_species_models_v2/escherichia_coli/checkpoint-4000/config.json
+{'eval_loss': 0.8622856140136719, 'eval_accuracy': 0.7432505302512852, 'eval_f1': 0.726753285988563, 'eval_matthews_correlation': 0.4568583758406028, 'eval_precision': 0.7339538784348929, 'eval_recall': 0.7230349598946679, 'eval_confusion_matrix': [[6920, 4205], [2937, 13755]], 'eval_runtime': 8.0358, 'eval_samples_per_second': 3461.633, 'eval_steps_per_second': 54.133, 'epoch': 2.01}
+Model weights saved in ../finetuned_models/per_species_models_v2/escherichia_coli/checkpoint-4000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/escherichia_coli/checkpoint-4000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/escherichia_coli/checkpoint-4000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_species_models_v2/escherichia_coli/checkpoint-1000] due to args.save_total_limit
+ 63%|██████▎   | 5000/7972 [16:46<09:36,  5.15it/s]***** Running Evaluation *****
+{'loss': 0.2354, 'learning_rate': 1.6678141135972462e-05, 'epoch': 2.06}
+{'loss': 0.2324, 'learning_rate': 1.6247848537005162e-05, 'epoch': 2.11}
+{'loss': 0.2417, 'learning_rate': 1.5817555938037865e-05, 'epoch': 2.16}
+{'loss': 0.2388, 'learning_rate': 1.5387263339070568e-05, 'epoch': 2.21}
+{'loss': 0.2347, 'learning_rate': 1.4956970740103271e-05, 'epoch': 2.26}
+{'loss': 0.2355, 'learning_rate': 1.4526678141135973e-05, 'epoch': 2.31}
+{'loss': 0.234, 'learning_rate': 1.4096385542168676e-05, 'epoch': 2.36}
+{'loss': 0.2324, 'learning_rate': 1.3666092943201378e-05, 'epoch': 2.41}
+{'loss': 0.2307, 'learning_rate': 1.323580034423408e-05, 'epoch': 2.46}
+{'loss': 0.2251, 'learning_rate': 1.2805507745266782e-05, 'epoch': 2.51}
+  Num examples = 27817
+  Batch size = 16
+ 63%|██████▎   | 5000/7972 [16:54<09:36,  5.15it/Saving model checkpoint to ../finetuned_models/per_species_models_v2/escherichia_coli/checkpoint-5000
+Configuration saved in ../finetuned_models/per_species_models_v2/escherichia_coli/checkpoint-5000/config.json
+{'eval_loss': 0.8647446632385254, 'eval_accuracy': 0.7388647230111083, 'eval_f1': 0.7227568653246231, 'eval_matthews_correlation': 0.44818542155750274, 'eval_precision': 0.7288435790981445, 'eval_recall': 0.7194404720555093, 'eval_confusion_matrix': [[6924, 4201], [3063, 13629]], 'eval_runtime': 8.0542, 'eval_samples_per_second': 3453.725, 'eval_steps_per_second': 54.009, 'epoch': 2.51}
+Model weights saved in ../finetuned_models/per_species_models_v2/escherichia_coli/checkpoint-5000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/escherichia_coli/checkpoint-5000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/escherichia_coli/checkpoint-5000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_species_models_v2/escherichia_coli/checkpoint-2000] due to args.save_total_limit
+ 75%|███████▌  | 6000/7972 [20:08<06:21,  5.17it/s]***** Running Evaluation *****
+{'loss': 0.2284, 'learning_rate': 1.2375215146299484e-05, 'epoch': 2.56}
+{'loss': 0.224, 'learning_rate': 1.1944922547332185e-05, 'epoch': 2.61}
+{'loss': 0.2284, 'learning_rate': 1.1518932874354562e-05, 'epoch': 2.66}
+{'loss': 0.2225, 'learning_rate': 1.1088640275387264e-05, 'epoch': 2.71}
+{'loss': 0.2316, 'learning_rate': 1.0658347676419966e-05, 'epoch': 2.76}
+{'loss': 0.223, 'learning_rate': 1.0228055077452669e-05, 'epoch': 2.81}
+{'loss': 0.2232, 'learning_rate': 9.79776247848537e-06, 'epoch': 2.86}
+{'loss': 0.2283, 'learning_rate': 9.367469879518072e-06, 'epoch': 2.91}
+{'loss': 0.2251, 'learning_rate': 8.937177280550775e-06, 'epoch': 2.96}
+{'loss': 0.219, 'learning_rate': 8.506884681583477e-06, 'epoch': 3.01}
+  Num examples = 27817
+  Batch size = 16
+ 75%|███████▌  | 6000/7972 [20:16<06:21,  5.17it/Saving model checkpoint to ../finetuned_models/per_species_models_v2/escherichia_coli/checkpoint-6000
+Configuration saved in ../finetuned_models/per_species_models_v2/escherichia_coli/checkpoint-6000/config.json
+{'eval_loss': 1.1193956136703491, 'eval_accuracy': 0.7299493115720602, 'eval_f1': 0.7067177859316163, 'eval_matthews_correlation': 0.4241914051368394, 'eval_precision': 0.7229950660786721, 'eval_recall': 0.7017290688939328, 'eval_confusion_matrix': [[6238, 4887], [2625, 14067]], 'eval_runtime': 8.0344, 'eval_samples_per_second': 3462.25, 'eval_steps_per_second': 54.142, 'epoch': 3.01}
+Model weights saved in ../finetuned_models/per_species_models_v2/escherichia_coli/checkpoint-6000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/escherichia_coli/checkpoint-6000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/escherichia_coli/checkpoint-6000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_species_models_v2/escherichia_coli/checkpoint-3000] due to args.save_total_limit
+ 88%|████████▊ | 7000/7972 [23:31<03:07,  5.17it/s]***** Running Evaluation *****
+{'loss': 0.2134, 'learning_rate': 8.080895008605852e-06, 'epoch': 3.06}
+{'loss': 0.2129, 'learning_rate': 7.650602409638555e-06, 'epoch': 3.11}
+{'loss': 0.2139, 'learning_rate': 7.220309810671257e-06, 'epoch': 3.16}
+{'loss': 0.2118, 'learning_rate': 6.790017211703959e-06, 'epoch': 3.21}
+{'loss': 0.2104, 'learning_rate': 6.359724612736661e-06, 'epoch': 3.26}
+{'loss': 0.2096, 'learning_rate': 5.929432013769363e-06, 'epoch': 3.31}
+{'loss': 0.2114, 'learning_rate': 5.499139414802065e-06, 'epoch': 3.36}
+{'loss': 0.2091, 'learning_rate': 5.0688468158347685e-06, 'epoch': 3.41}
+{'loss': 0.2077, 'learning_rate': 4.63855421686747e-06, 'epoch': 3.46}
+{'loss': 0.2114, 'learning_rate': 4.208261617900172e-06, 'epoch': 3.51}
+  Num examples = 27817
+  Batch size = 16
+ 88%|████████▊ | 7000/7972 [23:39<03:07,  5.17it/Saving model checkpoint to ../finetuned_models/per_species_models_v2/escherichia_coli/checkpoint-7000
+Configuration saved in ../finetuned_models/per_species_models_v2/escherichia_coli/checkpoint-7000/config.json
+{'eval_loss': 1.1175262928009033, 'eval_accuracy': 0.7390804184491498, 'eval_f1': 0.722200134447484, 'eval_matthews_correlation': 0.4478484586016023, 'eval_precision': 0.7294558355451989, 'eval_recall': 0.7185259762464424, 'eval_confusion_matrix': [[6851, 4274], [2984, 13708]], 'eval_runtime': 8.0373, 'eval_samples_per_second': 3460.977, 'eval_steps_per_second': 54.122, 'epoch': 3.51}
+Model weights saved in ../finetuned_models/per_species_models_v2/escherichia_coli/checkpoint-7000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/escherichia_coli/checkpoint-7000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/escherichia_coli/checkpoint-7000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_species_models_v2/escherichia_coli/checkpoint-5000] due to args.save_total_limit
+100%|██████████| 7972/7972 [27:58<00:00,  5.16it/s]  
+{'loss': 0.216, 'learning_rate': 3.7779690189328744e-06, 'epoch': 3.56}
+{'loss': 0.2111, 'learning_rate': 3.3476764199655767e-06, 'epoch': 3.61}
+{'loss': 0.2059, 'learning_rate': 2.917383820998279e-06, 'epoch': 3.66}
+{'loss': 0.2061, 'learning_rate': 2.487091222030981e-06, 'epoch': 3.71}
+{'loss': 0.209, 'learning_rate': 2.0567986230636835e-06, 'epoch': 3.76}
+{'loss': 0.2028, 'learning_rate': 1.6265060240963856e-06, 'epoch': 3.81}
+{'loss': 0.2098, 'learning_rate': 1.1962134251290878e-06, 'epoch': 3.86}
+{'loss': 0.2024, 'learning_rate': 7.659208261617901e-07, 'epoch': 3.91}
+{'loss': 0.2096, 'learning_rate': 3.3562822719449223e-07, 'epoch': 3.96}
+
+Training completed. Do not forget to share your model on huggingface.co/models =)
+
+
+Loading best model from ../finetuned_models/per_species_models_v2/escherichia_coli/checkpoint-4000 (score: 0.726753285988563).
+100%|██████████| 7972/7972 [27:59<00:00,  4.75it/s]
+{'train_runtime': 1679.9701, 'train_samples_per_second': 607.399, 'train_steps_per_second': 4.745, 'train_loss': 0.27993124092396815, 'epoch': 4.0}
+***** Running Evaluation *****
+  Num examples = 27817
+  Batch size = 16
+100%|██████████| 435/435 [00:08<00:00, 53.52it/s]
+Configuration saved in ../finetuned_models/per_species_models_v2/escherichia_coli/best/config.json
+Model weights saved in ../finetuned_models/per_species_models_v2/escherichia_coli/best/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/escherichia_coli/best/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/escherichia_coli/best/special_tokens_map.json

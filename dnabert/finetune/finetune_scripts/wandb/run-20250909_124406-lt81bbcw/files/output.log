@@ -1,0 +1,162 @@
+WARNING:root:Perform single sequence classification (no additional features)...
+--- Logging error ---
+Traceback (most recent call last):
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 1085, in emit
+    msg = self.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 929, in format
+    return fmt.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 668, in format
+    record.message = record.getMessage()
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 373, in getMessage
+    msg = msg % self.args
+TypeError: not all arguments converted during string formatting
+Call stack:
+  File "../train.py", line 390, in <module>
+    train()
+  File "../train.py", line 299, in train
+    train_dataset = SupervisedDataset(tokenizer=tokenizer,
+  File "../train.py", line 169, in __init__
+    logging.warning("Number of labels:", self.num_labels)
+Message: 'Number of labels:'
+Arguments: (2,)
+WARNING:root:Perform single sequence classification (no additional features)...
+--- Logging error ---
+Traceback (most recent call last):
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 1085, in emit
+    msg = self.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 929, in format
+    return fmt.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 668, in format
+    record.message = record.getMessage()
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 373, in getMessage
+    msg = msg % self.args
+TypeError: not all arguments converted during string formatting
+Call stack:
+  File "../train.py", line 390, in <module>
+    train()
+  File "../train.py", line 302, in train
+    val_dataset = SupervisedDataset(tokenizer=tokenizer,
+  File "../train.py", line 169, in __init__
+    logging.warning("Number of labels:", self.num_labels)
+Message: 'Number of labels:'
+Arguments: (2,)
+WARNING:root:Perform single sequence classification (no additional features)...
+--- Logging error ---
+Traceback (most recent call last):
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 1085, in emit
+    msg = self.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 929, in format
+    return fmt.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 668, in format
+    record.message = record.getMessage()
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 373, in getMessage
+    msg = msg % self.args
+TypeError: not all arguments converted during string formatting
+Call stack:
+  File "../train.py", line 390, in <module>
+    train()
+  File "../train.py", line 305, in train
+    test_dataset = SupervisedDataset(tokenizer=tokenizer,
+  File "../train.py", line 169, in __init__
+    logging.warning("Number of labels:", self.num_labels)
+Message: 'Number of labels:'
+Arguments: (2,)
+Initializing CUSTOM BertForSequenceClassification
+/gpfs/scratch/jvaska/cache/modules/transformers_modules/bacteria_model/bert_layers.py:126: UserWarning: Unable to import Triton; defaulting MosaicBERT attention implementation to pytorch (this will reduce throughput when using this model).
+  warnings.warn(
+Dropout layer: Dropout(p=0.1, inplace=False)
+Dropout probability: 0.1
+Some weights of the model checkpoint at ../pretrained_models/bacteria_model were not used when initializing BertForSequenceClassification: ['cls.predictions.transform.LayerNorm.bias', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.dense.bias', 'cls.predictions.decoder.weight', 'cls.predictions.decoder.bias', 'cls.predictions.transform.LayerNorm.weight']
+- This IS expected if you are initializing BertForSequenceClassification from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertForSequenceClassification from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of BertForSequenceClassification were not initialized from the model checkpoint at ../pretrained_models/bacteria_model and are newly initialized: ['classifier.0.weight', 'bert.pooler.dense.bias', 'classifier.2.weight', 'classifier.0.bias', 'bert.pooler.dense.weight', 'classifier.2.bias']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+Using cuda_amp half precision backend
+***** Running training *****
+  Num examples = 116,898
+  Num Epochs = 4
+  Instantaneous batch size per device = 8
+  Total train batch size (w. parallel, distributed & accumulation) = 128
+  Gradient Accumulation steps = 4
+  Total optimization steps = 3,652
+  Number of trainable parameters = 117,167,234
+Automatic Weights & Biases logging enabled, to disable set os.environ["WANDB_DISABLED"] = "true"
+ 27%|██▋       | 1000/3652 [03:10<08:25,  5.24it/s]***** Running Evaluation *****
+{'loss': 0.6757, 'learning_rate': 3e-06, 'epoch': 0.11}
+{'loss': 0.5455, 'learning_rate': 5.9700000000000004e-06, 'epoch': 0.22}
+{'loss': 0.3952, 'learning_rate': 8.939999999999999e-06, 'epoch': 0.33}
+{'loss': 0.2615, 'learning_rate': 1.1940000000000001e-05, 'epoch': 0.44}
+{'loss': 0.1962, 'learning_rate': 1.491e-05, 'epoch': 0.55}
+{'loss': 0.1905, 'learning_rate': 1.791e-05, 'epoch': 0.66}
+{'loss': 0.1873, 'learning_rate': 2.0909999999999998e-05, 'epoch': 0.77}
+{'loss': 0.1746, 'learning_rate': 2.3910000000000003e-05, 'epoch': 0.88}
+{'loss': 0.1622, 'learning_rate': 2.688e-05, 'epoch': 0.99}
+{'loss': 0.1634, 'learning_rate': 2.9880000000000002e-05, 'epoch': 1.09}
+  Num examples = 15722
+  Batch size = 16
+ 27%|██▋       | 1000/3652 [03:15<08:25,  5.24it/Saving model checkpoint to ../finetuned_models/per_species_models_v2/campylobacter_jejuni/checkpoint-1000
+Configuration saved in ../finetuned_models/per_species_models_v2/campylobacter_jejuni/checkpoint-1000/config.json
+{'eval_loss': 0.11142884939908981, 'eval_accuracy': 0.9750031802569648, 'eval_f1': 0.5617909084364924, 'eval_matthews_correlation': 0.17871183091026355, 'eval_precision': 0.5391335112786959, 'eval_recall': 0.7040317713880014, 'eval_confusion_matrix': [[15298, 352], [41, 31]], 'eval_runtime': 4.4892, 'eval_samples_per_second': 3502.164, 'eval_steps_per_second': 54.798, 'epoch': 1.09}
+Model weights saved in ../finetuned_models/per_species_models_v2/campylobacter_jejuni/checkpoint-1000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/campylobacter_jejuni/checkpoint-1000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/campylobacter_jejuni/checkpoint-1000/special_tokens_map.json
+ 55%|█████▍    | 2000/3652 [06:25<05:11,  5.31it/s]***** Running Evaluation *****
+{'loss': 0.1616, 'learning_rate': 2.891402714932127e-05, 'epoch': 1.2}
+{'loss': 0.1629, 'learning_rate': 2.7782805429864255e-05, 'epoch': 1.31}
+{'loss': 0.1623, 'learning_rate': 2.665158371040724e-05, 'epoch': 1.42}
+{'loss': 0.1544, 'learning_rate': 2.5520361990950225e-05, 'epoch': 1.53}
+{'loss': 0.1587, 'learning_rate': 2.4389140271493212e-05, 'epoch': 1.64}
+{'loss': 0.168, 'learning_rate': 2.32579185520362e-05, 'epoch': 1.75}
+{'loss': 0.1556, 'learning_rate': 2.212669683257919e-05, 'epoch': 1.86}
+{'loss': 0.1521, 'learning_rate': 2.0995475113122172e-05, 'epoch': 1.97}
+{'loss': 0.1607, 'learning_rate': 1.986425339366516e-05, 'epoch': 2.08}
+{'loss': 0.16, 'learning_rate': 1.8733031674208146e-05, 'epoch': 2.19}
+  Num examples = 15722
+  Batch size = 16
+ 55%|█████▍    | 2000/3652 [06:29<05:11,  5.31it/Saving model checkpoint to ../finetuned_models/per_species_models_v2/campylobacter_jejuni/checkpoint-2000
+Configuration saved in ../finetuned_models/per_species_models_v2/campylobacter_jejuni/checkpoint-2000/config.json
+{'eval_loss': 0.1600697934627533, 'eval_accuracy': 0.972077343849383, 'eval_f1': 0.5440338059172247, 'eval_matthews_correlation': 0.13537224049078994, 'eval_precision': 0.5284405732519506, 'eval_recall': 0.6610871494497692, 'eval_confusion_matrix': [[15258, 392], [47, 25]], 'eval_runtime': 4.4773, 'eval_samples_per_second': 3511.518, 'eval_steps_per_second': 54.944, 'epoch': 2.19}
+Model weights saved in ../finetuned_models/per_species_models_v2/campylobacter_jejuni/checkpoint-2000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/campylobacter_jejuni/checkpoint-2000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/campylobacter_jejuni/checkpoint-2000/special_tokens_map.json
+ 82%|████████▏ | 3000/3652 [09:39<02:02,  5.31it/s]***** Running Evaluation *****
+{'loss': 0.1555, 'learning_rate': 1.7601809954751133e-05, 'epoch': 2.3}
+{'loss': 0.1569, 'learning_rate': 1.647058823529412e-05, 'epoch': 2.41}
+{'loss': 0.1539, 'learning_rate': 1.5339366515837103e-05, 'epoch': 2.52}
+{'loss': 0.1498, 'learning_rate': 1.420814479638009e-05, 'epoch': 2.63}
+{'loss': 0.1582, 'learning_rate': 1.3076923076923078e-05, 'epoch': 2.74}
+{'loss': 0.1439, 'learning_rate': 1.1945701357466063e-05, 'epoch': 2.85}
+{'loss': 0.1596, 'learning_rate': 1.081447963800905e-05, 'epoch': 2.96}
+{'loss': 0.1558, 'learning_rate': 9.683257918552037e-06, 'epoch': 3.07}
+{'loss': 0.1602, 'learning_rate': 8.552036199095022e-06, 'epoch': 3.17}
+{'loss': 0.1544, 'learning_rate': 7.42081447963801e-06, 'epoch': 3.28}
+  Num examples = 15722
+  Batch size = 16
+ 82%|████████▏ | 3000/3652 [09:43<02:02,  5.31it/Saving model checkpoint to ../finetuned_models/per_species_models_v2/campylobacter_jejuni/checkpoint-3000
+Configuration saved in ../finetuned_models/per_species_models_v2/campylobacter_jejuni/checkpoint-3000/config.json
+{'eval_loss': 0.18472303450107574, 'eval_accuracy': 0.9707416359241827, 'eval_f1': 0.5650487856570481, 'eval_matthews_correlation': 0.20478406287187798, 'eval_precision': 0.5407639518737157, 'eval_recall': 0.7571911608093717, 'eval_confusion_matrix': [[15223, 427], [33, 39]], 'eval_runtime': 4.4754, 'eval_samples_per_second': 3513.001, 'eval_steps_per_second': 54.967, 'epoch': 3.28}
+Model weights saved in ../finetuned_models/per_species_models_v2/campylobacter_jejuni/checkpoint-3000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/campylobacter_jejuni/checkpoint-3000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/campylobacter_jejuni/checkpoint-3000/special_tokens_map.json
+100%|██████████| 3652/3652 [11:48<00:00,  5.30it/s]
+{'loss': 0.1545, 'learning_rate': 6.2895927601809956e-06, 'epoch': 3.39}
+{'loss': 0.1473, 'learning_rate': 5.158371040723982e-06, 'epoch': 3.5}
+{'loss': 0.1522, 'learning_rate': 4.027149321266968e-06, 'epoch': 3.61}
+{'loss': 0.1436, 'learning_rate': 2.895927601809955e-06, 'epoch': 3.72}
+{'loss': 0.1513, 'learning_rate': 1.7647058823529412e-06, 'epoch': 3.83}
+{'loss': 0.1545, 'learning_rate': 6.334841628959277e-07, 'epoch': 3.94}
+
+Training completed. Do not forget to share your model on huggingface.co/models =)
+
+
+Loading best model from ../finetuned_models/per_species_models_v2/campylobacter_jejuni/checkpoint-3000 (score: 0.5650487856570481).
+100%|██████████| 3652/3652 [11:48<00:00,  5.16it/s]
+{'train_runtime': 708.3807, 'train_samples_per_second': 660.086, 'train_steps_per_second': 5.155, 'train_loss': 0.19388759018688057, 'epoch': 4.0}
+***** Running Evaluation *****
+  Num examples = 15722
+  Batch size = 16
+100%|██████████| 246/246 [00:04<00:00, 53.75it/s]
+Configuration saved in ../finetuned_models/per_species_models_v2/campylobacter_jejuni/best/config.json
+Model weights saved in ../finetuned_models/per_species_models_v2/campylobacter_jejuni/best/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/campylobacter_jejuni/best/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/campylobacter_jejuni/best/special_tokens_map.json

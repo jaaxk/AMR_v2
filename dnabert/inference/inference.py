@@ -5,10 +5,10 @@ Output is a dataset for input to a random forest model, with columns: accession,
 
 Key Options:
     - "output_format": "random_forest" or "consensus"
-    - "grouping": "full", "per_antibiotic", or "per_species"
+    - "grouping": "full", "per_antibiotic", or "per_species" - this is the grouping that the DNABERT models were trained on, output will always be per-species datasets here
 
 Paths to specigy:
-    - "dataset_dir": path to directory containing datasets formatted by data_pipeline/pipeline.py
+    - "dataset_dir": path to directory containing datasets formatted by data_pipeline/pipeline.py - should be full, per_species, or per_antibiotic dataset(s) according to grouping
     - "model_path": path to DNABERT model
 """
 
@@ -20,6 +20,8 @@ import transformers
 from tqdm import tqdm
 import os
 import csv
+from Bio import SeqIO
+import json
 
 # global parameters
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -63,6 +65,13 @@ species_to_antibiotic = {
     'acinetobacter_baumannii': 'CAZ',
 }
 
+antibiotic_to_species ={
+    'GEN': ['klebsiella_pneumoniae', 'escherichia_coli', 'salmonella_enterica'],
+    'ERY': ['streptococcus_pneumoniae', 'staphylococcus_aureus'],
+    'CAZ': ['pseudomonas_aeruginosa', 'acinetobacter_baumannii'],
+    'TET': ['neisseria_gonorrhoeae', 'campylobacter_jejuni'],
+}
+
 antibiotic_mapping = {'GEN': 0, 
     'ERY': 1,
     'CAZ': 2,
@@ -88,6 +97,7 @@ def load_model(model_path):
         trust_remote_code=True,
     )
     return model, tokenizer
+        
 
 
 def inference(dataset_path, preds_path, model, tokenizer):
@@ -113,14 +123,16 @@ def inference(dataset_path, preds_path, model, tokenizer):
     df['pred_phenotype'] = pred_phenos
     df.to_csv(preds_path, index=False)
 
-    return pred_phenos
 
-
-def get_rf_dataset(preds_path, output_path, train):
+def get_rf_dataset(preds_path, output_path, train, sig_seqs_path, accessions):
     #make dataset with columns: accession, species (label), antibiotic (label), feature 1 hit count, feature 1 pred_resistant, ..., feature n hit count, feature n pred_resistant, ground truth phenotype (if train)
     # will be len(query_id.unique) + 3 (4 if train) columns
+    features = [record.id for record in SeqIO.parse(sig_seqs_path, 'fasta')] #get list of all query_ids in sig seqs fasta file for consistency between train and test datasets
+    #print(f'len features: {len(features)}')
+    #print(f'first 5 features: {features[:5]}')
     df = pd.read_csv(preds_path)
-    features = df['query_id'].unique().tolist()
+    #filter preds to only include accessions in accessions list 
+    df = df[df['accession'].isin(accessions)]
     hit_count_features = [f + '_hit_count' for f in features]
     pred_resistant_features = [f + '_pred_resistant' for f in features]
     
@@ -177,7 +189,43 @@ def get_consensus_preds(preds_path):
 
         
 
+def split(full_dataset_path):
+    """ opens dev_accs.txt, and test_accs.txt and splits df into train, dev, and test according to those splits """
+    dev_accs = [line.rstrip() for line in open('../finetune/data/dev_accs.txt')]
+    test_accs = [line.rstrip() for line in open('../finetune/data/test_accs.txt')]
 
+    df = pd.read_csv(full_dataset_path)
+    train_df = df[~df['accession'].isin(dev_accs + test_accs)]
+    dev_df = df[df['accession'].isin(dev_accs)]
+    test_df = df[df['accession'].isin(test_accs)]
+
+    #write to csv
+    train_df.to_csv(full_dataset_path.replace('.csv', '_train.csv'), index=False)
+    dev_df.to_csv(full_dataset_path.replace('.csv', '_dev.csv'), index=False)
+    test_df.to_csv(full_dataset_path.replace('.csv', '_test.csv'), index=False)
+    return train_df, dev_df, test_df
+
+def group_dataset(grouping, full_dataset, output_dir):
+    #group if not full model
+    #only for sequence-based grouping 
+
+    if grouping == 'per_species':
+        df = pd.read_csv(full_dataset)
+        for species in species_list:
+            df_species = df[df['species'] == species_mapping[species]]
+            if not os.path.exists(os.path.join(output_dir, species)):
+                os.makedirs(os.path.join(output_dir, species))
+            df_species.to_csv(os.path.join(output_dir, species, f'{species}_sequence_dataset.csv'), index=False)
+            print(f'Wrote {len(df_species)} rows to {species}_sequence_dataset.csv')
+
+    elif grouping == 'per_antibiotic':
+        df = pd.read_csv(full_dataset)
+        for antibiotic in antibiotic_mapping.keys():
+            df_antibiotic = df[df['antibiotic'] == antibiotic_mapping[antibiotic]]
+            if not os.path.exists(os.path.join(output_dir, antibiotic)):
+                os.makedirs(os.path.join(output_dir, antibiotic))
+            df_antibiotic.to_csv(os.path.join(output_dir, antibiotic, '{antibiotic}_sequence_dataset.csv'), index=False)
+            print(f'Wrote {len(df_antibiotic)} rows to {antibiotic}_sequence_dataset.csv')
 
 
 
@@ -187,20 +235,31 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--output_format', type=str, choices=['random_forest', 'consensus'], default='random_forest')
     parser.add_argument('--dataset_dir', type=str, help='Path to directory containing datasets formatted by data_pipeline/pipeline.py', default=None)
-    parser.add_argument('--model_path', type=str, help='Path to DNABERT model, should take in ONLY "sequence", no num_hits, species, or antibiotic', default=None)
-    parser.add_arugment('--model_name', type=str, help='Name of trained DNABERT model', default='unspecified_model')
-    parser.add_argument('--grouping', type=str, help='Grouping', choices=['full', 'per_species', 'per_antibiotic'], default='per_species')
-    parser.add_argument('--train', type=bool, default=False)
+    parser.add_argument('--model_path', type=str, help='Path to DNABERT model, if full model, should be direct path to model, if per_species, should be base_dir where base_dir/{species}/best is each model', default=None)
+    parser.add_argument('--model_name', type=str, help='Name of trained DNABERT model', default='unspecified_model')
+    parser.add_argument('--grouping', type=str, help='grouping for DNABERT model (not the output datasets, these will always be per-species)', choices=['full', 'per_species', 'per_antibiotic'], default='per_species')
+    parser.add_argument('--sig_seqs_dir', type=str, help='Path to directory containing significant sequences from DBGWAS (for IDs only here)', default='../../data_pipeline/data/dbgwas/p0.05/per_species')
+    parser.add_argument('--train', type=bool, help='will add ground truth labels', default=False)
+    parser.add_argument('--split', type=bool, help='will look for dev_accs.txt and test_accs.txt to split each final dataset into train/test/dev according to split that dnabert was trained with', default=False)
+    parser.add_argument('--metadata_dir', default='../../data_pipeline/data/metadata')
     args = parser.parse_args()
+    print(f'Arguments: {args}')
     train_test = 'train' if args.train else 'test'
+
+    #open species_to_accessions.json
+    with open(os.path.join(args.metadata_dir, f'{train_test}_species_to_accession.json')) as f:
+        species_to_accessions = json.load(f)
+        
     
 
-    #load model
-    model, tokenizer = load_model(args.model_path) #this current setup loads a full model and runs inference on all species/antibiotics on the same model (taking in only sequence). TODO: enable per-species/per-antibiotic models
-
+    
     #loop through dataset depending on grouping
     if args.grouping == 'per_species':
         for species in species_list:
+            #get model
+            model_path = os.path.join(args.model_path, species, 'best') #WARNING - if we change the model architecture, huggingface stores a model called 'best' in its cache, and won't reload it when this is called again, so make sure we clear cache or change the best model dirname from 'best'
+            model, tokenizer = load_model(model_path)
+
             dataset_path = os.path.join(args.dataset_dir, species, f'{species}_sequence_dataset.csv') #load sequence dataset
             preds_path = f'./outputs/preds/{args.model_name}/per_species/{train_test}/{species}_preds.csv'
             if not os.path.exists(preds_path):
@@ -208,17 +267,24 @@ def main():
                 print(f'Running DNABERT inference for {species}')
                 inference(dataset_path, preds_path, model, tokenizer)
             if args.output_format == 'random_forest':
-                output_path = f'./outputs/rf_datasets/{args.model_name}/per_species/{train_test}/{species}_rf_dataset.csv'
+                output_path = f'./outputs/rf_datasets/{args.model_name}/per_species/{train_test}/{species}/{species}_full_rf_dataset.csv'
                 if not os.path.exists(os.path.dirname(output_path)):
                     os.makedirs(os.path.dirname(output_path))
                 print(f'Getting RF dataset for {species}')
-                get_rf_dataset(preds_path, output_path, args.train)
+                get_rf_dataset(preds_path, output_path, args.train, os.path.join(args.sig_seqs_dir, f'{species}_sig_sequences.fasta'), accessions = species_to_accessions[species])
             elif args.output_format == 'consensus':
                 print(f'Getting consensus preds for {species}')
                 get_consensus_preds(preds_path)
 
-    if args.grouping == 'per_antibiotic':
-        for antibiotic in antibiotic_list:
+            if args.split:
+                split(output_path)
+
+    elif args.grouping == 'per_antibiotic':
+        for antibiotic in antibiotic_mapping.keys():
+
+            model_path = os.path.join(args.model_path, antibiotic, 'best') #WARNING - if we change the model architecture, huggingface stores a model called 'best' in its cache, and won't reload it when this is called again, so make sure we clear cache or change the best model dirname from 'best'
+            model, tokenizer = load_model(model_path)
+
             dataset_path = os.path.join(args.dataset_dir, antibiotic, f'{antibiotic}_sequence_dataset.csv') #load sequence dataset
             preds_path = f'./outputs/preds/{args.model_name}/per_antibiotic/{train_test}/{antibiotic}_preds.csv'
             if not os.path.exists(preds_path):
@@ -226,18 +292,23 @@ def main():
                 print(f'Running DNABERT inference for {antibiotic}')
                 inference(dataset_path, preds_path, model, tokenizer)
             if args.output_format == 'random_forest':
-                output_path = f'./outputs/rf_datasets/{args.model_name}/per_antibiotic/{train_test}/{antibiotic}_rf_dataset.csv'
-                if not os.path.exists(os.path.dirname(output_path)):
-                    os.makedirs(os.path.dirname(output_path))
-                print(f'Getting RF dataset for {antibiotic}')
-                get_rf_dataset(preds_path, output_path, args.train)
-
+                for species in antibiotic_to_species[antibiotic]:
+                    output_path = f'./outputs/rf_datasets/{args.model_name}/per_antibiotic/{train_test}/{species}/{species}_full_rf_dataset.csv'
+                    if not os.path.exists(os.path.dirname(output_path)):
+                        os.makedirs(os.path.dirname(output_path))
+                    print(f'Getting RF dataset for {species}')
+                    #we need to filter preds_path to contain only sequences from this species
+                    get_rf_dataset(preds_path, output_path, args.train, os.path.join(args.sig_seqs_dir, f'{species}_sig_sequences.fasta'), accessions = species_to_accessions[species])
+                    if args.split:
+                        split(output_path)
             elif args.output_format == 'consensus':
                 print(f'Getting consensus preds for {antibiotic}')
                 get_consensus_preds(preds_path)
+
+    elif args.grouping == 'full':
+        model, tokenizer = load_model(args.model_path)
             
 
-    pass
 
 if __name__ == "__main__":
     main()

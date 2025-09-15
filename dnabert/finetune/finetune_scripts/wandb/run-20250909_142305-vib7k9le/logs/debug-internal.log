@@ -1,0 +1,15 @@
+{"time":"2025-09-09T14:23:05.877620078-04:00","level":"INFO","msg":"stream: starting","core version":"0.19.9","symlink path":"/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/finetune/finetune_scripts/wandb/run-20250909_142305-vib7k9le/logs/debug-core.log"}
+{"time":"2025-09-09T14:23:06.167909815-04:00","level":"INFO","msg":"created new stream","id":"vib7k9le"}
+{"time":"2025-09-09T14:23:06.167971969-04:00","level":"INFO","msg":"stream: started","id":"vib7k9le"}
+{"time":"2025-09-09T14:23:06.168015509-04:00","level":"INFO","msg":"sender: started","stream_id":"vib7k9le"}
+{"time":"2025-09-09T14:23:06.168069739-04:00","level":"INFO","msg":"writer: Do: started","stream_id":"vib7k9le"}
+{"time":"2025-09-09T14:23:06.168075975-04:00","level":"INFO","msg":"handler: started","stream_id":"vib7k9le"}
+{"time":"2025-09-09T14:23:06.792875311-04:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-09-09T15:22:04.495122341-04:00","level":"INFO","msg":"stream: closing","id":"vib7k9le"}
+{"time":"2025-09-09T15:22:04.495173758-04:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2025-09-09T15:22:04.49521922-04:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2025-09-09T15:22:04.884751871-04:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-09-09T15:22:04.976156064-04:00","level":"INFO","msg":"handler: closed","stream_id":"vib7k9le"}
+{"time":"2025-09-09T15:22:04.976200288-04:00","level":"INFO","msg":"sender: closed","stream_id":"vib7k9le"}
+{"time":"2025-09-09T15:22:04.976195415-04:00","level":"INFO","msg":"writer: Close: closed","stream_id":"vib7k9le"}
+{"time":"2025-09-09T15:22:04.976371321-04:00","level":"INFO","msg":"stream: closed","id":"vib7k9le"}

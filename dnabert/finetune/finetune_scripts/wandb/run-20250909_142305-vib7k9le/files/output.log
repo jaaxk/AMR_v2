@@ -1,0 +1,402 @@
+WARNING:root:Perform single sequence classification (no additional features)...
+--- Logging error ---
+Traceback (most recent call last):
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 1085, in emit
+    msg = self.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 929, in format
+    return fmt.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 668, in format
+    record.message = record.getMessage()
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 373, in getMessage
+    msg = msg % self.args
+TypeError: not all arguments converted during string formatting
+Call stack:
+  File "../train.py", line 390, in <module>
+    train()
+  File "../train.py", line 299, in train
+    train_dataset = SupervisedDataset(tokenizer=tokenizer,
+  File "../train.py", line 169, in __init__
+    logging.warning("Number of labels:", self.num_labels)
+Message: 'Number of labels:'
+Arguments: (2,)
+WARNING:root:Perform single sequence classification (no additional features)...
+--- Logging error ---
+Traceback (most recent call last):
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 1085, in emit
+    msg = self.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 929, in format
+    return fmt.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 668, in format
+    record.message = record.getMessage()
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 373, in getMessage
+    msg = msg % self.args
+TypeError: not all arguments converted during string formatting
+Call stack:
+  File "../train.py", line 390, in <module>
+    train()
+  File "../train.py", line 302, in train
+    val_dataset = SupervisedDataset(tokenizer=tokenizer,
+  File "../train.py", line 169, in __init__
+    logging.warning("Number of labels:", self.num_labels)
+Message: 'Number of labels:'
+Arguments: (2,)
+WARNING:root:Perform single sequence classification (no additional features)...
+--- Logging error ---
+Traceback (most recent call last):
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 1085, in emit
+    msg = self.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 929, in format
+    return fmt.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 668, in format
+    record.message = record.getMessage()
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 373, in getMessage
+    msg = msg % self.args
+TypeError: not all arguments converted during string formatting
+Call stack:
+  File "../train.py", line 390, in <module>
+    train()
+  File "../train.py", line 305, in train
+    test_dataset = SupervisedDataset(tokenizer=tokenizer,
+  File "../train.py", line 169, in __init__
+    logging.warning("Number of labels:", self.num_labels)
+Message: 'Number of labels:'
+Arguments: (2,)
+Initializing CUSTOM BertForSequenceClassification
+/gpfs/scratch/jvaska/cache/modules/transformers_modules/bacteria_model/bert_layers.py:126: UserWarning: Unable to import Triton; defaulting MosaicBERT attention implementation to pytorch (this will reduce throughput when using this model).
+  warnings.warn(
+Dropout layer: Dropout(p=0.1, inplace=False)
+Dropout probability: 0.1
+Some weights of the model checkpoint at ../pretrained_models/bacteria_model were not used when initializing BertForSequenceClassification: ['cls.predictions.transform.LayerNorm.weight', 'cls.predictions.decoder.weight', 'cls.predictions.decoder.bias', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.dense.bias', 'cls.predictions.transform.LayerNorm.bias']
+- This IS expected if you are initializing BertForSequenceClassification from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertForSequenceClassification from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of BertForSequenceClassification were not initialized from the model checkpoint at ../pretrained_models/bacteria_model and are newly initialized: ['bert.pooler.dense.bias', 'bert.pooler.dense.weight', 'classifier.2.weight', 'classifier.0.bias', 'classifier.2.bias', 'classifier.0.weight']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+Using cuda_amp half precision backend
+***** Running training *****
+  Num examples = 500,000
+  Num Epochs = 4
+  Instantaneous batch size per device = 8
+  Total train batch size (w. parallel, distributed & accumulation) = 128
+  Gradient Accumulation steps = 4
+  Total optimization steps = 15,624
+  Number of trainable parameters = 117,167,234
+Automatic Weights & Biases logging enabled, to disable set os.environ["WANDB_DISABLED"] = "true"
+  6%|▋         | 1000/15624 [03:09<45:14,  5.39it/s]***** Running Evaluation *****
+{'loss': 0.6902, 'learning_rate': 2.9700000000000004e-06, 'epoch': 0.03}
+{'loss': 0.6655, 'learning_rate': 5.9700000000000004e-06, 'epoch': 0.05}
+{'loss': 0.6362, 'learning_rate': 8.97e-06, 'epoch': 0.08}
+{'loss': 0.5909, 'learning_rate': 1.197e-05, 'epoch': 0.1}
+{'loss': 0.5596, 'learning_rate': 1.4940000000000001e-05, 'epoch': 0.13}
+{'loss': 0.5446, 'learning_rate': 1.794e-05, 'epoch': 0.15}
+{'loss': 0.5369, 'learning_rate': 2.094e-05, 'epoch': 0.18}
+{'loss': 0.5323, 'learning_rate': 2.394e-05, 'epoch': 0.2}
+{'loss': 0.5287, 'learning_rate': 2.6940000000000003e-05, 'epoch': 0.23}
+{'loss': 0.5273, 'learning_rate': 2.991e-05, 'epoch': 0.26}
+  Num examples = 86372
+  Batch size = 16
+  6%|▋         | 1000/15624 [03:34<45:14,  5.39it/sSaving model checkpoint to ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-1000
+Configuration saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-1000/config.json
+{'eval_loss': 0.5348860621452332, 'eval_accuracy': 0.6524915481869125, 'eval_f1': 0.5776183731028433, 'eval_matthews_correlation': 0.2165629025223052, 'eval_precision': 0.6340421603112576, 'eval_recall': 0.5874715288085122, 'eval_confusion_matrix': [[9996, 23465], [6550, 46361]], 'eval_runtime': 24.5372, 'eval_samples_per_second': 3520.037, 'eval_steps_per_second': 55.018, 'epoch': 0.26}
+Model weights saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-1000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-1000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-1000/special_tokens_map.json
+ 13%|█▎        | 2000/15624 [06:44<42:57,  5.29it/s]***** Running Evaluation *****
+{'loss': 0.5264, 'learning_rate': 2.980101203501094e-05, 'epoch': 0.28}
+{'loss': 0.5222, 'learning_rate': 2.9597921225382932e-05, 'epoch': 0.31}
+{'loss': 0.5293, 'learning_rate': 2.9392778993435447e-05, 'epoch': 0.33}
+{'loss': 0.5195, 'learning_rate': 2.9187636761487966e-05, 'epoch': 0.36}
+{'loss': 0.5247, 'learning_rate': 2.898249452954048e-05, 'epoch': 0.38}
+{'loss': 0.5069, 'learning_rate': 2.8777352297592997e-05, 'epoch': 0.41}
+{'loss': 0.5013, 'learning_rate': 2.8572210065645516e-05, 'epoch': 0.44}
+{'loss': 0.4925, 'learning_rate': 2.8367067833698034e-05, 'epoch': 0.46}
+{'loss': 0.4966, 'learning_rate': 2.816192560175055e-05, 'epoch': 0.49}
+{'loss': 0.4961, 'learning_rate': 2.7956783369803065e-05, 'epoch': 0.51}
+  Num examples = 86372
+  Batch size = 16
+ 13%|█▎        | 2000/15624 [07:09<42:57,  5.29it/sSaving model checkpoint to ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-2000
+Configuration saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-2000/config.json
+{'eval_loss': 0.49551182985305786, 'eval_accuracy': 0.7192261381003103, 'eval_f1': 0.6923307446984363, 'eval_matthews_correlation': 0.3926526782691555, 'eval_precision': 0.7055574563885454, 'eval_recall': 0.687509770334622, 'eval_confusion_matrix': [[18292, 15169], [9082, 43829]], 'eval_runtime': 24.5576, 'eval_samples_per_second': 3517.117, 'eval_steps_per_second': 54.973, 'epoch': 0.51}
+Model weights saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-2000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-2000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-2000/special_tokens_map.json
+ 19%|█▉        | 3000/15624 [10:19<39:23,  5.34it/s]***** Running Evaluation *****
+{'loss': 0.492, 'learning_rate': 2.775164113785558e-05, 'epoch': 0.54}
+{'loss': 0.486, 'learning_rate': 2.7546498905908096e-05, 'epoch': 0.56}
+{'loss': 0.4787, 'learning_rate': 2.7341356673960614e-05, 'epoch': 0.59}
+{'loss': 0.476, 'learning_rate': 2.713621444201313e-05, 'epoch': 0.61}
+{'loss': 0.4733, 'learning_rate': 2.6931072210065645e-05, 'epoch': 0.64}
+{'loss': 0.4739, 'learning_rate': 2.672592997811816e-05, 'epoch': 0.67}
+{'loss': 0.4638, 'learning_rate': 2.652078774617068e-05, 'epoch': 0.69}
+{'loss': 0.4628, 'learning_rate': 2.6315645514223195e-05, 'epoch': 0.72}
+{'loss': 0.4665, 'learning_rate': 2.611050328227571e-05, 'epoch': 0.74}
+{'loss': 0.4578, 'learning_rate': 2.5905361050328225e-05, 'epoch': 0.77}
+  Num examples = 86372
+  Batch size = 16
+ 19%|█▉        | 3000/15624 [10:43<39:23,  5.34it/sSaving model checkpoint to ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-3000
+Configuration saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-3000/config.json
+{'eval_loss': 0.4780161380767822, 'eval_accuracy': 0.7386189968971426, 'eval_f1': 0.734930997303785, 'eval_matthews_correlation': 0.48736901386267295, 'eval_precision': 0.7374391567861448, 'eval_recall': 0.7500941282058735, 'eval_confusion_matrix': [[26804, 6657], [15919, 36992]], 'eval_runtime': 24.5067, 'eval_samples_per_second': 3524.429, 'eval_steps_per_second': 55.087, 'epoch': 0.77}
+Model weights saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-3000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-3000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-3000/special_tokens_map.json
+ 26%|██▌       | 4000/15624 [13:54<36:22,  5.33it/s]***** Running Evaluation *****
+{'loss': 0.454, 'learning_rate': 2.5700218818380748e-05, 'epoch': 0.79}
+{'loss': 0.4571, 'learning_rate': 2.5495076586433263e-05, 'epoch': 0.82}
+{'loss': 0.4539, 'learning_rate': 2.5289934354485778e-05, 'epoch': 0.84}
+{'loss': 0.4477, 'learning_rate': 2.5084792122538294e-05, 'epoch': 0.87}
+{'loss': 0.4398, 'learning_rate': 2.4881701312910287e-05, 'epoch': 0.9}
+{'loss': 0.4368, 'learning_rate': 2.4676559080962802e-05, 'epoch': 0.92}
+{'loss': 0.4416, 'learning_rate': 2.4471416849015317e-05, 'epoch': 0.95}
+{'loss': 0.4416, 'learning_rate': 2.4266274617067836e-05, 'epoch': 0.97}
+{'loss': 0.452, 'learning_rate': 2.406113238512035e-05, 'epoch': 1.0}
+{'loss': 0.424, 'learning_rate': 2.3855990153172867e-05, 'epoch': 1.02}
+  Num examples = 86372
+  Batch size = 16
+ 26%|██▌       | 4000/15624 [14:18<36:22,  5.33it/sSaving model checkpoint to ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-4000
+Configuration saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-4000/config.json
+{'eval_loss': 0.4608408510684967, 'eval_accuracy': 0.7503010234798314, 'eval_f1': 0.7392217362653865, 'eval_matthews_correlation': 0.47902127748018375, 'eval_precision': 0.737551601073456, 'eval_recall': 0.7414858321748303, 'eval_confusion_matrix': [[23501, 9960], [11607, 41304]], 'eval_runtime': 24.5358, 'eval_samples_per_second': 3520.25, 'eval_steps_per_second': 55.022, 'epoch': 1.02}
+Model weights saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-4000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-4000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-4000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-1000] due to args.save_total_limit
+ 32%|███▏      | 5000/15624 [17:35<34:26,  5.14it/s]***** Running Evaluation *****
+{'loss': 0.4213, 'learning_rate': 2.3650847921225382e-05, 'epoch': 1.05}
+{'loss': 0.4252, 'learning_rate': 2.34457056892779e-05, 'epoch': 1.08}
+{'loss': 0.4295, 'learning_rate': 2.3240563457330416e-05, 'epoch': 1.1}
+{'loss': 0.4246, 'learning_rate': 2.303542122538293e-05, 'epoch': 1.13}
+{'loss': 0.4176, 'learning_rate': 2.2830278993435447e-05, 'epoch': 1.15}
+{'loss': 0.4283, 'learning_rate': 2.2625136761487966e-05, 'epoch': 1.18}
+{'loss': 0.4185, 'learning_rate': 2.241999452954048e-05, 'epoch': 1.2}
+{'loss': 0.4172, 'learning_rate': 2.2214852297592997e-05, 'epoch': 1.23}
+{'loss': 0.4195, 'learning_rate': 2.2009710065645515e-05, 'epoch': 1.25}
+{'loss': 0.4153, 'learning_rate': 2.1804567833698034e-05, 'epoch': 1.28}
+  Num examples = 86372
+  Batch size = 16
+ 32%|███▏      | 5000/15624 [18:00<34:26,  5.14it/sSaving model checkpoint to ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-5000
+Configuration saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-5000/config.json
+{'eval_loss': 0.4621042311191559, 'eval_accuracy': 0.7505673134812207, 'eval_f1': 0.7413417079978182, 'eval_matthews_correlation': 0.4847648825574564, 'eval_precision': 0.7389527755993083, 'eval_recall': 0.7458613326122261, 'eval_confusion_matrix': [[24258, 9203], [12341, 40570]], 'eval_runtime': 24.6244, 'eval_samples_per_second': 3507.582, 'eval_steps_per_second': 54.824, 'epoch': 1.28}
+Model weights saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-5000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-5000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-5000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-2000] due to args.save_total_limit
+ 38%|███▊      | 6000/15624 [21:19<31:32,  5.09it/s]***** Running Evaluation *****
+{'loss': 0.4128, 'learning_rate': 2.159942560175055e-05, 'epoch': 1.31}
+{'loss': 0.4106, 'learning_rate': 2.1394283369803065e-05, 'epoch': 1.33}
+{'loss': 0.4146, 'learning_rate': 2.118914113785558e-05, 'epoch': 1.36}
+{'loss': 0.4088, 'learning_rate': 2.09839989059081e-05, 'epoch': 1.38}
+{'loss': 0.4106, 'learning_rate': 2.078090809628009e-05, 'epoch': 1.41}
+{'loss': 0.4077, 'learning_rate': 2.0575765864332604e-05, 'epoch': 1.43}
+{'loss': 0.4192, 'learning_rate': 2.0370623632385123e-05, 'epoch': 1.46}
+{'loss': 0.4051, 'learning_rate': 2.0165481400437638e-05, 'epoch': 1.48}
+{'loss': 0.4077, 'learning_rate': 1.9960339168490153e-05, 'epoch': 1.51}
+{'loss': 0.4024, 'learning_rate': 1.975519693654267e-05, 'epoch': 1.54}
+  Num examples = 86372
+  Batch size = 16
+ 38%|███▊      | 6000/15624 [21:44<31:32,  5.09it/sSaving model checkpoint to ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-6000
+Configuration saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-6000/config.json
+{'eval_loss': 0.45809850096702576, 'eval_accuracy': 0.7571087852544807, 'eval_f1': 0.7481582154980324, 'eval_matthews_correlation': 0.49845658076054994, 'eval_precision': 0.7456760529384951, 'eval_recall': 0.7528318897301116, 'eval_confusion_matrix': [[24555, 8906], [12073, 40838]], 'eval_runtime': 24.6598, 'eval_samples_per_second': 3502.54, 'eval_steps_per_second': 54.745, 'epoch': 1.54}
+Model weights saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-6000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-6000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-6000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-3000] due to args.save_total_limit
+ 45%|████▍     | 7000/15624 [25:01<28:07,  5.11it/s]***** Running Evaluation *****
+{'loss': 0.4013, 'learning_rate': 1.9550054704595187e-05, 'epoch': 1.56}
+{'loss': 0.3928, 'learning_rate': 1.9344912472647703e-05, 'epoch': 1.59}
+{'loss': 0.3949, 'learning_rate': 1.9139770240700218e-05, 'epoch': 1.61}
+{'loss': 0.4014, 'learning_rate': 1.8934628008752734e-05, 'epoch': 1.64}
+{'loss': 0.4007, 'learning_rate': 1.8729485776805252e-05, 'epoch': 1.66}
+{'loss': 0.3977, 'learning_rate': 1.8524343544857768e-05, 'epoch': 1.69}
+{'loss': 0.3888, 'learning_rate': 1.8321252735229757e-05, 'epoch': 1.72}
+{'loss': 0.3987, 'learning_rate': 1.8116110503282276e-05, 'epoch': 1.74}
+{'loss': 0.3965, 'learning_rate': 1.791096827133479e-05, 'epoch': 1.77}
+{'loss': 0.3937, 'learning_rate': 1.770582603938731e-05, 'epoch': 1.79}
+  Num examples = 86372
+  Batch size = 16
+ 45%|████▍     | 7000/15624 [25:25<28:07,  5.11it/sSaving model checkpoint to ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-7000
+Configuration saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-7000/config.json
+{'eval_loss': 0.4561529755592346, 'eval_accuracy': 0.7608484231000787, 'eval_f1': 0.7509154722532545, 'eval_matthews_correlation': 0.5028766285315309, 'eval_precision': 0.7487839960139415, 'eval_recall': 0.7541209518849716, 'eval_confusion_matrix': [[24234, 9227], [11429, 41482]], 'eval_runtime': 24.6293, 'eval_samples_per_second': 3506.883, 'eval_steps_per_second': 54.813, 'epoch': 1.79}
+Model weights saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-7000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-7000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-7000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-4000] due to args.save_total_limit
+ 51%|█████     | 8000/15624 [28:44<24:54,  5.10it/s]***** Running Evaluation *****
+{'loss': 0.3919, 'learning_rate': 1.7500683807439825e-05, 'epoch': 1.82}
+{'loss': 0.3936, 'learning_rate': 1.7295541575492344e-05, 'epoch': 1.84}
+{'loss': 0.3895, 'learning_rate': 1.709039934354486e-05, 'epoch': 1.87}
+{'loss': 0.3848, 'learning_rate': 1.6885257111597375e-05, 'epoch': 1.89}
+{'loss': 0.3837, 'learning_rate': 1.668011487964989e-05, 'epoch': 1.92}
+{'loss': 0.3889, 'learning_rate': 1.647497264770241e-05, 'epoch': 1.95}
+{'loss': 0.3827, 'learning_rate': 1.6269830415754924e-05, 'epoch': 1.97}
+{'loss': 0.3834, 'learning_rate': 1.606468818380744e-05, 'epoch': 2.0}
+{'loss': 0.3669, 'learning_rate': 1.5859545951859955e-05, 'epoch': 2.02}
+{'loss': 0.3681, 'learning_rate': 1.5654403719912474e-05, 'epoch': 2.05}
+  Num examples = 86372
+  Batch size = 16
+ 51%|█████     | 8000/15624 [29:08<24:54,  5.10it/sSaving model checkpoint to ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-8000
+Configuration saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-8000/config.json
+{'eval_loss': 0.4738546907901764, 'eval_accuracy': 0.758845459176585, 'eval_f1': 0.7521723634130663, 'eval_matthews_correlation': 0.5102468388989188, 'eval_precision': 0.7498996491465972, 'eval_recall': 0.7604563846882497, 'eval_confusion_matrix': [[25685, 7776], [13053, 39858]], 'eval_runtime': 24.6597, 'eval_samples_per_second': 3502.555, 'eval_steps_per_second': 54.745, 'epoch': 2.05}
+Model weights saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-8000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-8000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-8000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-5000] due to args.save_total_limit
+ 58%|█████▊    | 9000/15624 [32:26<21:36,  5.11it/s]***** Running Evaluation *****
+{'loss': 0.369, 'learning_rate': 1.544926148796499e-05, 'epoch': 2.07}
+{'loss': 0.3647, 'learning_rate': 1.5244119256017505e-05, 'epoch': 2.1}
+{'loss': 0.3758, 'learning_rate': 1.5038977024070022e-05, 'epoch': 2.12}
+{'loss': 0.3665, 'learning_rate': 1.4833834792122539e-05, 'epoch': 2.15}
+{'loss': 0.3631, 'learning_rate': 1.463074398249453e-05, 'epoch': 2.18}
+{'loss': 0.3642, 'learning_rate': 1.4425601750547047e-05, 'epoch': 2.2}
+{'loss': 0.3649, 'learning_rate': 1.4220459518599562e-05, 'epoch': 2.23}
+{'loss': 0.3685, 'learning_rate': 1.401531728665208e-05, 'epoch': 2.25}
+{'loss': 0.3588, 'learning_rate': 1.3810175054704595e-05, 'epoch': 2.28}
+{'loss': 0.358, 'learning_rate': 1.3605032822757112e-05, 'epoch': 2.3}
+  Num examples = 86372
+  Batch size = 16
+ 58%|█████▊    | 9000/15624 [32:51<21:36,  5.11it/sSaving model checkpoint to ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-9000
+Configuration saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-9000/config.json
+{'eval_loss': 0.46913203597068787, 'eval_accuracy': 0.7660468670402445, 'eval_f1': 0.7587563104944837, 'eval_matthews_correlation': 0.5217384939558679, 'eval_precision': 0.7560974493701655, 'eval_recall': 0.7657299562576675, 'eval_confusion_matrix': [[25575, 7886], [12321, 40590]], 'eval_runtime': 24.6483, 'eval_samples_per_second': 3504.183, 'eval_steps_per_second': 54.771, 'epoch': 2.3}
+Model weights saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-9000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-9000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-9000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-6000] due to args.save_total_limit
+ 64%|██████▍   | 10000/15624 [36:07<18:25,  5.09it/s]***** Running Evaluation *****
+{'loss': 0.36, 'learning_rate': 1.3399890590809627e-05, 'epoch': 2.33}
+{'loss': 0.3654, 'learning_rate': 1.3194748358862146e-05, 'epoch': 2.36}
+{'loss': 0.361, 'learning_rate': 1.2989606126914661e-05, 'epoch': 2.38}
+{'loss': 0.3665, 'learning_rate': 1.2784463894967178e-05, 'epoch': 2.41}
+{'loss': 0.3525, 'learning_rate': 1.2579321663019694e-05, 'epoch': 2.43}
+{'loss': 0.366, 'learning_rate': 1.2374179431072211e-05, 'epoch': 2.46}
+{'loss': 0.3477, 'learning_rate': 1.2169037199124726e-05, 'epoch': 2.48}
+{'loss': 0.3533, 'learning_rate': 1.1963894967177242e-05, 'epoch': 2.51}
+{'loss': 0.3628, 'learning_rate': 1.175875273522976e-05, 'epoch': 2.53}
+{'loss': 0.3578, 'learning_rate': 1.1553610503282276e-05, 'epoch': 2.56}
+  Num examples = 86372
+  Batch size = 16
+ 64%|██████▍   | 10000/15624 [36:32<18:25,  5.09it/Saving model checkpoint to ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-10000
+Configuration saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-10000/config.json
+{'eval_loss': 0.48299872875213623, 'eval_accuracy': 0.7724725605520307, 'eval_f1': 0.7639476214171788, 'eval_matthews_correlation': 0.5299072998163368, 'eval_precision': 0.7613017457472214, 'eval_recall': 0.7686565923963282, 'eval_confusion_matrix': [[25153, 8308], [11344, 41567]], 'eval_runtime': 24.6865, 'eval_samples_per_second': 3498.751, 'eval_steps_per_second': 54.686, 'epoch': 2.56}
+Model weights saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-10000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-10000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-10000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-7000] due to args.save_total_limit
+ 70%|███████   | 11000/15624 [39:49<15:06,  5.10it/s]***** Running Evaluation *****
+{'loss': 0.3557, 'learning_rate': 1.1348468271334793e-05, 'epoch': 2.59}
+{'loss': 0.3562, 'learning_rate': 1.1143326039387308e-05, 'epoch': 2.61}
+{'loss': 0.363, 'learning_rate': 1.0938183807439825e-05, 'epoch': 2.64}
+{'loss': 0.3542, 'learning_rate': 1.073304157549234e-05, 'epoch': 2.66}
+{'loss': 0.3463, 'learning_rate': 1.0527899343544858e-05, 'epoch': 2.69}
+{'loss': 0.3581, 'learning_rate': 1.0322757111597375e-05, 'epoch': 2.71}
+{'loss': 0.3564, 'learning_rate': 1.0117614879649892e-05, 'epoch': 2.74}
+{'loss': 0.3623, 'learning_rate': 9.912472647702407e-06, 'epoch': 2.76}
+{'loss': 0.3504, 'learning_rate': 9.707330415754924e-06, 'epoch': 2.79}
+{'loss': 0.349, 'learning_rate': 9.50218818380744e-06, 'epoch': 2.82}
+  Num examples = 86372
+  Batch size = 16
+ 70%|███████   | 11000/15624 [40:14<15:06,  5.10it/Saving model checkpoint to ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-11000
+Configuration saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-11000/config.json
+{'eval_loss': 0.48485955595970154, 'eval_accuracy': 0.7711295327189367, 'eval_f1': 0.7646363889435847, 'eval_matthews_correlation': 0.5348940979946136, 'eval_precision': 0.7620823893196625, 'eval_recall': 0.7729215198436131, 'eval_confusion_matrix': [[26129, 7332], [12436, 40475]], 'eval_runtime': 24.6023, 'eval_samples_per_second': 3510.723, 'eval_steps_per_second': 54.873, 'epoch': 2.82}
+Model weights saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-11000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-11000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-11000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-8000] due to args.save_total_limit
+ 77%|███████▋  | 12000/15624 [43:34<11:48,  5.11it/s]***** Running Evaluation *****
+{'loss': 0.3485, 'learning_rate': 9.297045951859957e-06, 'epoch': 2.84}
+{'loss': 0.3532, 'learning_rate': 9.091903719912472e-06, 'epoch': 2.87}
+{'loss': 0.3485, 'learning_rate': 8.88676148796499e-06, 'epoch': 2.89}
+{'loss': 0.3412, 'learning_rate': 8.681619256017506e-06, 'epoch': 2.92}
+{'loss': 0.3473, 'learning_rate': 8.476477024070023e-06, 'epoch': 2.94}
+{'loss': 0.3479, 'learning_rate': 8.271334792122538e-06, 'epoch': 2.97}
+{'loss': 0.3459, 'learning_rate': 8.066192560175056e-06, 'epoch': 3.0}
+{'loss': 0.3348, 'learning_rate': 7.861050328227571e-06, 'epoch': 3.02}
+{'loss': 0.3329, 'learning_rate': 7.655908096280086e-06, 'epoch': 3.05}
+{'loss': 0.3268, 'learning_rate': 7.450765864332604e-06, 'epoch': 3.07}
+  Num examples = 86372
+  Batch size = 16
+ 77%|███████▋  | 12000/15624 [43:59<11:48,  5.11it/Saving model checkpoint to ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-12000
+Configuration saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-12000/config.json
+{'eval_loss': 0.4912729859352112, 'eval_accuracy': 0.7735145649052934, 'eval_f1': 0.7663779603406724, 'eval_matthews_correlation': 0.5368733396777511, 'eval_precision': 0.7635884094131568, 'eval_recall': 0.773374105768206, 'eval_confusion_matrix': [[25857, 7604], [11958, 40953]], 'eval_runtime': 24.6182, 'eval_samples_per_second': 3508.466, 'eval_steps_per_second': 54.838, 'epoch': 3.07}
+Model weights saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-12000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-12000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-12000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-9000] due to args.save_total_limit
+ 83%|████████▎ | 13000/15624 [47:16<08:33,  5.11it/s]***** Running Evaluation *****
+{'loss': 0.3338, 'learning_rate': 7.24562363238512e-06, 'epoch': 3.1}
+{'loss': 0.3322, 'learning_rate': 7.040481400437637e-06, 'epoch': 3.12}
+{'loss': 0.3294, 'learning_rate': 6.835339168490154e-06, 'epoch': 3.15}
+{'loss': 0.3228, 'learning_rate': 6.63019693654267e-06, 'epoch': 3.17}
+{'loss': 0.3298, 'learning_rate': 6.425054704595187e-06, 'epoch': 3.2}
+{'loss': 0.3358, 'learning_rate': 6.219912472647703e-06, 'epoch': 3.23}
+{'loss': 0.33, 'learning_rate': 6.014770240700219e-06, 'epoch': 3.25}
+{'loss': 0.3258, 'learning_rate': 5.809628008752735e-06, 'epoch': 3.28}
+{'loss': 0.3268, 'learning_rate': 5.604485776805252e-06, 'epoch': 3.3}
+{'loss': 0.3227, 'learning_rate': 5.399343544857768e-06, 'epoch': 3.33}
+  Num examples = 86372
+  Batch size = 16
+ 83%|████████▎ | 13000/15624 [47:41<08:33,  5.11it/Saving model checkpoint to ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-13000
+Configuration saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-13000/config.json
+{'eval_loss': 0.5010194182395935, 'eval_accuracy': 0.773595609688325, 'eval_f1': 0.767021376814911, 'eval_matthews_correlation': 0.5393323883371066, 'eval_precision': 0.7643669544085681, 'eval_recall': 0.775071657272892, 'eval_confusion_matrix': [[26154, 7307], [12248, 40663]], 'eval_runtime': 24.6574, 'eval_samples_per_second': 3502.886, 'eval_steps_per_second': 54.75, 'epoch': 3.33}
+Model weights saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-13000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-13000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-13000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-10000] due to args.save_total_limit
+ 90%|████████▉ | 14000/15624 [50:57<05:16,  5.14it/s]***** Running Evaluation *****
+{'loss': 0.3249, 'learning_rate': 5.194201312910284e-06, 'epoch': 3.35}
+{'loss': 0.3278, 'learning_rate': 4.9890590809628e-06, 'epoch': 3.38}
+{'loss': 0.3271, 'learning_rate': 4.783916849015317e-06, 'epoch': 3.4}
+{'loss': 0.3274, 'learning_rate': 4.578774617067834e-06, 'epoch': 3.43}
+{'loss': 0.3266, 'learning_rate': 4.37363238512035e-06, 'epoch': 3.46}
+{'loss': 0.3232, 'learning_rate': 4.168490153172867e-06, 'epoch': 3.48}
+{'loss': 0.3256, 'learning_rate': 3.963347921225383e-06, 'epoch': 3.51}
+{'loss': 0.3241, 'learning_rate': 3.7582056892778993e-06, 'epoch': 3.53}
+{'loss': 0.3209, 'learning_rate': 3.553063457330416e-06, 'epoch': 3.56}
+{'loss': 0.3318, 'learning_rate': 3.347921225382932e-06, 'epoch': 3.58}
+  Num examples = 86372
+  Batch size = 16
+ 90%|████████▉ | 14000/15624 [51:22<05:16,  5.14it/Saving model checkpoint to ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-14000
+Configuration saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-14000/config.json
+{'eval_loss': 0.4998585283756256, 'eval_accuracy': 0.7744060575186403, 'eval_f1': 0.7678553580791889, 'eval_matthews_correlation': 0.5410063164251888, 'eval_precision': 0.765187471180998, 'eval_recall': 0.7759253982743626, 'eval_confusion_matrix': [[26189, 7272], [12213, 40698]], 'eval_runtime': 24.5658, 'eval_samples_per_second': 3515.947, 'eval_steps_per_second': 54.954, 'epoch': 3.58}
+Model weights saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-14000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-14000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-14000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-11000] due to args.save_total_limit
+ 96%|█████████▌| 15000/15624 [54:39<02:02,  5.11it/s]***** Running Evaluation *****
+{'loss': 0.3299, 'learning_rate': 3.1427789934354488e-06, 'epoch': 3.61}
+{'loss': 0.3269, 'learning_rate': 2.9376367614879654e-06, 'epoch': 3.64}
+{'loss': 0.3308, 'learning_rate': 2.7324945295404816e-06, 'epoch': 3.66}
+{'loss': 0.3334, 'learning_rate': 2.527352297592998e-06, 'epoch': 3.69}
+{'loss': 0.3285, 'learning_rate': 2.322210065645514e-06, 'epoch': 3.71}
+{'loss': 0.3218, 'learning_rate': 2.1191192560175058e-06, 'epoch': 3.74}
+{'loss': 0.3187, 'learning_rate': 1.9139770240700216e-06, 'epoch': 3.76}
+{'loss': 0.3178, 'learning_rate': 1.7088347921225384e-06, 'epoch': 3.79}
+{'loss': 0.3279, 'learning_rate': 1.5036925601750548e-06, 'epoch': 3.81}
+{'loss': 0.3267, 'learning_rate': 1.298550328227571e-06, 'epoch': 3.84}
+  Num examples = 86372
+  Batch size = 16
+ 96%|█████████▌| 15000/15624 [55:03<02:02,  5.11it/Saving model checkpoint to ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-15000
+Configuration saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-15000/config.json
+{'eval_loss': 0.5089432597160339, 'eval_accuracy': 0.7755291066549345, 'eval_f1': 0.7687086593986541, 'eval_matthews_correlation': 0.5420567918173701, 'eval_precision': 0.7659330886326026, 'eval_recall': 0.7762213298335279, 'eval_confusion_matrix': [[26076, 7385], [12003, 40908]], 'eval_runtime': 24.6542, 'eval_samples_per_second': 3503.335, 'eval_steps_per_second': 54.757, 'epoch': 3.84}
+Model weights saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-15000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-15000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-15000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-12000] due to args.save_total_limit
+100%|██████████| 15624/15624 [57:07<00:00,  5.11it/s]  
+{'loss': 0.3283, 'learning_rate': 1.0934080962800875e-06, 'epoch': 3.87}
+{'loss': 0.3248, 'learning_rate': 8.88265864332604e-07, 'epoch': 3.89}
+{'loss': 0.3335, 'learning_rate': 6.831236323851204e-07, 'epoch': 3.92}
+{'loss': 0.3191, 'learning_rate': 4.800328227571116e-07, 'epoch': 3.94}
+{'loss': 0.3269, 'learning_rate': 2.7489059080962804e-07, 'epoch': 3.97}
+{'loss': 0.3175, 'learning_rate': 6.974835886214442e-08, 'epoch': 3.99}
+
+Training completed. Do not forget to share your model on huggingface.co/models =)
+
+
+Loading best model from ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/checkpoint-15000 (score: 0.7687086593986541).
+100%|██████████| 15624/15624 [57:07<00:00,  4.56it/s]
+{'train_runtime': 3427.3329, 'train_samples_per_second': 583.544, 'train_steps_per_second': 4.559, 'train_loss': 0.3986794852136162, 'epoch': 4.0}
+***** Running Evaluation *****
+  Num examples = 86372
+  Batch size = 16
+100%|██████████| 1350/1350 [00:24<00:00, 54.37it/s]
+Configuration saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/best/config.json
+Model weights saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/best/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/best/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/neisseria_gonorrhoeae/best/special_tokens_map.json

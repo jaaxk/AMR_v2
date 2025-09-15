@@ -1,0 +1,85 @@
+WARNING:root:Perform single sequence classification (no additional features)...
+--- Logging error ---
+Traceback (most recent call last):
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 1085, in emit
+    msg = self.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 929, in format
+    return fmt.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 668, in format
+    record.message = record.getMessage()
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 373, in getMessage
+    msg = msg % self.args
+TypeError: not all arguments converted during string formatting
+Call stack:
+  File "../train.py", line 390, in <module>
+    train()
+  File "../train.py", line 299, in train
+    train_dataset = SupervisedDataset(tokenizer=tokenizer,
+  File "../train.py", line 169, in __init__
+    logging.warning("Number of labels:", self.num_labels)
+Message: 'Number of labels:'
+Arguments: (2,)
+WARNING:root:Perform single sequence classification (no additional features)...
+--- Logging error ---
+Traceback (most recent call last):
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 1085, in emit
+    msg = self.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 929, in format
+    return fmt.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 668, in format
+    record.message = record.getMessage()
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 373, in getMessage
+    msg = msg % self.args
+TypeError: not all arguments converted during string formatting
+Call stack:
+  File "../train.py", line 390, in <module>
+    train()
+  File "../train.py", line 302, in train
+    val_dataset = SupervisedDataset(tokenizer=tokenizer,
+  File "../train.py", line 169, in __init__
+    logging.warning("Number of labels:", self.num_labels)
+Message: 'Number of labels:'
+Arguments: (2,)
+WARNING:root:Perform single sequence classification (no additional features)...
+--- Logging error ---
+Traceback (most recent call last):
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 1085, in emit
+    msg = self.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 929, in format
+    return fmt.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 668, in format
+    record.message = record.getMessage()
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 373, in getMessage
+    msg = msg % self.args
+TypeError: not all arguments converted during string formatting
+Call stack:
+  File "../train.py", line 390, in <module>
+    train()
+  File "../train.py", line 305, in train
+    test_dataset = SupervisedDataset(tokenizer=tokenizer,
+  File "../train.py", line 169, in __init__
+    logging.warning("Number of labels:", self.num_labels)
+Message: 'Number of labels:'
+Arguments: (2,)
+Initializing CUSTOM BertForSequenceClassification
+/gpfs/scratch/jvaska/cache/modules/transformers_modules/bacteria_model/bert_layers.py:126: UserWarning: Unable to import Triton; defaulting MosaicBERT attention implementation to pytorch (this will reduce throughput when using this model).
+  warnings.warn(
+Dropout layer: Dropout(p=0.1, inplace=False)
+Dropout probability: 0.1
+Some weights of the model checkpoint at ../pretrained_models/bacteria_model were not used when initializing BertForSequenceClassification: ['cls.predictions.decoder.weight', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.transform.dense.bias', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.decoder.bias']
+- This IS expected if you are initializing BertForSequenceClassification from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertForSequenceClassification from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of BertForSequenceClassification were not initialized from the model checkpoint at ../pretrained_models/bacteria_model and are newly initialized: ['classifier.0.weight', 'classifier.2.bias', 'classifier.0.bias', 'bert.pooler.dense.weight', 'classifier.2.weight', 'bert.pooler.dense.bias']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+Using cuda_amp half precision backend
+***** Running training *****
+  Num examples = 208,930
+  Num Epochs = 4
+  Instantaneous batch size per device = 8
+  Total train batch size (w. parallel, distributed & accumulation) = 128
+  Gradient Accumulation steps = 4
+  Total optimization steps = 6,528
+  Number of trainable parameters = 117,167,234
+Automatic Weights & Biases logging enabled, to disable set os.environ["WANDB_DISABLED"] = "true"
+  2%|▏         | 119/6528 [00:25<21:07,  5.06it/s]
+{'loss': 0.6906, 'learning_rate': 3e-06, 'epoch': 0.06}

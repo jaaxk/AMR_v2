@@ -1,0 +1,15 @@
+{"time":"2025-09-09T12:44:06.229189635-04:00","level":"INFO","msg":"stream: starting","core version":"0.19.9","symlink path":"/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/finetune/finetune_scripts/wandb/run-20250909_124406-lt81bbcw/logs/debug-core.log"}
+{"time":"2025-09-09T12:44:06.406719013-04:00","level":"INFO","msg":"created new stream","id":"lt81bbcw"}
+{"time":"2025-09-09T12:44:06.406772034-04:00","level":"INFO","msg":"stream: started","id":"lt81bbcw"}
+{"time":"2025-09-09T12:44:06.406783511-04:00","level":"INFO","msg":"handler: started","stream_id":"lt81bbcw"}
+{"time":"2025-09-09T12:44:06.406792078-04:00","level":"INFO","msg":"sender: started","stream_id":"lt81bbcw"}
+{"time":"2025-09-09T12:44:06.406807098-04:00","level":"INFO","msg":"writer: Do: started","stream_id":"lt81bbcw"}
+{"time":"2025-09-09T12:44:06.578585397-04:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-09-09T12:56:17.87852115-04:00","level":"INFO","msg":"stream: closing","id":"lt81bbcw"}
+{"time":"2025-09-09T12:56:17.878553775-04:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2025-09-09T12:56:17.878590933-04:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2025-09-09T12:56:18.220435931-04:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-09-09T12:56:18.463422154-04:00","level":"INFO","msg":"handler: closed","stream_id":"lt81bbcw"}
+{"time":"2025-09-09T12:56:18.463473198-04:00","level":"INFO","msg":"writer: Close: closed","stream_id":"lt81bbcw"}
+{"time":"2025-09-09T12:56:18.463480028-04:00","level":"INFO","msg":"sender: closed","stream_id":"lt81bbcw"}
+{"time":"2025-09-09T12:56:18.464163449-04:00","level":"INFO","msg":"stream: closed","id":"lt81bbcw"}

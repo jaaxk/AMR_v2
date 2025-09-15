@@ -1,0 +1,402 @@
+WARNING:root:Perform single sequence classification (no additional features)...
+--- Logging error ---
+Traceback (most recent call last):
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 1085, in emit
+    msg = self.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 929, in format
+    return fmt.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 668, in format
+    record.message = record.getMessage()
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 373, in getMessage
+    msg = msg % self.args
+TypeError: not all arguments converted during string formatting
+Call stack:
+  File "../train.py", line 390, in <module>
+    train()
+  File "../train.py", line 299, in train
+    train_dataset = SupervisedDataset(tokenizer=tokenizer,
+  File "../train.py", line 169, in __init__
+    logging.warning("Number of labels:", self.num_labels)
+Message: 'Number of labels:'
+Arguments: (2,)
+WARNING:root:Perform single sequence classification (no additional features)...
+--- Logging error ---
+Traceback (most recent call last):
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 1085, in emit
+    msg = self.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 929, in format
+    return fmt.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 668, in format
+    record.message = record.getMessage()
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 373, in getMessage
+    msg = msg % self.args
+TypeError: not all arguments converted during string formatting
+Call stack:
+  File "../train.py", line 390, in <module>
+    train()
+  File "../train.py", line 302, in train
+    val_dataset = SupervisedDataset(tokenizer=tokenizer,
+  File "../train.py", line 169, in __init__
+    logging.warning("Number of labels:", self.num_labels)
+Message: 'Number of labels:'
+Arguments: (2,)
+WARNING:root:Perform single sequence classification (no additional features)...
+--- Logging error ---
+Traceback (most recent call last):
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 1085, in emit
+    msg = self.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 929, in format
+    return fmt.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 668, in format
+    record.message = record.getMessage()
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 373, in getMessage
+    msg = msg % self.args
+TypeError: not all arguments converted during string formatting
+Call stack:
+  File "../train.py", line 390, in <module>
+    train()
+  File "../train.py", line 305, in train
+    test_dataset = SupervisedDataset(tokenizer=tokenizer,
+  File "../train.py", line 169, in __init__
+    logging.warning("Number of labels:", self.num_labels)
+Message: 'Number of labels:'
+Arguments: (2,)
+Initializing CUSTOM BertForSequenceClassification
+/gpfs/scratch/jvaska/cache/modules/transformers_modules/bacteria_model/bert_layers.py:126: UserWarning: Unable to import Triton; defaulting MosaicBERT attention implementation to pytorch (this will reduce throughput when using this model).
+  warnings.warn(
+Dropout layer: Dropout(p=0.1, inplace=False)
+Dropout probability: 0.1
+Some weights of the model checkpoint at ../pretrained_models/bacteria_model were not used when initializing BertForSequenceClassification: ['cls.predictions.transform.dense.bias', 'cls.predictions.decoder.weight', 'cls.predictions.decoder.bias', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.transform.LayerNorm.weight']
+- This IS expected if you are initializing BertForSequenceClassification from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertForSequenceClassification from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of BertForSequenceClassification were not initialized from the model checkpoint at ../pretrained_models/bacteria_model and are newly initialized: ['bert.pooler.dense.bias', 'bert.pooler.dense.weight', 'classifier.0.weight', 'classifier.0.bias', 'classifier.2.weight', 'classifier.2.bias']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+Using cuda_amp half precision backend
+***** Running training *****
+  Num examples = 500,000
+  Num Epochs = 4
+  Instantaneous batch size per device = 8
+  Total train batch size (w. parallel, distributed & accumulation) = 128
+  Gradient Accumulation steps = 4
+  Total optimization steps = 15,624
+  Number of trainable parameters = 117,167,234
+Automatic Weights & Biases logging enabled, to disable set os.environ["WANDB_DISABLED"] = "true"
+  6%|▋         | 1000/15624 [03:11<46:29,  5.24it/s]***** Running Evaluation *****
+{'loss': 0.6883, 'learning_rate': 3e-06, 'epoch': 0.03}
+{'loss': 0.6459, 'learning_rate': 6e-06, 'epoch': 0.05}
+{'loss': 0.5742, 'learning_rate': 8.97e-06, 'epoch': 0.08}
+{'loss': 0.5268, 'learning_rate': 1.197e-05, 'epoch': 0.1}
+{'loss': 0.4939, 'learning_rate': 1.497e-05, 'epoch': 0.13}
+{'loss': 0.4659, 'learning_rate': 1.794e-05, 'epoch': 0.15}
+{'loss': 0.445, 'learning_rate': 2.094e-05, 'epoch': 0.18}
+{'loss': 0.4269, 'learning_rate': 2.3910000000000003e-05, 'epoch': 0.2}
+{'loss': 0.4139, 'learning_rate': 2.691e-05, 'epoch': 0.23}
+{'loss': 0.4006, 'learning_rate': 2.991e-05, 'epoch': 0.26}
+  Num examples = 84872
+  Batch size = 16
+  6%|▋         | 1000/15624 [03:35<46:29,  5.24it/sSaving model checkpoint to ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-1000
+Configuration saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-1000/config.json
+{'eval_loss': 0.5730817317962646, 'eval_accuracy': 0.7141460081063248, 'eval_f1': 0.6922323188033355, 'eval_matthews_correlation': 0.4233858523249921, 'eval_precision': 0.7321282134976277, 'eval_recall': 0.693056648789045, 'eval_confusion_matrix': [[41629, 5521], [18740, 18982]], 'eval_runtime': 24.125, 'eval_samples_per_second': 3518.005, 'eval_steps_per_second': 55.005, 'epoch': 0.26}
+Model weights saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-1000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-1000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-1000/special_tokens_map.json
+ 13%|█▎        | 2000/15624 [06:47<43:10,  5.26it/s]***** Running Evaluation *****
+{'loss': 0.3828, 'learning_rate': 2.980101203501094e-05, 'epoch': 0.28}
+{'loss': 0.3655, 'learning_rate': 2.9595869803063458e-05, 'epoch': 0.31}
+{'loss': 0.3538, 'learning_rate': 2.9390727571115973e-05, 'epoch': 0.33}
+{'loss': 0.352, 'learning_rate': 2.9185585339168492e-05, 'epoch': 0.36}
+{'loss': 0.3389, 'learning_rate': 2.898249452954048e-05, 'epoch': 0.38}
+{'loss': 0.3366, 'learning_rate': 2.8777352297592997e-05, 'epoch': 0.41}
+{'loss': 0.3239, 'learning_rate': 2.857426148796499e-05, 'epoch': 0.44}
+{'loss': 0.3354, 'learning_rate': 2.8369119256017505e-05, 'epoch': 0.46}
+{'loss': 0.3243, 'learning_rate': 2.816397702407002e-05, 'epoch': 0.49}
+{'loss': 0.3119, 'learning_rate': 2.7958834792122536e-05, 'epoch': 0.51}
+  Num examples = 84872
+  Batch size = 16
+ 13%|█▎        | 2000/15624 [07:11<43:10,  5.26it/sSaving model checkpoint to ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-2000
+Configuration saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-2000/config.json
+{'eval_loss': 0.6548998355865479, 'eval_accuracy': 0.7228178904703554, 'eval_f1': 0.7020624897052248, 'eval_matthews_correlation': 0.4420490514219514, 'eval_precision': 0.7416459507030749, 'eval_recall': 0.7021628784741731, 'eval_confusion_matrix': [[41874, 5276], [18249, 19473]], 'eval_runtime': 24.059, 'eval_samples_per_second': 3527.656, 'eval_steps_per_second': 55.156, 'epoch': 0.51}
+Model weights saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-2000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-2000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-2000/special_tokens_map.json
+ 19%|█▉        | 3000/15624 [10:22<39:53,  5.27it/s]***** Running Evaluation *****
+{'loss': 0.3122, 'learning_rate': 2.7753692560175058e-05, 'epoch': 0.54}
+{'loss': 0.3045, 'learning_rate': 2.7548550328227573e-05, 'epoch': 0.56}
+{'loss': 0.3051, 'learning_rate': 2.734340809628009e-05, 'epoch': 0.59}
+{'loss': 0.3038, 'learning_rate': 2.7138265864332604e-05, 'epoch': 0.61}
+{'loss': 0.2937, 'learning_rate': 2.6933123632385123e-05, 'epoch': 0.64}
+{'loss': 0.2941, 'learning_rate': 2.6727981400437638e-05, 'epoch': 0.67}
+{'loss': 0.2915, 'learning_rate': 2.6522839168490154e-05, 'epoch': 0.69}
+{'loss': 0.2867, 'learning_rate': 2.631769693654267e-05, 'epoch': 0.72}
+{'loss': 0.2875, 'learning_rate': 2.6112554704595188e-05, 'epoch': 0.74}
+{'loss': 0.2872, 'learning_rate': 2.5907412472647703e-05, 'epoch': 0.77}
+  Num examples = 84872
+  Batch size = 16
+ 19%|█▉        | 3000/15624 [10:46<39:53,  5.27it/sSaving model checkpoint to ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-3000
+Configuration saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-3000/config.json
+{'eval_loss': 0.7132779359817505, 'eval_accuracy': 0.7132976717881044, 'eval_f1': 0.7031245784762117, 'eval_matthews_correlation': 0.4144436899961585, 'eval_precision': 0.713223269786875, 'eval_recall': 0.701389337511469, 'eval_confusion_matrix': [[38125, 9025], [15308, 22414]], 'eval_runtime': 24.0633, 'eval_samples_per_second': 3527.029, 'eval_steps_per_second': 55.146, 'epoch': 0.77}
+Model weights saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-3000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-3000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-3000/special_tokens_map.json
+ 26%|██▌       | 4000/15624 [13:57<36:57,  5.24it/s]***** Running Evaluation *****
+{'loss': 0.2862, 'learning_rate': 2.570227024070022e-05, 'epoch': 0.79}
+{'loss': 0.2853, 'learning_rate': 2.5497128008752734e-05, 'epoch': 0.82}
+{'loss': 0.281, 'learning_rate': 2.5291985776805253e-05, 'epoch': 0.84}
+{'loss': 0.2761, 'learning_rate': 2.5086843544857768e-05, 'epoch': 0.87}
+{'loss': 0.2847, 'learning_rate': 2.4881701312910287e-05, 'epoch': 0.9}
+{'loss': 0.2819, 'learning_rate': 2.4676559080962802e-05, 'epoch': 0.92}
+{'loss': 0.2789, 'learning_rate': 2.4471416849015317e-05, 'epoch': 0.95}
+{'loss': 0.2784, 'learning_rate': 2.4266274617067836e-05, 'epoch': 0.97}
+{'loss': 0.2714, 'learning_rate': 2.406113238512035e-05, 'epoch': 1.0}
+{'loss': 0.2602, 'learning_rate': 2.3855990153172867e-05, 'epoch': 1.02}
+  Num examples = 84872
+  Batch size = 16
+ 26%|██▌       | 4000/15624 [14:22<36:57,  5.24it/sSaving model checkpoint to ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-4000
+Configuration saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-4000/config.json
+{'eval_loss': 0.7254517078399658, 'eval_accuracy': 0.7186115562258459, 'eval_f1': 0.7069623053660885, 'eval_matthews_correlation': 0.42578963168157724, 'eval_precision': 0.7209160869062403, 'eval_recall': 0.7051647901545508, 'eval_confusion_matrix': [[38956, 8194], [15688, 22034]], 'eval_runtime': 24.0596, 'eval_samples_per_second': 3527.578, 'eval_steps_per_second': 55.155, 'epoch': 1.02}
+Model weights saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-4000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-4000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-4000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-1000] due to args.save_total_limit
+ 32%|███▏      | 5000/15624 [17:33<33:30,  5.29it/s]***** Running Evaluation *****
+{'loss': 0.2569, 'learning_rate': 2.3650847921225382e-05, 'epoch': 1.05}
+{'loss': 0.2549, 'learning_rate': 2.34457056892779e-05, 'epoch': 1.08}
+{'loss': 0.2532, 'learning_rate': 2.3240563457330416e-05, 'epoch': 1.1}
+{'loss': 0.2627, 'learning_rate': 2.303542122538293e-05, 'epoch': 1.13}
+{'loss': 0.261, 'learning_rate': 2.2830278993435447e-05, 'epoch': 1.15}
+{'loss': 0.2497, 'learning_rate': 2.2625136761487966e-05, 'epoch': 1.18}
+{'loss': 0.2632, 'learning_rate': 2.241999452954048e-05, 'epoch': 1.2}
+{'loss': 0.2593, 'learning_rate': 2.2214852297592997e-05, 'epoch': 1.23}
+{'loss': 0.2623, 'learning_rate': 2.2009710065645515e-05, 'epoch': 1.25}
+{'loss': 0.254, 'learning_rate': 2.1804567833698034e-05, 'epoch': 1.28}
+  Num examples = 84872
+  Batch size = 16
+ 32%|███▏      | 5000/15624 [17:57<33:30,  5.29it/sSaving model checkpoint to ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-5000
+Configuration saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-5000/config.json
+{'eval_loss': 0.7919331192970276, 'eval_accuracy': 0.7160665472711848, 'eval_f1': 0.7026034056108776, 'eval_matthews_correlation': 0.4210333913738405, 'eval_precision': 0.7203934605499981, 'eval_recall': 0.7010825505091864, 'eval_confusion_matrix': [[39416, 7734], [16364, 21358]], 'eval_runtime': 24.016, 'eval_samples_per_second': 3533.975, 'eval_steps_per_second': 55.255, 'epoch': 1.28}
+Model weights saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-5000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-5000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-5000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-2000] due to args.save_total_limit
+ 38%|███▊      | 6000/15624 [21:08<30:19,  5.29it/s]***** Running Evaluation *****
+{'loss': 0.2552, 'learning_rate': 2.159942560175055e-05, 'epoch': 1.31}
+{'loss': 0.2603, 'learning_rate': 2.1394283369803065e-05, 'epoch': 1.33}
+{'loss': 0.259, 'learning_rate': 2.118914113785558e-05, 'epoch': 1.36}
+{'loss': 0.25, 'learning_rate': 2.09839989059081e-05, 'epoch': 1.38}
+{'loss': 0.2568, 'learning_rate': 2.0778856673960614e-05, 'epoch': 1.41}
+{'loss': 0.2543, 'learning_rate': 2.057371444201313e-05, 'epoch': 1.43}
+{'loss': 0.2577, 'learning_rate': 2.0368572210065645e-05, 'epoch': 1.46}
+{'loss': 0.2435, 'learning_rate': 2.016342997811816e-05, 'epoch': 1.48}
+{'loss': 0.2494, 'learning_rate': 1.995828774617068e-05, 'epoch': 1.51}
+{'loss': 0.2409, 'learning_rate': 1.9753145514223194e-05, 'epoch': 1.54}
+  Num examples = 84872
+  Batch size = 16
+ 38%|███▊      | 6000/15624 [21:32<30:19,  5.29it/sSaving model checkpoint to ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-6000
+Configuration saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-6000/config.json
+{'eval_loss': 0.8071318864822388, 'eval_accuracy': 0.7280139504194552, 'eval_f1': 0.7109242760545648, 'eval_matthews_correlation': 0.44978911342758593, 'eval_precision': 0.7411178275934052, 'eval_recall': 0.7097628455942377, 'eval_confusion_matrix': [[41212, 5938], [17146, 20576]], 'eval_runtime': 23.9583, 'eval_samples_per_second': 3542.494, 'eval_steps_per_second': 55.388, 'epoch': 1.54}
+Model weights saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-6000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-6000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-6000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-3000] due to args.save_total_limit
+ 45%|████▍     | 7000/15624 [24:43<27:14,  5.27it/s]***** Running Evaluation *****
+{'loss': 0.2393, 'learning_rate': 1.954800328227571e-05, 'epoch': 1.56}
+{'loss': 0.2425, 'learning_rate': 1.9342861050328225e-05, 'epoch': 1.59}
+{'loss': 0.2422, 'learning_rate': 1.9137718818380747e-05, 'epoch': 1.61}
+{'loss': 0.2474, 'learning_rate': 1.8932576586433263e-05, 'epoch': 1.64}
+{'loss': 0.2346, 'learning_rate': 1.8727434354485778e-05, 'epoch': 1.66}
+{'loss': 0.2574, 'learning_rate': 1.8522292122538293e-05, 'epoch': 1.69}
+{'loss': 0.2468, 'learning_rate': 1.8317149890590812e-05, 'epoch': 1.72}
+{'loss': 0.2402, 'learning_rate': 1.8112007658643327e-05, 'epoch': 1.74}
+{'loss': 0.2358, 'learning_rate': 1.7906865426695843e-05, 'epoch': 1.77}
+{'loss': 0.2415, 'learning_rate': 1.7701723194748358e-05, 'epoch': 1.79}
+  Num examples = 84872
+  Batch size = 16
+ 45%|████▍     | 7000/15624 [25:07<27:14,  5.27it/sSaving model checkpoint to ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-7000
+Configuration saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-7000/config.json
+{'eval_loss': 0.9120217561721802, 'eval_accuracy': 0.7274719577717033, 'eval_f1': 0.7135948592491941, 'eval_matthews_correlation': 0.4458286441091491, 'eval_precision': 0.7346079614103345, 'eval_recall': 0.7118035324902734, 'eval_confusion_matrix': [[40212, 6938], [16192, 21530]], 'eval_runtime': 23.9964, 'eval_samples_per_second': 3536.864, 'eval_steps_per_second': 55.3, 'epoch': 1.79}
+Model weights saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-7000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-7000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-7000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-4000] due to args.save_total_limit
+ 51%|█████     | 8000/15624 [28:17<24:03,  5.28it/s]***** Running Evaluation *****
+{'loss': 0.2385, 'learning_rate': 1.7496580962800877e-05, 'epoch': 1.82}
+{'loss': 0.2423, 'learning_rate': 1.7291438730853392e-05, 'epoch': 1.84}
+{'loss': 0.229, 'learning_rate': 1.7086296498905908e-05, 'epoch': 1.87}
+{'loss': 0.236, 'learning_rate': 1.6881154266958423e-05, 'epoch': 1.89}
+{'loss': 0.2389, 'learning_rate': 1.6676012035010942e-05, 'epoch': 1.92}
+{'loss': 0.2409, 'learning_rate': 1.6470869803063457e-05, 'epoch': 1.95}
+{'loss': 0.2386, 'learning_rate': 1.6265727571115973e-05, 'epoch': 1.97}
+{'loss': 0.2364, 'learning_rate': 1.606058533916849e-05, 'epoch': 2.0}
+{'loss': 0.2339, 'learning_rate': 1.5855443107221007e-05, 'epoch': 2.02}
+{'loss': 0.2265, 'learning_rate': 1.5650300875273525e-05, 'epoch': 2.05}
+  Num examples = 84872
+  Batch size = 16
+ 51%|█████     | 8000/15624 [28:41<24:03,  5.28it/sSaving model checkpoint to ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-8000
+Configuration saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-8000/config.json
+{'eval_loss': 0.9558812379837036, 'eval_accuracy': 0.7283792063342445, 'eval_f1': 0.7113563988344442, 'eval_matthews_correlation': 0.45053735127825795, 'eval_precision': 0.7414568754391687, 'eval_recall': 0.7101657951628375, 'eval_confusion_matrix': [[41215, 5935], [17118, 20604]], 'eval_runtime': 23.969, 'eval_samples_per_second': 3540.911, 'eval_steps_per_second': 55.363, 'epoch': 2.05}
+Model weights saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-8000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-8000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-8000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-5000] due to args.save_total_limit
+ 58%|█████▊    | 9000/15624 [31:52<20:57,  5.27it/s]***** Running Evaluation *****
+{'loss': 0.2278, 'learning_rate': 1.544515864332604e-05, 'epoch': 2.07}
+{'loss': 0.2331, 'learning_rate': 1.5240016411378556e-05, 'epoch': 2.1}
+{'loss': 0.2194, 'learning_rate': 1.5034874179431073e-05, 'epoch': 2.12}
+{'loss': 0.233, 'learning_rate': 1.4831783369803063e-05, 'epoch': 2.15}
+{'loss': 0.2261, 'learning_rate': 1.4626641137855582e-05, 'epoch': 2.18}
+{'loss': 0.2346, 'learning_rate': 1.4421498905908097e-05, 'epoch': 2.2}
+{'loss': 0.2303, 'learning_rate': 1.4216356673960614e-05, 'epoch': 2.23}
+{'loss': 0.2239, 'learning_rate': 1.401121444201313e-05, 'epoch': 2.25}
+{'loss': 0.2274, 'learning_rate': 1.3806072210065646e-05, 'epoch': 2.28}
+{'loss': 0.2208, 'learning_rate': 1.3600929978118162e-05, 'epoch': 2.3}
+  Num examples = 84872
+  Batch size = 16
+ 58%|█████▊    | 9000/15624 [32:16<20:57,  5.27it/sSaving model checkpoint to ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-9000
+Configuration saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-9000/config.json
+{'eval_loss': 0.9452508091926575, 'eval_accuracy': 0.7276369120558017, 'eval_f1': 0.7125367363446693, 'eval_matthews_correlation': 0.447120438556259, 'eval_precision': 0.7369240984401461, 'eval_recall': 0.7109501396132211, 'eval_confusion_matrix': [[40604, 6546], [16570, 21152]], 'eval_runtime': 24.001, 'eval_samples_per_second': 3536.19, 'eval_steps_per_second': 55.289, 'epoch': 2.3}
+Model weights saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-9000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-9000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-9000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-6000] due to args.save_total_limit
+ 64%|██████▍   | 10000/15624 [35:27<17:45,  5.28it/s]***** Running Evaluation *****
+{'loss': 0.2258, 'learning_rate': 1.3395787746170677e-05, 'epoch': 2.33}
+{'loss': 0.2299, 'learning_rate': 1.3190645514223196e-05, 'epoch': 2.36}
+{'loss': 0.2227, 'learning_rate': 1.2985503282275711e-05, 'epoch': 2.38}
+{'loss': 0.2243, 'learning_rate': 1.2780361050328228e-05, 'epoch': 2.41}
+{'loss': 0.2238, 'learning_rate': 1.2575218818380744e-05, 'epoch': 2.43}
+{'loss': 0.2225, 'learning_rate': 1.237007658643326e-05, 'epoch': 2.46}
+{'loss': 0.2248, 'learning_rate': 1.2164934354485776e-05, 'epoch': 2.48}
+{'loss': 0.2277, 'learning_rate': 1.1959792122538293e-05, 'epoch': 2.51}
+{'loss': 0.2221, 'learning_rate': 1.175464989059081e-05, 'epoch': 2.53}
+{'loss': 0.2237, 'learning_rate': 1.1549507658643327e-05, 'epoch': 2.56}
+  Num examples = 84872
+  Batch size = 16
+ 64%|██████▍   | 10000/15624 [35:51<17:45,  5.28it/Saving model checkpoint to ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-10000
+Configuration saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-10000/config.json
+{'eval_loss': 1.0012906789779663, 'eval_accuracy': 0.7261405410500519, 'eval_f1': 0.7121406739771894, 'eval_matthews_correlation': 0.44302855401809793, 'eval_precision': 0.7332055752127242, 'eval_recall': 0.710409098813708, 'eval_confusion_matrix': [[40173, 6977], [16266, 21456]], 'eval_runtime': 23.9551, 'eval_samples_per_second': 3542.966, 'eval_steps_per_second': 55.395, 'epoch': 2.56}
+Model weights saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-10000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-10000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-10000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-8000] due to args.save_total_limit
+ 70%|███████   | 11000/15624 [39:03<14:35,  5.28it/s]***** Running Evaluation *****
+{'loss': 0.2218, 'learning_rate': 1.1344365426695843e-05, 'epoch': 2.59}
+{'loss': 0.2224, 'learning_rate': 1.113922319474836e-05, 'epoch': 2.61}
+{'loss': 0.2164, 'learning_rate': 1.0934080962800875e-05, 'epoch': 2.64}
+{'loss': 0.227, 'learning_rate': 1.0728938730853392e-05, 'epoch': 2.66}
+{'loss': 0.2187, 'learning_rate': 1.0523796498905907e-05, 'epoch': 2.69}
+{'loss': 0.2178, 'learning_rate': 1.0318654266958426e-05, 'epoch': 2.71}
+{'loss': 0.221, 'learning_rate': 1.0113512035010942e-05, 'epoch': 2.74}
+{'loss': 0.2205, 'learning_rate': 9.908369803063459e-06, 'epoch': 2.76}
+{'loss': 0.2154, 'learning_rate': 9.703227571115974e-06, 'epoch': 2.79}
+{'loss': 0.2133, 'learning_rate': 9.498085339168491e-06, 'epoch': 2.82}
+  Num examples = 84872
+  Batch size = 16
+ 70%|███████   | 11000/15624 [39:27<14:35,  5.28it/Saving model checkpoint to ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-11000
+Configuration saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-11000/config.json
+{'eval_loss': 1.0003339052200317, 'eval_accuracy': 0.7322556320105571, 'eval_f1': 0.7187384053847341, 'eval_matthews_correlation': 0.45593517053804505, 'eval_precision': 0.7397682761816917, 'eval_recall': 0.7167476897319301, 'eval_confusion_matrix': [[40377, 6773], [15951, 21771]], 'eval_runtime': 23.9484, 'eval_samples_per_second': 3543.951, 'eval_steps_per_second': 55.411, 'epoch': 2.82}
+Model weights saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-11000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-11000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-11000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-7000] due to args.save_total_limit
+ 77%|███████▋  | 12000/15624 [42:38<11:23,  5.30it/s]***** Running Evaluation *****
+{'loss': 0.2193, 'learning_rate': 9.294994529540482e-06, 'epoch': 2.84}
+{'loss': 0.2166, 'learning_rate': 9.089852297592998e-06, 'epoch': 2.87}
+{'loss': 0.2152, 'learning_rate': 8.884710065645515e-06, 'epoch': 2.89}
+{'loss': 0.2213, 'learning_rate': 8.67956783369803e-06, 'epoch': 2.92}
+{'loss': 0.2234, 'learning_rate': 8.474425601750547e-06, 'epoch': 2.94}
+{'loss': 0.2146, 'learning_rate': 8.269283369803063e-06, 'epoch': 2.97}
+{'loss': 0.2204, 'learning_rate': 8.064141137855581e-06, 'epoch': 3.0}
+{'loss': 0.2079, 'learning_rate': 7.858998905908097e-06, 'epoch': 3.02}
+{'loss': 0.2103, 'learning_rate': 7.653856673960614e-06, 'epoch': 3.05}
+{'loss': 0.2128, 'learning_rate': 7.448714442013129e-06, 'epoch': 3.07}
+  Num examples = 84872
+  Batch size = 16
+ 77%|███████▋  | 12000/15624 [43:02<11:23,  5.30it/Saving model checkpoint to ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-12000
+Configuration saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-12000/config.json
+{'eval_loss': 1.056111454963684, 'eval_accuracy': 0.7283674238853803, 'eval_f1': 0.7157519475312392, 'eval_matthews_correlation': 0.44695570620357195, 'eval_precision': 0.7336232851256403, 'eval_recall': 0.7137730012662261, 'eval_confusion_matrix': [[39849, 7301], [15753, 21969]], 'eval_runtime': 23.9435, 'eval_samples_per_second': 3544.68, 'eval_steps_per_second': 55.422, 'epoch': 3.07}
+Model weights saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-12000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-12000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-12000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-9000] due to args.save_total_limit
+ 83%|████████▎ | 13000/15624 [46:13<08:17,  5.27it/s]***** Running Evaluation *****
+{'loss': 0.2167, 'learning_rate': 7.243572210065645e-06, 'epoch': 3.1}
+{'loss': 0.2034, 'learning_rate': 7.038429978118162e-06, 'epoch': 3.12}
+{'loss': 0.2144, 'learning_rate': 6.8332877461706785e-06, 'epoch': 3.15}
+{'loss': 0.2066, 'learning_rate': 6.628145514223195e-06, 'epoch': 3.17}
+{'loss': 0.2091, 'learning_rate': 6.423003282275711e-06, 'epoch': 3.2}
+{'loss': 0.2114, 'learning_rate': 6.217861050328228e-06, 'epoch': 3.23}
+{'loss': 0.2094, 'learning_rate': 6.012718818380744e-06, 'epoch': 3.25}
+{'loss': 0.2074, 'learning_rate': 5.80757658643326e-06, 'epoch': 3.28}
+{'loss': 0.2104, 'learning_rate': 5.6024343544857775e-06, 'epoch': 3.3}
+{'loss': 0.2158, 'learning_rate': 5.397292122538294e-06, 'epoch': 3.33}
+  Num examples = 84872
+  Batch size = 16
+ 83%|████████▎ | 13000/15624 [46:37<08:17,  5.27it/Saving model checkpoint to ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-13000
+Configuration saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-13000/config.json
+{'eval_loss': 1.0543748140335083, 'eval_accuracy': 0.7284027712319728, 'eval_f1': 0.7151798705330975, 'eval_matthews_correlation': 0.44740122322252807, 'eval_precision': 0.7346419889740512, 'eval_recall': 0.7132694316735769, 'eval_confusion_matrix': [[40054, 7096], [15955, 21767]], 'eval_runtime': 24.0654, 'eval_samples_per_second': 3526.727, 'eval_steps_per_second': 55.141, 'epoch': 3.33}
+Model weights saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-13000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-13000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-13000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-10000] due to args.save_total_limit
+ 90%|████████▉ | 14000/15624 [49:47<05:06,  5.29it/s]***** Running Evaluation *****
+{'loss': 0.2097, 'learning_rate': 5.19214989059081e-06, 'epoch': 3.35}
+{'loss': 0.2085, 'learning_rate': 4.987007658643326e-06, 'epoch': 3.38}
+{'loss': 0.2017, 'learning_rate': 4.781865426695843e-06, 'epoch': 3.4}
+{'loss': 0.211, 'learning_rate': 4.576723194748359e-06, 'epoch': 3.43}
+{'loss': 0.2094, 'learning_rate': 4.3715809628008756e-06, 'epoch': 3.46}
+{'loss': 0.2105, 'learning_rate': 4.166438730853392e-06, 'epoch': 3.48}
+{'loss': 0.207, 'learning_rate': 3.961296498905908e-06, 'epoch': 3.51}
+{'loss': 0.2124, 'learning_rate': 3.7561542669584246e-06, 'epoch': 3.53}
+{'loss': 0.2088, 'learning_rate': 3.5510120350109412e-06, 'epoch': 3.56}
+{'loss': 0.2098, 'learning_rate': 3.3458698030634574e-06, 'epoch': 3.58}
+  Num examples = 84872
+  Batch size = 16
+ 90%|████████▉ | 14000/15624 [50:11<05:06,  5.29it/Saving model checkpoint to ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-14000
+Configuration saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-14000/config.json
+{'eval_loss': 1.119877815246582, 'eval_accuracy': 0.7332453577151475, 'eval_f1': 0.7206290332036939, 'eval_matthews_correlation': 0.4574307339271034, 'eval_precision': 0.7394026846941881, 'eval_recall': 0.718505148144406, 'eval_confusion_matrix': [[40134, 7016], [15624, 22098]], 'eval_runtime': 23.9769, 'eval_samples_per_second': 3539.733, 'eval_steps_per_second': 55.345, 'epoch': 3.58}
+Model weights saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-14000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-14000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-14000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-11000] due to args.save_total_limit
+ 96%|█████████▌| 15000/15624 [53:21<01:57,  5.29it/s]***** Running Evaluation *****
+{'loss': 0.2106, 'learning_rate': 3.1407275711159737e-06, 'epoch': 3.61}
+{'loss': 0.2103, 'learning_rate': 2.93558533916849e-06, 'epoch': 3.64}
+{'loss': 0.2018, 'learning_rate': 2.7304431072210065e-06, 'epoch': 3.66}
+{'loss': 0.2037, 'learning_rate': 2.525300875273523e-06, 'epoch': 3.69}
+{'loss': 0.2076, 'learning_rate': 2.3201586433260393e-06, 'epoch': 3.71}
+{'loss': 0.2123, 'learning_rate': 2.115016411378556e-06, 'epoch': 3.74}
+{'loss': 0.2077, 'learning_rate': 1.909874179431072e-06, 'epoch': 3.76}
+{'loss': 0.2094, 'learning_rate': 1.7047319474835888e-06, 'epoch': 3.79}
+{'loss': 0.2127, 'learning_rate': 1.499589715536105e-06, 'epoch': 3.81}
+{'loss': 0.2067, 'learning_rate': 1.2944474835886214e-06, 'epoch': 3.84}
+  Num examples = 84872
+  Batch size = 16
+ 96%|█████████▌| 15000/15624 [53:45<01:57,  5.29it/Saving model checkpoint to ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-15000
+Configuration saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-15000/config.json
+{'eval_loss': 1.1307145357131958, 'eval_accuracy': 0.7308299556979923, 'eval_f1': 0.7175623261288071, 'eval_matthews_correlation': 0.45266868578019814, 'eval_precision': 0.7376209631101887, 'eval_recall': 0.715583819293494, 'eval_confusion_matrix': [[40211, 6939], [15906, 21816]], 'eval_runtime': 23.9371, 'eval_samples_per_second': 3545.631, 'eval_steps_per_second': 55.437, 'epoch': 3.84}
+Model weights saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-15000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-15000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-15000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-12000] due to args.save_total_limit
+100%|██████████| 15624/15624 [55:44<00:00,  5.28it/s]  
+{'loss': 0.2066, 'learning_rate': 1.0893052516411379e-06, 'epoch': 3.87}
+{'loss': 0.2079, 'learning_rate': 8.841630196936543e-07, 'epoch': 3.89}
+{'loss': 0.2042, 'learning_rate': 6.790207877461707e-07, 'epoch': 3.92}
+{'loss': 0.2049, 'learning_rate': 4.759299781181619e-07, 'epoch': 3.94}
+{'loss': 0.2036, 'learning_rate': 2.707877461706784e-07, 'epoch': 3.97}
+{'loss': 0.2074, 'learning_rate': 6.564551422319474e-08, 'epoch': 3.99}
+
+Training completed. Do not forget to share your model on huggingface.co/models =)
+
+
+Loading best model from ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/checkpoint-14000 (score: 0.7206290332036939).
+100%|██████████| 15624/15624 [55:45<00:00,  4.67it/s]
+{'train_runtime': 3345.2225, 'train_samples_per_second': 597.868, 'train_steps_per_second': 4.671, 'train_loss': 0.2597978836868704, 'epoch': 4.0}
+***** Running Evaluation *****
+  Num examples = 84872
+  Batch size = 16
+100%|██████████| 1327/1327 [00:24<00:00, 55.15it/s]
+Configuration saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/best/config.json
+Model weights saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/best/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/best/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/acinetobacter_baumannii/best/special_tokens_map.json

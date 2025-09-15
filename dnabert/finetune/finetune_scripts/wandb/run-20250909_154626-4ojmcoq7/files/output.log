@@ -1,0 +1,179 @@
+WARNING:root:Perform single sequence classification (no additional features)...
+--- Logging error ---
+Traceback (most recent call last):
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 1085, in emit
+    msg = self.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 929, in format
+    return fmt.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 668, in format
+    record.message = record.getMessage()
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 373, in getMessage
+    msg = msg % self.args
+TypeError: not all arguments converted during string formatting
+Call stack:
+  File "../train.py", line 390, in <module>
+    train()
+  File "../train.py", line 299, in train
+    train_dataset = SupervisedDataset(tokenizer=tokenizer,
+  File "../train.py", line 169, in __init__
+    logging.warning("Number of labels:", self.num_labels)
+Message: 'Number of labels:'
+Arguments: (2,)
+WARNING:root:Perform single sequence classification (no additional features)...
+--- Logging error ---
+Traceback (most recent call last):
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 1085, in emit
+    msg = self.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 929, in format
+    return fmt.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 668, in format
+    record.message = record.getMessage()
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 373, in getMessage
+    msg = msg % self.args
+TypeError: not all arguments converted during string formatting
+Call stack:
+  File "../train.py", line 390, in <module>
+    train()
+  File "../train.py", line 302, in train
+    val_dataset = SupervisedDataset(tokenizer=tokenizer,
+  File "../train.py", line 169, in __init__
+    logging.warning("Number of labels:", self.num_labels)
+Message: 'Number of labels:'
+Arguments: (2,)
+WARNING:root:Perform single sequence classification (no additional features)...
+--- Logging error ---
+Traceback (most recent call last):
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 1085, in emit
+    msg = self.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 929, in format
+    return fmt.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 668, in format
+    record.message = record.getMessage()
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 373, in getMessage
+    msg = msg % self.args
+TypeError: not all arguments converted during string formatting
+Call stack:
+  File "../train.py", line 390, in <module>
+    train()
+  File "../train.py", line 305, in train
+    test_dataset = SupervisedDataset(tokenizer=tokenizer,
+  File "../train.py", line 169, in __init__
+    logging.warning("Number of labels:", self.num_labels)
+Message: 'Number of labels:'
+Arguments: (2,)
+Initializing CUSTOM BertForSequenceClassification
+/gpfs/scratch/jvaska/cache/modules/transformers_modules/bacteria_model/bert_layers.py:126: UserWarning: Unable to import Triton; defaulting MosaicBERT attention implementation to pytorch (this will reduce throughput when using this model).
+  warnings.warn(
+Dropout layer: Dropout(p=0.1, inplace=False)
+Dropout probability: 0.1
+Some weights of the model checkpoint at ../pretrained_models/bacteria_model were not used when initializing BertForSequenceClassification: ['cls.predictions.decoder.weight', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.decoder.bias', 'cls.predictions.transform.dense.bias', 'cls.predictions.transform.LayerNorm.bias']
+- This IS expected if you are initializing BertForSequenceClassification from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertForSequenceClassification from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of BertForSequenceClassification were not initialized from the model checkpoint at ../pretrained_models/bacteria_model and are newly initialized: ['classifier.2.weight', 'bert.pooler.dense.weight', 'classifier.0.bias', 'bert.pooler.dense.bias', 'classifier.2.bias', 'classifier.0.weight']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+Using cuda_amp half precision backend
+***** Running training *****
+  Num examples = 139,436
+  Num Epochs = 4
+  Instantaneous batch size per device = 8
+  Total train batch size (w. parallel, distributed & accumulation) = 128
+  Gradient Accumulation steps = 4
+  Total optimization steps = 4,356
+  Number of trainable parameters = 117,167,234
+Automatic Weights & Biases logging enabled, to disable set os.environ["WANDB_DISABLED"] = "true"
+ 23%|██▎       | 1000/4356 [03:09<10:29,  5.33it/s]***** Running Evaluation *****
+{'loss': 0.6864, 'learning_rate': 3e-06, 'epoch': 0.09}
+{'loss': 0.6115, 'learning_rate': 6e-06, 'epoch': 0.18}
+{'loss': 0.5061, 'learning_rate': 8.97e-06, 'epoch': 0.28}
+{'loss': 0.4177, 'learning_rate': 1.197e-05, 'epoch': 0.37}
+{'loss': 0.366, 'learning_rate': 1.497e-05, 'epoch': 0.46}
+{'loss': 0.3368, 'learning_rate': 1.797e-05, 'epoch': 0.55}
+{'loss': 0.3269, 'learning_rate': 2.097e-05, 'epoch': 0.64}
+{'loss': 0.301, 'learning_rate': 2.3970000000000003e-05, 'epoch': 0.73}
+{'loss': 0.28, 'learning_rate': 2.6940000000000003e-05, 'epoch': 0.83}
+{'loss': 0.2636, 'learning_rate': 2.994e-05, 'epoch': 0.92}
+  Num examples = 13926
+  Batch size = 16
+ 23%|██▎       | 1000/4356 [03:13<10:29,  5.33it/Saving model checkpoint to ../finetuned_models/per_species_models_v2/salmonella_enterica/checkpoint-1000
+Configuration saved in ../finetuned_models/per_species_models_v2/salmonella_enterica/checkpoint-1000/config.json
+{'eval_loss': 0.398335337638855, 'eval_accuracy': 0.8174637368950165, 'eval_f1': 0.8123632831776386, 'eval_matthews_correlation': 0.6251524539013714, 'eval_precision': 0.8142549365623895, 'eval_recall': 0.8109064847906671, 'eval_confusion_matrix': [[6840, 1161], [1381, 4544]], 'eval_runtime': 4.1449, 'eval_samples_per_second': 3359.781, 'eval_steps_per_second': 52.595, 'epoch': 0.92}
+Model weights saved in ../finetuned_models/per_species_models_v2/salmonella_enterica/checkpoint-1000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/salmonella_enterica/checkpoint-1000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/salmonella_enterica/checkpoint-1000/special_tokens_map.json
+ 46%|████▌     | 2000/4356 [06:22<07:22,  5.32it/s]***** Running Evaluation *****
+{'loss': 0.2594, 'learning_rate': 2.9123957091775925e-05, 'epoch': 1.01}
+{'loss': 0.2461, 'learning_rate': 2.8230035756853396e-05, 'epoch': 1.1}
+{'loss': 0.2317, 'learning_rate': 2.733611442193087e-05, 'epoch': 1.19}
+{'loss': 0.2257, 'learning_rate': 2.6442193087008346e-05, 'epoch': 1.28}
+{'loss': 0.2271, 'learning_rate': 2.5548271752085817e-05, 'epoch': 1.38}
+{'loss': 0.2172, 'learning_rate': 2.4654350417163288e-05, 'epoch': 1.47}
+{'loss': 0.215, 'learning_rate': 2.3760429082240763e-05, 'epoch': 1.56}
+{'loss': 0.2018, 'learning_rate': 2.2866507747318238e-05, 'epoch': 1.65}
+{'loss': 0.1926, 'learning_rate': 2.1972586412395712e-05, 'epoch': 1.74}
+{'loss': 0.2003, 'learning_rate': 2.107866507747318e-05, 'epoch': 1.84}
+  Num examples = 13926
+  Batch size = 16
+ 46%|████▌     | 2000/4356 [06:26<07:22,  5.32it/Saving model checkpoint to ../finetuned_models/per_species_models_v2/salmonella_enterica/checkpoint-2000
+Configuration saved in ../finetuned_models/per_species_models_v2/salmonella_enterica/checkpoint-2000/config.json
+{'eval_loss': 0.4963269829750061, 'eval_accuracy': 0.8359184259658193, 'eval_f1': 0.8325713275338127, 'eval_matthews_correlation': 0.6652446044152918, 'eval_precision': 0.8318856311646559, 'eval_recall': 0.8333606084049621, 'eval_confusion_matrix': [[6805, 1196], [1089, 4836]], 'eval_runtime': 4.1432, 'eval_samples_per_second': 3361.182, 'eval_steps_per_second': 52.617, 'epoch': 1.84}
+Model weights saved in ../finetuned_models/per_species_models_v2/salmonella_enterica/checkpoint-2000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/salmonella_enterica/checkpoint-2000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/salmonella_enterica/checkpoint-2000/special_tokens_map.json
+ 69%|██████▉   | 3000/4356 [09:35<04:14,  5.32it/s]***** Running Evaluation *****
+{'loss': 0.2, 'learning_rate': 2.0184743742550655e-05, 'epoch': 1.93}
+{'loss': 0.1919, 'learning_rate': 1.9299761620977354e-05, 'epoch': 2.02}
+{'loss': 0.1801, 'learning_rate': 1.840584028605483e-05, 'epoch': 2.11}
+{'loss': 0.1861, 'learning_rate': 1.75119189511323e-05, 'epoch': 2.2}
+{'loss': 0.1874, 'learning_rate': 1.6626936829559e-05, 'epoch': 2.29}
+{'loss': 0.1811, 'learning_rate': 1.5733015494636475e-05, 'epoch': 2.39}
+{'loss': 0.179, 'learning_rate': 1.4839094159713946e-05, 'epoch': 2.48}
+{'loss': 0.1798, 'learning_rate': 1.3945172824791419e-05, 'epoch': 2.57}
+{'loss': 0.1842, 'learning_rate': 1.3051251489868892e-05, 'epoch': 2.66}
+{'loss': 0.1804, 'learning_rate': 1.2157330154946365e-05, 'epoch': 2.75}
+  Num examples = 13926
+  Batch size = 16
+ 69%|██████▉   | 3000/4356 [09:39<04:14,  5.32it/Saving model checkpoint to ../finetuned_models/per_species_models_v2/salmonella_enterica/checkpoint-3000
+Configuration saved in ../finetuned_models/per_species_models_v2/salmonella_enterica/checkpoint-3000/config.json
+{'eval_loss': 0.5749423503875732, 'eval_accuracy': 0.8419503087749534, 'eval_f1': 0.8388519127930135, 'eval_matthews_correlation': 0.6778922360818664, 'eval_precision': 0.8379495666645416, 'eval_recall': 0.8399456080648147, 'eval_confusion_matrix': [[6828, 1173], [1028, 4897]], 'eval_runtime': 4.1392, 'eval_samples_per_second': 3364.444, 'eval_steps_per_second': 52.668, 'epoch': 2.75}
+Model weights saved in ../finetuned_models/per_species_models_v2/salmonella_enterica/checkpoint-3000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/salmonella_enterica/checkpoint-3000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/salmonella_enterica/checkpoint-3000/special_tokens_map.json
+ 92%|█████████▏| 4000/4356 [12:48<01:06,  5.32it/s]***** Running Evaluation *****
+{'loss': 0.1789, 'learning_rate': 1.1263408820023838e-05, 'epoch': 2.85}
+{'loss': 0.1763, 'learning_rate': 1.0369487485101311e-05, 'epoch': 2.94}
+{'loss': 0.175, 'learning_rate': 9.475566150178784e-06, 'epoch': 3.03}
+{'loss': 0.1712, 'learning_rate': 8.581644815256257e-06, 'epoch': 3.12}
+{'loss': 0.1733, 'learning_rate': 7.687723480333732e-06, 'epoch': 3.21}
+{'loss': 0.1693, 'learning_rate': 6.793802145411204e-06, 'epoch': 3.3}
+{'loss': 0.167, 'learning_rate': 5.8998808104886775e-06, 'epoch': 3.4}
+{'loss': 0.1666, 'learning_rate': 5.0059594755661505e-06, 'epoch': 3.49}
+{'loss': 0.162, 'learning_rate': 4.1120381406436235e-06, 'epoch': 3.58}
+{'loss': 0.1667, 'learning_rate': 3.2181168057210965e-06, 'epoch': 3.67}
+  Num examples = 13926
+  Batch size = 16
+ 92%|█████████▏| 4000/4356 [12:52<01:06,  5.32it/Saving model checkpoint to ../finetuned_models/per_species_models_v2/salmonella_enterica/checkpoint-4000
+Configuration saved in ../finetuned_models/per_species_models_v2/salmonella_enterica/checkpoint-4000/config.json
+{'eval_loss': 0.6178349852561951, 'eval_accuracy': 0.8441763607640385, 'eval_f1': 0.8404651833128235, 'eval_matthews_correlation': 0.6809512070901579, 'eval_precision': 0.8408423114904111, 'eval_recall': 0.8401092901362013, 'eval_confusion_matrix': [[6940, 1061], [1109, 4816]], 'eval_runtime': 4.1429, 'eval_samples_per_second': 3361.439, 'eval_steps_per_second': 52.621, 'epoch': 3.67}
+Model weights saved in ../finetuned_models/per_species_models_v2/salmonella_enterica/checkpoint-4000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/salmonella_enterica/checkpoint-4000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/salmonella_enterica/checkpoint-4000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_species_models_v2/salmonella_enterica/checkpoint-1000] due to args.save_total_limit
+100%|██████████| 4356/4356 [15:23<00:00,  5.31it/s]  
+{'loss': 0.1638, 'learning_rate': 2.3241954707985695e-06, 'epoch': 3.76}
+{'loss': 0.1588, 'learning_rate': 1.430274135876043e-06, 'epoch': 3.85}
+{'loss': 0.167, 'learning_rate': 5.363528009535161e-07, 'epoch': 3.95}
+
+Training completed. Do not forget to share your model on huggingface.co/models =)
+
+
+Loading best model from ../finetuned_models/per_species_models_v2/salmonella_enterica/checkpoint-4000 (score: 0.8404651833128235).
+100%|██████████| 4356/4356 [15:24<00:00,  4.71it/s]
+{'train_runtime': 924.2652, 'train_samples_per_second': 603.446, 'train_steps_per_second': 4.713, 'train_loss': 0.23975578111941054, 'epoch': 4.0}
+***** Running Evaluation *****
+  Num examples = 13926
+  Batch size = 16
+100%|██████████| 218/218 [00:04<00:00, 51.59it/s]
+Configuration saved in ../finetuned_models/per_species_models_v2/salmonella_enterica/best/config.json
+Model weights saved in ../finetuned_models/per_species_models_v2/salmonella_enterica/best/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/salmonella_enterica/best/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/salmonella_enterica/best/special_tokens_map.json

@@ -1,0 +1,16 @@
+{"time":"2025-09-09T12:56:55.244364784-04:00","level":"INFO","msg":"stream: starting","core version":"0.19.9","symlink path":"/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/finetune/finetune_scripts/wandb/run-20250909_125655-qs5lum36/logs/debug-core.log"}
+{"time":"2025-09-09T12:56:55.654255326-04:00","level":"INFO","msg":"created new stream","id":"qs5lum36"}
+{"time":"2025-09-09T12:56:55.654295425-04:00","level":"INFO","msg":"stream: started","id":"qs5lum36"}
+{"time":"2025-09-09T12:56:55.654305314-04:00","level":"INFO","msg":"handler: started","stream_id":"qs5lum36"}
+{"time":"2025-09-09T12:56:55.654315611-04:00","level":"INFO","msg":"sender: started","stream_id":"qs5lum36"}
+{"time":"2025-09-09T12:56:55.654331533-04:00","level":"INFO","msg":"writer: Do: started","stream_id":"qs5lum36"}
+{"time":"2025-09-09T12:56:55.789976514-04:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-09-09T13:22:11.135289614-04:00","level":"INFO","msg":"api: retrying HTTP error","status":502,"url":"https://api.wandb.ai/files/jackvaska8-stony-brook-university/AMR-DNABERT2-finetune/qs5lum36/file_stream","body":"\n<html><head>\n<meta http-equiv=\"content-type\" content=\"text/html;charset=utf-8\">\n<title>502 Server Error</title>\n</head>\n<body text=#000000 bgcolor=#ffffff>\n<h1>Error: Server Error</h1>\n<h2>The server encountered a temporary error and could not complete your request.<p>Please try again in 30 seconds.</h2>\n<h2></h2>\n</body></html>\n"}
+{"time":"2025-09-09T13:25:45.099876734-04:00","level":"INFO","msg":"stream: closing","id":"qs5lum36"}
+{"time":"2025-09-09T13:25:45.099932987-04:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2025-09-09T13:25:45.099977385-04:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2025-09-09T13:25:45.490319291-04:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-09-09T13:25:45.602617567-04:00","level":"INFO","msg":"handler: closed","stream_id":"qs5lum36"}
+{"time":"2025-09-09T13:25:45.602660574-04:00","level":"INFO","msg":"writer: Close: closed","stream_id":"qs5lum36"}
+{"time":"2025-09-09T13:25:45.602685018-04:00","level":"INFO","msg":"sender: closed","stream_id":"qs5lum36"}
+{"time":"2025-09-09T13:25:45.602790826-04:00","level":"INFO","msg":"stream: closed","id":"qs5lum36"}

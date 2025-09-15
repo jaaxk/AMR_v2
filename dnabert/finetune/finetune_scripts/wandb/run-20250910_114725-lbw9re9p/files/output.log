@@ -1,0 +1,359 @@
+WARNING:root:Perform single sequence classification (no additional features)...
+--- Logging error ---
+Traceback (most recent call last):
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 1085, in emit
+    msg = self.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 929, in format
+    return fmt.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 668, in format
+    record.message = record.getMessage()
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 373, in getMessage
+    msg = msg % self.args
+TypeError: not all arguments converted during string formatting
+Call stack:
+  File "../train.py", line 390, in <module>
+    train()
+  File "../train.py", line 299, in train
+    train_dataset = SupervisedDataset(tokenizer=tokenizer,
+  File "../train.py", line 169, in __init__
+    logging.warning("Number of labels:", self.num_labels)
+Message: 'Number of labels:'
+Arguments: (2,)
+WARNING:root:Perform single sequence classification (no additional features)...
+--- Logging error ---
+Traceback (most recent call last):
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 1085, in emit
+    msg = self.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 929, in format
+    return fmt.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 668, in format
+    record.message = record.getMessage()
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 373, in getMessage
+    msg = msg % self.args
+TypeError: not all arguments converted during string formatting
+Call stack:
+  File "../train.py", line 390, in <module>
+    train()
+  File "../train.py", line 302, in train
+    val_dataset = SupervisedDataset(tokenizer=tokenizer,
+  File "../train.py", line 169, in __init__
+    logging.warning("Number of labels:", self.num_labels)
+Message: 'Number of labels:'
+Arguments: (2,)
+WARNING:root:Perform single sequence classification (no additional features)...
+--- Logging error ---
+Traceback (most recent call last):
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 1085, in emit
+    msg = self.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 929, in format
+    return fmt.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 668, in format
+    record.message = record.getMessage()
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 373, in getMessage
+    msg = msg % self.args
+TypeError: not all arguments converted during string formatting
+Call stack:
+  File "../train.py", line 390, in <module>
+    train()
+  File "../train.py", line 305, in train
+    test_dataset = SupervisedDataset(tokenizer=tokenizer,
+  File "../train.py", line 169, in __init__
+    logging.warning("Number of labels:", self.num_labels)
+Message: 'Number of labels:'
+Arguments: (2,)
+Initializing CUSTOM BertForSequenceClassification
+/gpfs/scratch/jvaska/cache/modules/transformers_modules/bacteria_model/bert_layers.py:126: UserWarning: Unable to import Triton; defaulting MosaicBERT attention implementation to pytorch (this will reduce throughput when using this model).
+  warnings.warn(
+Dropout layer: Dropout(p=0.1, inplace=False)
+Dropout probability: 0.1
+Some weights of the model checkpoint at ../pretrained_models/bacteria_model were not used when initializing BertForSequenceClassification: ['cls.predictions.decoder.weight', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.dense.bias', 'cls.predictions.decoder.bias', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.transform.LayerNorm.weight']
+- This IS expected if you are initializing BertForSequenceClassification from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertForSequenceClassification from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of BertForSequenceClassification were not initialized from the model checkpoint at ../pretrained_models/bacteria_model and are newly initialized: ['classifier.2.bias', 'bert.pooler.dense.bias', 'bert.pooler.dense.weight', 'classifier.0.weight', 'classifier.2.weight', 'classifier.0.bias']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+Using cuda_amp half precision backend
+***** Running training *****
+  Num examples = 214,299
+  Num Epochs = 8
+  Instantaneous batch size per device = 8
+  Total train batch size (w. parallel, distributed & accumulation) = 128
+  Gradient Accumulation steps = 4
+  Total optimization steps = 13,392
+  Number of trainable parameters = 117,167,234
+Automatic Weights & Biases logging enabled, to disable set os.environ["WANDB_DISABLED"] = "true"
+  7%|▋         | 1000/13392 [03:14<39:27,  5.23it/s]***** Running Evaluation *****
+{'loss': 0.693, 'learning_rate': 3e-06, 'epoch': 0.06}
+{'loss': 0.6922, 'learning_rate': 6e-06, 'epoch': 0.12}
+{'loss': 0.6866, 'learning_rate': 9e-06, 'epoch': 0.18}
+{'loss': 0.6702, 'learning_rate': 1.197e-05, 'epoch': 0.24}
+{'loss': 0.6531, 'learning_rate': 1.491e-05, 'epoch': 0.3}
+{'loss': 0.6208, 'learning_rate': 1.791e-05, 'epoch': 0.36}
+{'loss': 0.605, 'learning_rate': 2.0909999999999998e-05, 'epoch': 0.42}
+{'loss': 0.5851, 'learning_rate': 2.3910000000000003e-05, 'epoch': 0.48}
+{'loss': 0.5879, 'learning_rate': 2.688e-05, 'epoch': 0.54}
+{'loss': 0.57, 'learning_rate': 2.9880000000000002e-05, 'epoch': 0.6}
+  Num examples = 25810
+  Batch size = 16
+  7%|▋         | 1000/13392 [03:22<39:27,  5.23itSaving model checkpoint to ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-1000
+Configuration saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-1000/config.json
+{'eval_loss': 0.8805863261222839, 'eval_accuracy': 0.4985664471135219, 'eval_f1': 0.4950429334643456, 'eval_matthews_correlation': -0.008533007473537345, 'eval_precision': 0.4957066762001757, 'eval_recall': 0.49576014878341906, 'eval_confusion_matrix': [[5356, 6951], [5991, 7512]], 'eval_runtime': 7.5004, 'eval_samples_per_second': 3441.169, 'eval_steps_per_second': 53.864, 'epoch': 0.6}
+Model weights saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-1000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-1000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-1000/special_tokens_map.json
+ 15%|█▍        | 2000/13392 [06:35<36:11,  5.25it/s]***** Running Evaluation *****
+{'loss': 0.5622, 'learning_rate': 2.9770012911555845e-05, 'epoch': 0.66}
+{'loss': 0.546, 'learning_rate': 2.9530342156229825e-05, 'epoch': 0.72}
+{'loss': 0.5367, 'learning_rate': 2.9288250484183344e-05, 'epoch': 0.78}
+{'loss': 0.5314, 'learning_rate': 2.9046158812136865e-05, 'epoch': 0.84}
+{'loss': 0.5223, 'learning_rate': 2.8804067140090383e-05, 'epoch': 0.9}
+{'loss': 0.5042, 'learning_rate': 2.8561975468043898e-05, 'epoch': 0.96}
+{'loss': 0.4997, 'learning_rate': 2.831988379599742e-05, 'epoch': 1.02}
+{'loss': 0.4768, 'learning_rate': 2.8077792123950938e-05, 'epoch': 1.08}
+{'loss': 0.4838, 'learning_rate': 2.7835700451904456e-05, 'epoch': 1.13}
+{'loss': 0.4655, 'learning_rate': 2.7593608779857974e-05, 'epoch': 1.19}
+  Num examples = 25810
+  Batch size = 16
+ 15%|█▍        | 2000/13392 [06:42<36:11,  5.25itSaving model checkpoint to ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-2000
+Configuration saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-2000/config.json
+{'eval_loss': 0.9766510128974915, 'eval_accuracy': 0.5361487795428128, 'eval_f1': 0.5334250799717859, 'eval_matthews_correlation': 0.08328162904465085, 'eval_precision': 0.5424463040642515, 'eval_recall': 0.5408506104903268, 'eval_confusion_matrix': [[7905, 4402], [7570, 5933]], 'eval_runtime': 7.4741, 'eval_samples_per_second': 3453.237, 'eval_steps_per_second': 54.053, 'epoch': 1.19}
+Model weights saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-2000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-2000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-2000/special_tokens_map.json
+ 22%|██▏       | 3000/13392 [09:54<33:03,  5.24it/s]***** Running Evaluation *****
+{'loss': 0.4591, 'learning_rate': 2.7351517107811492e-05, 'epoch': 1.25}
+{'loss': 0.4548, 'learning_rate': 2.710942543576501e-05, 'epoch': 1.31}
+{'loss': 0.4488, 'learning_rate': 2.686733376371853e-05, 'epoch': 1.37}
+{'loss': 0.4503, 'learning_rate': 2.6625242091672047e-05, 'epoch': 1.43}
+{'loss': 0.4454, 'learning_rate': 2.6383150419625565e-05, 'epoch': 1.49}
+{'loss': 0.442, 'learning_rate': 2.6141058747579083e-05, 'epoch': 1.55}
+{'loss': 0.4394, 'learning_rate': 2.5898967075532605e-05, 'epoch': 1.61}
+{'loss': 0.4337, 'learning_rate': 2.565687540348612e-05, 'epoch': 1.67}
+{'loss': 0.4284, 'learning_rate': 2.5414783731439638e-05, 'epoch': 1.73}
+{'loss': 0.4285, 'learning_rate': 2.517269205939316e-05, 'epoch': 1.79}
+  Num examples = 25810
+  Batch size = 16
+ 22%|██▏       | 3000/13392 [10:02<33:03,  5.24itSaving model checkpoint to ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-3000
+Configuration saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-3000/config.json
+{'eval_loss': 1.084372639656067, 'eval_accuracy': 0.5669507942657884, 'eval_f1': 0.5664728228087066, 'eval_matthews_correlation': 0.1401695000431159, 'eval_precision': 0.5704587281507341, 'eval_recall': 0.5697127568791219, 'eval_confusion_matrix': [[7745, 4562], [6615, 6888]], 'eval_runtime': 7.5062, 'eval_samples_per_second': 3438.491, 'eval_steps_per_second': 53.822, 'epoch': 1.79}
+Model weights saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-3000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-3000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-3000/special_tokens_map.json
+ 30%|██▉       | 4000/13392 [13:14<29:54,  5.23it/s]***** Running Evaluation *****
+{'loss': 0.4249, 'learning_rate': 2.4930600387346674e-05, 'epoch': 1.85}
+{'loss': 0.4321, 'learning_rate': 2.4688508715300196e-05, 'epoch': 1.91}
+{'loss': 0.4186, 'learning_rate': 2.4446417043253714e-05, 'epoch': 1.97}
+{'loss': 0.4137, 'learning_rate': 2.420432537120723e-05, 'epoch': 2.03}
+{'loss': 0.405, 'learning_rate': 2.396223369916075e-05, 'epoch': 2.09}
+{'loss': 0.3966, 'learning_rate': 2.372014202711427e-05, 'epoch': 2.15}
+{'loss': 0.3994, 'learning_rate': 2.3478050355067787e-05, 'epoch': 2.21}
+{'loss': 0.4006, 'learning_rate': 2.3235958683021305e-05, 'epoch': 2.27}
+{'loss': 0.3913, 'learning_rate': 2.2993867010974823e-05, 'epoch': 2.33}
+{'loss': 0.4003, 'learning_rate': 2.275177533892834e-05, 'epoch': 2.39}
+  Num examples = 25810
+  Batch size = 16
+ 30%|██▉       | 4000/13392 [13:22<29:54,  5.23itSaving model checkpoint to ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-4000
+Configuration saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-4000/config.json
+{'eval_loss': 1.1625317335128784, 'eval_accuracy': 0.5699728787291748, 'eval_f1': 0.5667297791973748, 'eval_matthews_correlation': 0.15402444363813753, 'eval_precision': 0.5788501893310296, 'eval_recall': 0.575217096621168, 'eval_confusion_matrix': [[8472, 3835], [7264, 6239]], 'eval_runtime': 7.4686, 'eval_samples_per_second': 3455.801, 'eval_steps_per_second': 54.093, 'epoch': 2.39}
+Model weights saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-4000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-4000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-4000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-1000] due to args.save_total_limit
+ 37%|███▋      | 5000/13392 [16:35<26:40,  5.24it/s]***** Running Evaluation *****
+{'loss': 0.4046, 'learning_rate': 2.2512104583602324e-05, 'epoch': 2.45}
+{'loss': 0.3951, 'learning_rate': 2.2270012911555843e-05, 'epoch': 2.51}
+{'loss': 0.3982, 'learning_rate': 2.202792123950936e-05, 'epoch': 2.57}
+{'loss': 0.387, 'learning_rate': 2.178582956746288e-05, 'epoch': 2.63}
+{'loss': 0.3994, 'learning_rate': 2.1543737895416397e-05, 'epoch': 2.69}
+{'loss': 0.394, 'learning_rate': 2.1301646223369915e-05, 'epoch': 2.75}
+{'loss': 0.4014, 'learning_rate': 2.1059554551323434e-05, 'epoch': 2.81}
+{'loss': 0.3902, 'learning_rate': 2.0817462879276955e-05, 'epoch': 2.87}
+{'loss': 0.3797, 'learning_rate': 2.0575371207230473e-05, 'epoch': 2.93}
+{'loss': 0.3781, 'learning_rate': 2.0333279535183988e-05, 'epoch': 2.99}
+  Num examples = 25810
+  Batch size = 16
+ 37%|███▋      | 5000/13392 [16:42<26:40,  5.24itSaving model checkpoint to ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-5000
+Configuration saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-5000/config.json
+{'eval_loss': 1.1791503429412842, 'eval_accuracy': 0.5683068578070515, 'eval_f1': 0.5678447442780454, 'eval_matthews_correlation': 0.1428385790682686, 'eval_precision': 0.571792167320593, 'eval_recall': 0.5710483484191653, 'eval_confusion_matrix': [[7756, 4551], [6591, 6912]], 'eval_runtime': 7.4696, 'eval_samples_per_second': 3455.343, 'eval_steps_per_second': 54.086, 'epoch': 2.99}
+Model weights saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-5000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-5000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-5000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-2000] due to args.save_total_limit
+ 45%|████▍     | 6000/13392 [19:54<23:28,  5.25it/s]***** Running Evaluation *****
+{'loss': 0.3786, 'learning_rate': 2.009118786313751e-05, 'epoch': 3.05}
+{'loss': 0.3727, 'learning_rate': 1.9849096191091028e-05, 'epoch': 3.11}
+{'loss': 0.3761, 'learning_rate': 1.9607004519044546e-05, 'epoch': 3.17}
+{'loss': 0.3724, 'learning_rate': 1.9364912846998064e-05, 'epoch': 3.23}
+{'loss': 0.3725, 'learning_rate': 1.9122821174951582e-05, 'epoch': 3.29}
+{'loss': 0.3581, 'learning_rate': 1.88807295029051e-05, 'epoch': 3.34}
+{'loss': 0.3635, 'learning_rate': 1.863863783085862e-05, 'epoch': 3.4}
+{'loss': 0.3668, 'learning_rate': 1.839654615881214e-05, 'epoch': 3.46}
+{'loss': 0.3663, 'learning_rate': 1.8154454486765655e-05, 'epoch': 3.52}
+{'loss': 0.3637, 'learning_rate': 1.7912362814719173e-05, 'epoch': 3.58}
+  Num examples = 25810
+  Batch size = 16
+ 45%|████▍     | 6000/13392 [20:02<23:28,  5.25itSaving model checkpoint to ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-6000
+Configuration saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-6000/config.json
+{'eval_loss': 1.3287436962127686, 'eval_accuracy': 0.5769081751259202, 'eval_f1': 0.5755199689560576, 'eval_matthews_correlation': 0.16356310771214208, 'eval_precision': 0.58276960902559, 'eval_recall': 0.58080529351112, 'eval_confusion_matrix': [[8183, 4124], [6796, 6707]], 'eval_runtime': 7.5054, 'eval_samples_per_second': 3438.846, 'eval_steps_per_second': 53.828, 'epoch': 3.58}
+Model weights saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-6000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-6000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-6000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-3000] due to args.save_total_limit
+ 52%|█████▏    | 7000/13392 [23:14<20:18,  5.24it/s]***** Running Evaluation *****
+{'loss': 0.3704, 'learning_rate': 1.7670271142672695e-05, 'epoch': 3.64}
+{'loss': 0.3676, 'learning_rate': 1.742817947062621e-05, 'epoch': 3.7}
+{'loss': 0.3662, 'learning_rate': 1.7188508715300193e-05, 'epoch': 3.76}
+{'loss': 0.3686, 'learning_rate': 1.6946417043253714e-05, 'epoch': 3.82}
+{'loss': 0.3646, 'learning_rate': 1.670432537120723e-05, 'epoch': 3.88}
+{'loss': 0.3727, 'learning_rate': 1.646223369916075e-05, 'epoch': 3.94}
+{'loss': 0.3625, 'learning_rate': 1.622014202711427e-05, 'epoch': 4.0}
+{'loss': 0.3523, 'learning_rate': 1.5978050355067784e-05, 'epoch': 4.06}
+{'loss': 0.3489, 'learning_rate': 1.5735958683021305e-05, 'epoch': 4.12}
+{'loss': 0.3498, 'learning_rate': 1.5493867010974824e-05, 'epoch': 4.18}
+  Num examples = 25810
+  Batch size = 16
+ 52%|█████▏    | 7000/13392 [23:22<20:18,  5.24itSaving model checkpoint to ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-7000
+Configuration saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-7000/config.json
+{'eval_loss': 1.3210724592208862, 'eval_accuracy': 0.586943045331267, 'eval_f1': 0.5856800855290184, 'eval_matthews_correlation': 0.18361509193165299, 'eval_precision': 0.592856955190957, 'eval_recall': 0.5907699964847455, 'eval_confusion_matrix': [[8287, 4020], [6641, 6862]], 'eval_runtime': 7.6014, 'eval_samples_per_second': 3395.434, 'eval_steps_per_second': 53.148, 'epoch': 4.18}
+Model weights saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-7000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-7000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-7000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-4000] due to args.save_total_limit
+ 60%|█████▉    | 8000/13392 [26:34<17:09,  5.24it/s]***** Running Evaluation *****
+{'loss': 0.3546, 'learning_rate': 1.525177533892834e-05, 'epoch': 4.24}
+{'loss': 0.3499, 'learning_rate': 1.500968366688186e-05, 'epoch': 4.3}
+{'loss': 0.3569, 'learning_rate': 1.4767591994835378e-05, 'epoch': 4.36}
+{'loss': 0.3537, 'learning_rate': 1.4525500322788896e-05, 'epoch': 4.42}
+{'loss': 0.3509, 'learning_rate': 1.4283408650742414e-05, 'epoch': 4.48}
+{'loss': 0.3472, 'learning_rate': 1.4041316978695934e-05, 'epoch': 4.54}
+{'loss': 0.3529, 'learning_rate': 1.3799225306649452e-05, 'epoch': 4.6}
+{'loss': 0.3512, 'learning_rate': 1.3557133634602969e-05, 'epoch': 4.66}
+{'loss': 0.3446, 'learning_rate': 1.3315041962556489e-05, 'epoch': 4.72}
+{'loss': 0.3486, 'learning_rate': 1.3072950290510007e-05, 'epoch': 4.78}
+  Num examples = 25810
+  Batch size = 16
+ 60%|█████▉    | 8000/13392 [26:42<17:09,  5.24itSaving model checkpoint to ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-8000
+Configuration saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-8000/config.json
+{'eval_loss': 1.4793553352355957, 'eval_accuracy': 0.5641224331654398, 'eval_f1': 0.5601199049852632, 'eval_matthews_correlation': 0.14347402240136306, 'eval_precision': 0.5737636147635675, 'eval_recall': 0.5697660871488155, 'eval_confusion_matrix': [[8511, 3796], [7454, 6049]], 'eval_runtime': 7.5147, 'eval_samples_per_second': 3434.591, 'eval_steps_per_second': 53.761, 'epoch': 4.78}
+Model weights saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-8000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-8000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-8000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-5000] due to args.save_total_limit
+ 67%|██████▋   | 9000/13392 [29:54<13:58,  5.24it/s]***** Running Evaluation *****
+{'loss': 0.3515, 'learning_rate': 1.2830858618463525e-05, 'epoch': 4.84}
+{'loss': 0.343, 'learning_rate': 1.2588766946417043e-05, 'epoch': 4.9}
+{'loss': 0.3444, 'learning_rate': 1.2346675274370561e-05, 'epoch': 4.96}
+{'loss': 0.3479, 'learning_rate': 1.210458360232408e-05, 'epoch': 5.02}
+{'loss': 0.3421, 'learning_rate': 1.18624919302776e-05, 'epoch': 5.08}
+{'loss': 0.3402, 'learning_rate': 1.1620400258231118e-05, 'epoch': 5.14}
+{'loss': 0.3403, 'learning_rate': 1.1378308586184634e-05, 'epoch': 5.2}
+{'loss': 0.3349, 'learning_rate': 1.1136216914138154e-05, 'epoch': 5.26}
+{'loss': 0.3413, 'learning_rate': 1.0894125242091672e-05, 'epoch': 5.32}
+{'loss': 0.3411, 'learning_rate': 1.0652033570045192e-05, 'epoch': 5.38}
+  Num examples = 25810
+  Batch size = 16
+ 67%|██████▋   | 9000/13392 [30:02<13:58,  5.24itSaving model checkpoint to ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-9000
+Configuration saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-9000/config.json
+{'eval_loss': 1.465258002281189, 'eval_accuracy': 0.5748547074777218, 'eval_f1': 0.5724814903068045, 'eval_matthews_correlation': 0.162054654441532, 'eval_precision': 0.5825303609138874, 'eval_recall': 0.5795516666089887, 'eval_confusion_matrix': [[8380, 3927], [7046, 6457]], 'eval_runtime': 7.4742, 'eval_samples_per_second': 3453.204, 'eval_steps_per_second': 54.052, 'epoch': 5.38}
+Model weights saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-9000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-9000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-9000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-6000] due to args.save_total_limit
+ 75%|███████▍  | 10000/13392 [33:23<10:46,  5.25it/s]***** Running Evaluation *****
+{'loss': 0.3325, 'learning_rate': 1.0409941897998708e-05, 'epoch': 5.44}
+{'loss': 0.3403, 'learning_rate': 1.0167850225952227e-05, 'epoch': 5.49}
+{'loss': 0.3417, 'learning_rate': 9.925758553905747e-06, 'epoch': 5.55}
+{'loss': 0.3386, 'learning_rate': 9.683666881859265e-06, 'epoch': 5.61}
+{'loss': 0.3303, 'learning_rate': 9.441575209812783e-06, 'epoch': 5.67}
+{'loss': 0.3414, 'learning_rate': 9.199483537766301e-06, 'epoch': 5.73}
+{'loss': 0.3384, 'learning_rate': 8.95739186571982e-06, 'epoch': 5.79}
+{'loss': 0.3321, 'learning_rate': 8.715300193673337e-06, 'epoch': 5.85}
+{'loss': 0.334, 'learning_rate': 8.473208521626857e-06, 'epoch': 5.91}
+{'loss': 0.3358, 'learning_rate': 8.231116849580375e-06, 'epoch': 5.97}
+  Num examples = 25810
+  Batch size = 16
+ 75%|███████▍  | 10000/13392 [33:30<10:46,  5.25iSaving model checkpoint to ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-10000
+Configuration saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-10000/config.json
+{'eval_loss': 1.5233303308486938, 'eval_accuracy': 0.5794265788454087, 'eval_f1': 0.5756558401454657, 'eval_matthews_correlation': 0.17480923387749842, 'eval_precision': 0.5898233784845681, 'eval_recall': 0.5850509877394778, 'eval_confusion_matrix': [[8694, 3613], [7242, 6261]], 'eval_runtime': 7.4678, 'eval_samples_per_second': 3456.15, 'eval_steps_per_second': 54.099, 'epoch': 5.97}
+Model weights saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-10000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-10000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-10000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-8000] due to args.save_total_limit
+ 82%|████████▏ | 11000/13392 [36:45<07:36,  5.24it/s]***** Running Evaluation *****
+{'loss': 0.3353, 'learning_rate': 7.989025177533892e-06, 'epoch': 6.03}
+{'loss': 0.3222, 'learning_rate': 7.746933505487412e-06, 'epoch': 6.09}
+{'loss': 0.3324, 'learning_rate': 7.50484183344093e-06, 'epoch': 6.15}
+{'loss': 0.3328, 'learning_rate': 7.262750161394448e-06, 'epoch': 6.21}
+{'loss': 0.3294, 'learning_rate': 7.020658489347967e-06, 'epoch': 6.27}
+{'loss': 0.3303, 'learning_rate': 6.7785668173014844e-06, 'epoch': 6.33}
+{'loss': 0.3355, 'learning_rate': 6.538896061975468e-06, 'epoch': 6.39}
+{'loss': 0.3314, 'learning_rate': 6.296804389928987e-06, 'epoch': 6.45}
+{'loss': 0.3227, 'learning_rate': 6.054712717882505e-06, 'epoch': 6.51}
+{'loss': 0.3242, 'learning_rate': 5.812621045836023e-06, 'epoch': 6.57}
+  Num examples = 25810
+  Batch size = 16
+ 82%|████████▏ | 11000/13392 [36:52<07:36,  5.24iSaving model checkpoint to ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-11000
+Configuration saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-11000/config.json
+{'eval_loss': 1.5823286771774292, 'eval_accuracy': 0.5842309182487408, 'eval_f1': 0.5826007049300685, 'eval_matthews_correlation': 0.17924095831910472, 'eval_precision': 0.5908677896853325, 'eval_recall': 0.5883902900312785, 'eval_confusion_matrix': [[8346, 3961], [6770, 6733]], 'eval_runtime': 7.477, 'eval_samples_per_second': 3451.941, 'eval_steps_per_second': 54.033, 'epoch': 6.57}
+Model weights saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-11000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-11000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-11000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-9000] due to args.save_total_limit
+ 90%|████████▉ | 12000/13392 [40:08<04:26,  5.22it/s]***** Running Evaluation *****
+{'loss': 0.3297, 'learning_rate': 5.5705293737895414e-06, 'epoch': 6.63}
+{'loss': 0.3221, 'learning_rate': 5.3284377017430605e-06, 'epoch': 6.69}
+{'loss': 0.3241, 'learning_rate': 5.086346029696579e-06, 'epoch': 6.75}
+{'loss': 0.3223, 'learning_rate': 4.844254357650097e-06, 'epoch': 6.81}
+{'loss': 0.3315, 'learning_rate': 4.602162685603616e-06, 'epoch': 6.87}
+{'loss': 0.3258, 'learning_rate': 4.360071013557133e-06, 'epoch': 6.93}
+{'loss': 0.327, 'learning_rate': 4.117979341510652e-06, 'epoch': 6.99}
+{'loss': 0.3138, 'learning_rate': 3.87588766946417e-06, 'epoch': 7.05}
+{'loss': 0.3166, 'learning_rate': 3.633795997417689e-06, 'epoch': 7.11}
+{'loss': 0.3263, 'learning_rate': 3.391704325371207e-06, 'epoch': 7.17}
+  Num examples = 25810
+  Batch size = 16
+ 90%|████████▉ | 12000/13392 [40:15<04:26,  5.22iSaving model checkpoint to ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-12000
+Configuration saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-12000/config.json
+{'eval_loss': 1.598963975906372, 'eval_accuracy': 0.5841146842309183, 'eval_f1': 0.5827759694751709, 'eval_matthews_correlation': 0.17809889707152238, 'eval_precision': 0.5901092406024384, 'eval_recall': 0.5880021208869071, 'eval_confusion_matrix': [[8269, 4038], [6696, 6807]], 'eval_runtime': 7.4752, 'eval_samples_per_second': 3452.773, 'eval_steps_per_second': 54.046, 'epoch': 7.17}
+Model weights saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-12000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-12000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-12000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-10000] due to args.save_total_limit
+ 97%|█████████▋| 13000/13392 [43:28<01:15,  5.21it/s]***** Running Evaluation *****
+{'loss': 0.315, 'learning_rate': 3.1496126533247257e-06, 'epoch': 7.23}
+{'loss': 0.3209, 'learning_rate': 2.907520981278244e-06, 'epoch': 7.29}
+{'loss': 0.3196, 'learning_rate': 2.6654293092317624e-06, 'epoch': 7.35}
+{'loss': 0.3152, 'learning_rate': 2.423337637185281e-06, 'epoch': 7.41}
+{'loss': 0.3192, 'learning_rate': 2.1812459651387996e-06, 'epoch': 7.47}
+{'loss': 0.3256, 'learning_rate': 1.939154293092318e-06, 'epoch': 7.53}
+{'loss': 0.3201, 'learning_rate': 1.6970626210458362e-06, 'epoch': 7.59}
+{'loss': 0.3225, 'learning_rate': 1.4549709489993544e-06, 'epoch': 7.65}
+{'loss': 0.3213, 'learning_rate': 1.2128792769528727e-06, 'epoch': 7.7}
+{'loss': 0.3212, 'learning_rate': 9.707876049063911e-07, 'epoch': 7.76}
+  Num examples = 25810
+  Batch size = 16
+ 97%|█████████▋| 13000/13392 [43:35<01:15,  5.21iSaving model checkpoint to ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-13000
+Configuration saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-13000/config.json
+{'eval_loss': 1.6305878162384033, 'eval_accuracy': 0.5861681518791166, 'eval_f1': 0.5839960553987109, 'eval_matthews_correlation': 0.1847716290943276, 'eval_precision': 0.5940147522703183, 'eval_recall': 0.5907851004595754, 'eval_confusion_matrix': [[8497, 3810], [6871, 6632]], 'eval_runtime': 7.4658, 'eval_samples_per_second': 3457.111, 'eval_steps_per_second': 54.114, 'epoch': 7.76}
+Model weights saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-13000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-13000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-13000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-11000] due to args.save_total_limit
+100%|██████████| 13392/13392 [44:51<00:00,  5.24it/s]
+{'loss': 0.3241, 'learning_rate': 7.286959328599096e-07, 'epoch': 7.82}
+{'loss': 0.3167, 'learning_rate': 4.86604260813428e-07, 'epoch': 7.88}
+{'loss': 0.3177, 'learning_rate': 2.4451258876694643e-07, 'epoch': 7.94}
+
+Training completed. Do not forget to share your model on huggingface.co/models =)
+
+
+Loading best model from ../finetuned_models/per_antibiotic_models_v3/CAZ/checkpoint-7000 (score: 0.5856800855290184).
+100%|██████████| 13392/13392 [44:53<00:00,  4.97it/s]
+{'train_runtime': 2693.146, 'train_samples_per_second': 636.576, 'train_steps_per_second': 4.973, 'train_loss': 0.3922551492921198, 'epoch': 8.0}
+***** Running Evaluation *****
+  Num examples = 27354
+  Batch size = 16
+100%|██████████| 428/428 [00:08<00:00, 52.81it/s]
+Configuration saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/best/config.json
+Model weights saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/best/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/best/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_antibiotic_models_v3/CAZ/best/special_tokens_map.json

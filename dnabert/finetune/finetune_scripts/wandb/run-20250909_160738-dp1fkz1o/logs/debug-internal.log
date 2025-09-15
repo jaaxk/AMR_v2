@@ -1,0 +1,15 @@
+{"time":"2025-09-09T16:07:38.742435595-04:00","level":"INFO","msg":"stream: starting","core version":"0.19.9","symlink path":"/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/finetune/finetune_scripts/wandb/run-20250909_160738-dp1fkz1o/logs/debug-core.log"}
+{"time":"2025-09-09T16:07:38.974720591-04:00","level":"INFO","msg":"created new stream","id":"dp1fkz1o"}
+{"time":"2025-09-09T16:07:38.974787282-04:00","level":"INFO","msg":"stream: started","id":"dp1fkz1o"}
+{"time":"2025-09-09T16:07:38.976080922-04:00","level":"INFO","msg":"handler: started","stream_id":"dp1fkz1o"}
+{"time":"2025-09-09T16:07:38.976130791-04:00","level":"INFO","msg":"writer: Do: started","stream_id":"dp1fkz1o"}
+{"time":"2025-09-09T16:07:38.976201358-04:00","level":"INFO","msg":"sender: started","stream_id":"dp1fkz1o"}
+{"time":"2025-09-09T16:07:39.237894836-04:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-09-09T16:14:26.081641777-04:00","level":"INFO","msg":"stream: closing","id":"dp1fkz1o"}
+{"time":"2025-09-09T16:14:26.08168307-04:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2025-09-09T16:14:26.081711891-04:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2025-09-09T16:14:26.535074821-04:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-09-09T16:14:26.67628388-04:00","level":"INFO","msg":"handler: closed","stream_id":"dp1fkz1o"}
+{"time":"2025-09-09T16:14:26.676297586-04:00","level":"INFO","msg":"sender: closed","stream_id":"dp1fkz1o"}
+{"time":"2025-09-09T16:14:26.676292246-04:00","level":"INFO","msg":"writer: Close: closed","stream_id":"dp1fkz1o"}
+{"time":"2025-09-09T16:14:26.676480118-04:00","level":"INFO","msg":"stream: closed","id":"dp1fkz1o"}

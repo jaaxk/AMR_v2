@@ -1,0 +1,10 @@
+{"time":"2025-09-10T13:41:37.849278446-04:00","level":"INFO","msg":"stream: starting","core version":"0.19.9","symlink path":"/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/finetune/finetune_scripts/wandb/run-20250910_134137-3fo70tyo/logs/debug-core.log"}
+{"time":"2025-09-10T13:41:38.050386298-04:00","level":"INFO","msg":"created new stream","id":"3fo70tyo"}
+{"time":"2025-09-10T13:41:38.0504366-04:00","level":"INFO","msg":"stream: started","id":"3fo70tyo"}
+{"time":"2025-09-10T13:41:38.050483309-04:00","level":"INFO","msg":"sender: started","stream_id":"3fo70tyo"}
+{"time":"2025-09-10T13:41:38.050500322-04:00","level":"INFO","msg":"handler: started","stream_id":"3fo70tyo"}
+{"time":"2025-09-10T13:41:38.050528375-04:00","level":"INFO","msg":"writer: Do: started","stream_id":"3fo70tyo"}
+{"time":"2025-09-10T13:41:38.271002235-04:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-09-10T13:41:39.131496107-04:00","level":"INFO","msg":"stream: closing","id":"3fo70tyo"}
+{"time":"2025-09-10T13:41:39.131548544-04:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2025-09-10T13:41:39.131602581-04:00","level":"INFO","msg":"Stopped system monitor"}

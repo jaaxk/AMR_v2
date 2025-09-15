@@ -1,0 +1,15 @@
+{"time":"2025-09-10T12:33:49.563793364-04:00","level":"INFO","msg":"stream: starting","core version":"0.19.9","symlink path":"/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/finetune/finetune_scripts/wandb/run-20250910_123349-lkkey8bh/logs/debug-core.log"}
+{"time":"2025-09-10T12:33:49.860069285-04:00","level":"INFO","msg":"created new stream","id":"lkkey8bh"}
+{"time":"2025-09-10T12:33:49.860125515-04:00","level":"INFO","msg":"stream: started","id":"lkkey8bh"}
+{"time":"2025-09-10T12:33:49.860147211-04:00","level":"INFO","msg":"sender: started","stream_id":"lkkey8bh"}
+{"time":"2025-09-10T12:33:49.860181329-04:00","level":"INFO","msg":"handler: started","stream_id":"lkkey8bh"}
+{"time":"2025-09-10T12:33:49.86014148-04:00","level":"INFO","msg":"writer: Do: started","stream_id":"lkkey8bh"}
+{"time":"2025-09-10T12:33:50.07509542-04:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-09-10T12:38:25.766230334-04:00","level":"INFO","msg":"stream: closing","id":"lkkey8bh"}
+{"time":"2025-09-10T12:38:25.766265868-04:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2025-09-10T12:38:25.766325926-04:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2025-09-10T12:38:26.451069283-04:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-09-10T12:38:26.734691352-04:00","level":"INFO","msg":"handler: closed","stream_id":"lkkey8bh"}
+{"time":"2025-09-10T12:38:26.734728804-04:00","level":"INFO","msg":"sender: closed","stream_id":"lkkey8bh"}
+{"time":"2025-09-10T12:38:26.734721324-04:00","level":"INFO","msg":"writer: Close: closed","stream_id":"lkkey8bh"}
+{"time":"2025-09-10T12:38:26.735392616-04:00","level":"INFO","msg":"stream: closed","id":"lkkey8bh"}

@@ -1,0 +1,122 @@
+WARNING:root:Perform single sequence classification (no additional features)...
+--- Logging error ---
+Traceback (most recent call last):
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 1085, in emit
+    msg = self.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 929, in format
+    return fmt.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 668, in format
+    record.message = record.getMessage()
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 373, in getMessage
+    msg = msg % self.args
+TypeError: not all arguments converted during string formatting
+Call stack:
+  File "../train.py", line 390, in <module>
+    train()
+  File "../train.py", line 299, in train
+    train_dataset = SupervisedDataset(tokenizer=tokenizer,
+  File "../train.py", line 169, in __init__
+    logging.warning("Number of labels:", self.num_labels)
+Message: 'Number of labels:'
+Arguments: (2,)
+WARNING:root:Perform single sequence classification (no additional features)...
+--- Logging error ---
+Traceback (most recent call last):
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 1085, in emit
+    msg = self.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 929, in format
+    return fmt.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 668, in format
+    record.message = record.getMessage()
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 373, in getMessage
+    msg = msg % self.args
+TypeError: not all arguments converted during string formatting
+Call stack:
+  File "../train.py", line 390, in <module>
+    train()
+  File "../train.py", line 302, in train
+    val_dataset = SupervisedDataset(tokenizer=tokenizer,
+  File "../train.py", line 169, in __init__
+    logging.warning("Number of labels:", self.num_labels)
+Message: 'Number of labels:'
+Arguments: (2,)
+WARNING:root:Perform single sequence classification (no additional features)...
+--- Logging error ---
+Traceback (most recent call last):
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 1085, in emit
+    msg = self.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 929, in format
+    return fmt.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 668, in format
+    record.message = record.getMessage()
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 373, in getMessage
+    msg = msg % self.args
+TypeError: not all arguments converted during string formatting
+Call stack:
+  File "../train.py", line 390, in <module>
+    train()
+  File "../train.py", line 305, in train
+    test_dataset = SupervisedDataset(tokenizer=tokenizer,
+  File "../train.py", line 169, in __init__
+    logging.warning("Number of labels:", self.num_labels)
+Message: 'Number of labels:'
+Arguments: (2,)
+Initializing CUSTOM BertForSequenceClassification
+/gpfs/scratch/jvaska/cache/modules/transformers_modules/bacteria_model/bert_layers.py:126: UserWarning: Unable to import Triton; defaulting MosaicBERT attention implementation to pytorch (this will reduce throughput when using this model).
+  warnings.warn(
+Dropout layer: Dropout(p=0.1, inplace=False)
+Dropout probability: 0.1
+Some weights of the model checkpoint at ../pretrained_models/bacteria_model were not used when initializing BertForSequenceClassification: ['cls.predictions.transform.dense.bias', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.decoder.bias', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.decoder.weight']
+- This IS expected if you are initializing BertForSequenceClassification from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertForSequenceClassification from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of BertForSequenceClassification were not initialized from the model checkpoint at ../pretrained_models/bacteria_model and are newly initialized: ['bert.pooler.dense.bias', 'bert.pooler.dense.weight', 'classifier.0.weight', 'classifier.0.bias', 'classifier.2.weight', 'classifier.2.bias']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+Using cuda_amp half precision backend
+***** Running training *****
+  Num examples = 22,499
+  Num Epochs = 8
+  Instantaneous batch size per device = 8
+  Total train batch size (w. parallel, distributed & accumulation) = 128
+  Gradient Accumulation steps = 4
+  Total optimization steps = 1,408
+  Number of trainable parameters = 117,167,234
+Automatic Weights & Biases logging enabled, to disable set os.environ["WANDB_DISABLED"] = "true"
+ 71%|███████   | 1000/1408 [03:09<01:17,  5.30it/s]***** Running Evaluation *****
+{'loss': 0.6927, 'learning_rate': 3e-06, 'epoch': 0.57}
+{'loss': 0.686, 'learning_rate': 5.9700000000000004e-06, 'epoch': 1.14}
+{'loss': 0.6489, 'learning_rate': 8.91e-06, 'epoch': 1.7}
+{'loss': 0.6009, 'learning_rate': 1.1880000000000001e-05, 'epoch': 2.27}
+{'loss': 0.5558, 'learning_rate': 1.485e-05, 'epoch': 2.84}
+{'loss': 0.5284, 'learning_rate': 1.785e-05, 'epoch': 3.41}
+{'loss': 0.5046, 'learning_rate': 2.085e-05, 'epoch': 3.98}
+{'loss': 0.4806, 'learning_rate': 2.385e-05, 'epoch': 4.55}
+{'loss': 0.4582, 'learning_rate': 2.6850000000000002e-05, 'epoch': 5.11}
+{'loss': 0.4488, 'learning_rate': 2.985e-05, 'epoch': 5.68}
+  Num examples = 2722
+  Batch size = 16
+ 71%|███████   | 1000/1408 [03:10<01:17,  5.30iSaving model checkpoint to ../finetuned_models/per_antibiotic_models_v3/ERY/checkpoint-1000
+Configuration saved in ../finetuned_models/per_antibiotic_models_v3/ERY/checkpoint-1000/config.json
+{'eval_loss': 0.8520916700363159, 'eval_accuracy': 0.6675238795003674, 'eval_f1': 0.6631263210997294, 'eval_matthews_correlation': 0.33367004408992934, 'eval_precision': 0.6639910538929409, 'eval_recall': 0.6697283109047816, 'eval_confusion_matrix': [[753, 352], [553, 1064]], 'eval_runtime': 0.7828, 'eval_samples_per_second': 3477.387, 'eval_steps_per_second': 54.933, 'epoch': 5.68}
+Model weights saved in ../finetuned_models/per_antibiotic_models_v3/ERY/checkpoint-1000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_antibiotic_models_v3/ERY/checkpoint-1000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_antibiotic_models_v3/ERY/checkpoint-1000/special_tokens_map.json
+100%|██████████| 1408/1408 [04:28<00:00,  5.34it/s]
+{'loss': 0.4258, 'learning_rate': 2.3014705882352943e-05, 'epoch': 6.25}
+{'loss': 0.4142, 'learning_rate': 1.5661764705882355e-05, 'epoch': 6.82}
+{'loss': 0.3818, 'learning_rate': 8.308823529411766e-06, 'epoch': 7.39}
+{'loss': 0.3758, 'learning_rate': 9.558823529411764e-07, 'epoch': 7.95}
+
+Training completed. Do not forget to share your model on huggingface.co/models =)
+
+
+Loading best model from ../finetuned_models/per_antibiotic_models_v3/ERY/checkpoint-1000 (score: 0.6631263210997294).
+100%|██████████| 1408/1408 [04:28<00:00,  5.24it/s]
+{'train_runtime': 268.7114, 'train_samples_per_second': 669.834, 'train_steps_per_second': 5.24, 'train_loss': 0.5134032598950646, 'epoch': 8.0}
+***** Running Evaluation *****
+  Num examples = 2475
+  Batch size = 16
+100%|██████████| 39/39 [00:00<00:00, 47.10it/s]
+Configuration saved in ../finetuned_models/per_antibiotic_models_v3/ERY/best/config.json
+Model weights saved in ../finetuned_models/per_antibiotic_models_v3/ERY/best/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_antibiotic_models_v3/ERY/best/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_antibiotic_models_v3/ERY/best/special_tokens_map.json

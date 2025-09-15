@@ -1,0 +1,456 @@
+WARNING:root:Perform single sequence classification (no additional features)...
+--- Logging error ---
+Traceback (most recent call last):
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 1085, in emit
+    msg = self.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 929, in format
+    return fmt.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 668, in format
+    record.message = record.getMessage()
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 373, in getMessage
+    msg = msg % self.args
+TypeError: not all arguments converted during string formatting
+Call stack:
+  File "../train.py", line 390, in <module>
+    train()
+  File "../train.py", line 299, in train
+    train_dataset = SupervisedDataset(tokenizer=tokenizer,
+  File "../train.py", line 169, in __init__
+    logging.warning("Number of labels:", self.num_labels)
+Message: 'Number of labels:'
+Arguments: (2,)
+WARNING:root:Perform single sequence classification (no additional features)...
+--- Logging error ---
+Traceback (most recent call last):
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 1085, in emit
+    msg = self.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 929, in format
+    return fmt.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 668, in format
+    record.message = record.getMessage()
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 373, in getMessage
+    msg = msg % self.args
+TypeError: not all arguments converted during string formatting
+Call stack:
+  File "../train.py", line 390, in <module>
+    train()
+  File "../train.py", line 302, in train
+    val_dataset = SupervisedDataset(tokenizer=tokenizer,
+  File "../train.py", line 169, in __init__
+    logging.warning("Number of labels:", self.num_labels)
+Message: 'Number of labels:'
+Arguments: (2,)
+WARNING:root:Perform single sequence classification (no additional features)...
+--- Logging error ---
+Traceback (most recent call last):
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 1085, in emit
+    msg = self.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 929, in format
+    return fmt.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 668, in format
+    record.message = record.getMessage()
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 373, in getMessage
+    msg = msg % self.args
+TypeError: not all arguments converted during string formatting
+Call stack:
+  File "../train.py", line 390, in <module>
+    train()
+  File "../train.py", line 305, in train
+    test_dataset = SupervisedDataset(tokenizer=tokenizer,
+  File "../train.py", line 169, in __init__
+    logging.warning("Number of labels:", self.num_labels)
+Message: 'Number of labels:'
+Arguments: (2,)
+Initializing CUSTOM BertForSequenceClassification
+/gpfs/scratch/jvaska/cache/modules/transformers_modules/bacteria_model/bert_layers.py:126: UserWarning: Unable to import Triton; defaulting MosaicBERT attention implementation to pytorch (this will reduce throughput when using this model).
+  warnings.warn(
+Dropout layer: Dropout(p=0.1, inplace=False)
+Dropout probability: 0.1
+Some weights of the model checkpoint at ../pretrained_models/bacteria_model were not used when initializing BertForSequenceClassification: ['cls.predictions.decoder.weight', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.decoder.bias', 'cls.predictions.transform.dense.bias']
+- This IS expected if you are initializing BertForSequenceClassification from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertForSequenceClassification from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of BertForSequenceClassification were not initialized from the model checkpoint at ../pretrained_models/bacteria_model and are newly initialized: ['classifier.2.weight', 'bert.pooler.dense.weight', 'classifier.0.weight', 'classifier.2.bias', 'classifier.0.bias', 'bert.pooler.dense.bias']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+Using cuda_amp half precision backend
+***** Running training *****
+  Num examples = 288,397
+  Num Epochs = 8
+  Instantaneous batch size per device = 8
+  Total train batch size (w. parallel, distributed & accumulation) = 128
+  Gradient Accumulation steps = 4
+  Total optimization steps = 18,024
+  Number of trainable parameters = 117,167,234
+Automatic Weights & Biases logging enabled, to disable set os.environ["WANDB_DISABLED"] = "true"
+  6%|▌         | 1000/18024 [03:11<53:48,  5.27it/s]***** Running Evaluation *****
+{'loss': 0.6933, 'learning_rate': 3e-06, 'epoch': 0.04}
+{'loss': 0.693, 'learning_rate': 6e-06, 'epoch': 0.09}
+{'loss': 0.692, 'learning_rate': 9e-06, 'epoch': 0.13}
+{'loss': 0.6902, 'learning_rate': 1.2e-05, 'epoch': 0.18}
+{'loss': 0.6871, 'learning_rate': 1.5e-05, 'epoch': 0.22}
+{'loss': 0.6838, 'learning_rate': 1.794e-05, 'epoch': 0.27}
+{'loss': 0.6818, 'learning_rate': 2.0909999999999998e-05, 'epoch': 0.31}
+{'loss': 0.6774, 'learning_rate': 2.3910000000000003e-05, 'epoch': 0.36}
+{'loss': 0.6799, 'learning_rate': 2.691e-05, 'epoch': 0.4}
+{'loss': 0.6704, 'learning_rate': 2.991e-05, 'epoch': 0.44}
+  Num examples = 37530
+  Batch size = 16
+  6%|▌         | 1000/18024 [03:21<53:48,  5.27itSaving model checkpoint to ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-1000
+Configuration saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-1000/config.json
+{'eval_loss': 0.6680498719215393, 'eval_accuracy': 0.5717292832400747, 'eval_f1': 0.571657157163554, 'eval_matthews_correlation': 0.1499988046866597, 'eval_precision': 0.5751488245337125, 'eval_recall': 0.5748502772566094, 'eval_confusion_matrix': [[10485, 9467], [6606, 10972]], 'eval_runtime': 10.2399, 'eval_samples_per_second': 3665.088, 'eval_steps_per_second': 57.325, 'epoch': 0.44}
+Model weights saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-1000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-1000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-1000/special_tokens_map.json
+ 11%|█         | 2000/18024 [06:34<50:58,  5.24it/s]***** Running Evaluation *****
+{'loss': 0.6697, 'learning_rate': 2.9829064849624062e-05, 'epoch': 0.49}
+{'loss': 0.6634, 'learning_rate': 2.965284304511278e-05, 'epoch': 0.53}
+{'loss': 0.6605, 'learning_rate': 2.9476621240601503e-05, 'epoch': 0.58}
+{'loss': 0.6526, 'learning_rate': 2.9300399436090226e-05, 'epoch': 0.62}
+{'loss': 0.647, 'learning_rate': 2.9124177631578945e-05, 'epoch': 0.67}
+{'loss': 0.6487, 'learning_rate': 2.894795582706767e-05, 'epoch': 0.71}
+{'loss': 0.6433, 'learning_rate': 2.8771734022556393e-05, 'epoch': 0.75}
+{'loss': 0.6384, 'learning_rate': 2.8595512218045116e-05, 'epoch': 0.8}
+{'loss': 0.6295, 'learning_rate': 2.8421052631578946e-05, 'epoch': 0.84}
+{'loss': 0.6342, 'learning_rate': 2.8244830827067672e-05, 'epoch': 0.89}
+  Num examples = 37530
+  Batch size = 16
+ 11%|█         | 2000/18024 [06:44<50:58,  5.24itSaving model checkpoint to ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-2000
+Configuration saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-2000/config.json
+{'eval_loss': 0.6442398428916931, 'eval_accuracy': 0.605222488675726, 'eval_f1': 0.6050951221910674, 'eval_matthews_correlation': 0.21822906572826226, 'eval_precision': 0.6094355177960595, 'eval_recall': 0.6087944894119763, 'eval_confusion_matrix': [[11020, 8932], [5884, 11694]], 'eval_runtime': 10.2591, 'eval_samples_per_second': 3658.211, 'eval_steps_per_second': 57.217, 'epoch': 0.89}
+Model weights saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-2000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-2000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-2000/special_tokens_map.json
+ 17%|█▋        | 3000/18024 [09:56<47:53,  5.23it/s]***** Running Evaluation *****
+{'loss': 0.624, 'learning_rate': 2.806860902255639e-05, 'epoch': 0.93}
+{'loss': 0.621, 'learning_rate': 2.7892387218045114e-05, 'epoch': 0.98}
+{'loss': 0.6161, 'learning_rate': 2.7716165413533836e-05, 'epoch': 1.02}
+{'loss': 0.609, 'learning_rate': 2.753994360902256e-05, 'epoch': 1.07}
+{'loss': 0.6052, 'learning_rate': 2.7363721804511278e-05, 'epoch': 1.11}
+{'loss': 0.6006, 'learning_rate': 2.7189262218045115e-05, 'epoch': 1.15}
+{'loss': 0.5959, 'learning_rate': 2.7013040413533834e-05, 'epoch': 1.2}
+{'loss': 0.5968, 'learning_rate': 2.6836818609022557e-05, 'epoch': 1.24}
+{'loss': 0.5891, 'learning_rate': 2.666059680451128e-05, 'epoch': 1.29}
+{'loss': 0.5958, 'learning_rate': 2.6484375000000002e-05, 'epoch': 1.33}
+  Num examples = 37530
+  Batch size = 16
+ 17%|█▋        | 3000/18024 [10:07<47:53,  5.23itSaving model checkpoint to ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-3000
+Configuration saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-3000/config.json
+{'eval_loss': 0.6472415924072266, 'eval_accuracy': 0.6156141753264055, 'eval_f1': 0.6149454641029768, 'eval_matthews_correlation': 0.24361664120172657, 'eval_precision': 0.6228921730574426, 'eval_recall': 0.6207340272245607, 'eval_confusion_matrix': [[10770, 9182], [5244, 12334]], 'eval_runtime': 10.2503, 'eval_samples_per_second': 3661.349, 'eval_steps_per_second': 57.267, 'epoch': 1.33}
+Model weights saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-3000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-3000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-3000/special_tokens_map.json
+ 22%|██▏       | 4000/18024 [13:19<44:36,  5.24it/s]***** Running Evaluation *****
+{'loss': 0.5876, 'learning_rate': 2.630815319548872e-05, 'epoch': 1.38}
+{'loss': 0.5812, 'learning_rate': 2.6131931390977443e-05, 'epoch': 1.42}
+{'loss': 0.5848, 'learning_rate': 2.5955709586466166e-05, 'epoch': 1.46}
+{'loss': 0.5816, 'learning_rate': 2.5779487781954888e-05, 'epoch': 1.51}
+{'loss': 0.5817, 'learning_rate': 2.5603265977443607e-05, 'epoch': 1.55}
+{'loss': 0.5736, 'learning_rate': 2.542704417293233e-05, 'epoch': 1.6}
+{'loss': 0.5745, 'learning_rate': 2.5250822368421055e-05, 'epoch': 1.64}
+{'loss': 0.5719, 'learning_rate': 2.5074600563909778e-05, 'epoch': 1.69}
+{'loss': 0.5618, 'learning_rate': 2.4898378759398497e-05, 'epoch': 1.73}
+{'loss': 0.5708, 'learning_rate': 2.472215695488722e-05, 'epoch': 1.78}
+  Num examples = 37530
+  Batch size = 16
+ 22%|██▏       | 4000/18024 [13:29<44:36,  5.24itSaving model checkpoint to ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-4000
+Configuration saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-4000/config.json
+{'eval_loss': 0.6470004320144653, 'eval_accuracy': 0.6335464961364242, 'eval_f1': 0.6323297312497347, 'eval_matthews_correlation': 0.26470116389347453, 'eval_precision': 0.6322630835240622, 'eval_recall': 0.6324381382538482, 'eval_confusion_matrix': [[12968, 6984], [6769, 10809]], 'eval_runtime': 10.2536, 'eval_samples_per_second': 3660.193, 'eval_steps_per_second': 57.248, 'epoch': 1.78}
+Model weights saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-4000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-4000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-4000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-1000] due to args.save_total_limit
+ 28%|██▊       | 5000/18024 [16:41<41:12,  5.27it/s]***** Running Evaluation *****
+{'loss': 0.562, 'learning_rate': 2.4545935150375942e-05, 'epoch': 1.82}
+{'loss': 0.5591, 'learning_rate': 2.4369713345864664e-05, 'epoch': 1.86}
+{'loss': 0.559, 'learning_rate': 2.4193491541353383e-05, 'epoch': 1.91}
+{'loss': 0.5569, 'learning_rate': 2.4017269736842106e-05, 'epoch': 1.95}
+{'loss': 0.5484, 'learning_rate': 2.3841047932330828e-05, 'epoch': 2.0}
+{'loss': 0.5297, 'learning_rate': 2.3664826127819547e-05, 'epoch': 2.04}
+{'loss': 0.531, 'learning_rate': 2.348860432330827e-05, 'epoch': 2.09}
+{'loss': 0.5364, 'learning_rate': 2.3312382518796992e-05, 'epoch': 2.13}
+{'loss': 0.5259, 'learning_rate': 2.3136160714285714e-05, 'epoch': 2.17}
+{'loss': 0.5336, 'learning_rate': 2.2959938909774437e-05, 'epoch': 2.22}
+  Num examples = 37530
+  Batch size = 16
+ 28%|██▊       | 5000/18024 [16:51<41:12,  5.27itSaving model checkpoint to ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-5000
+Configuration saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-5000/config.json
+{'eval_loss': 0.6690757870674133, 'eval_accuracy': 0.6448707700506262, 'eval_f1': 0.6387682047883874, 'eval_matthews_correlation': 0.2833919764021597, 'eval_precision': 0.6442298152531822, 'eval_recall': 0.6392066753814799, 'eval_confusion_matrix': [[14540, 5412], [7916, 9662]], 'eval_runtime': 10.2392, 'eval_samples_per_second': 3665.321, 'eval_steps_per_second': 57.329, 'epoch': 2.22}
+Model weights saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-5000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-5000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-5000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-2000] due to args.save_total_limit
+ 33%|███▎      | 6000/18024 [20:02<38:02,  5.27it/s]***** Running Evaluation *****
+{'loss': 0.53, 'learning_rate': 2.278371710526316e-05, 'epoch': 2.26}
+{'loss': 0.5226, 'learning_rate': 2.2607495300751882e-05, 'epoch': 2.31}
+{'loss': 0.5171, 'learning_rate': 2.2431273496240604e-05, 'epoch': 2.35}
+{'loss': 0.5201, 'learning_rate': 2.2255051691729323e-05, 'epoch': 2.4}
+{'loss': 0.5207, 'learning_rate': 2.2078829887218046e-05, 'epoch': 2.44}
+{'loss': 0.5152, 'learning_rate': 2.1902608082706768e-05, 'epoch': 2.49}
+{'loss': 0.5131, 'learning_rate': 2.172638627819549e-05, 'epoch': 2.53}
+{'loss': 0.515, 'learning_rate': 2.155016447368421e-05, 'epoch': 2.57}
+{'loss': 0.5181, 'learning_rate': 2.1373942669172932e-05, 'epoch': 2.62}
+{'loss': 0.515, 'learning_rate': 2.1197720864661655e-05, 'epoch': 2.66}
+  Num examples = 37530
+  Batch size = 16
+ 33%|███▎      | 6000/18024 [20:12<38:02,  5.27itSaving model checkpoint to ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-6000
+Configuration saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-6000/config.json
+{'eval_loss': 0.6786741018295288, 'eval_accuracy': 0.6509459099387157, 'eval_f1': 0.6491244933043607, 'eval_matthews_correlation': 0.29835013599428717, 'eval_precision': 0.6493652023856937, 'eval_recall': 0.6489851756401048, 'eval_confusion_matrix': [[13567, 6385], [6715, 10863]], 'eval_runtime': 10.2146, 'eval_samples_per_second': 3674.145, 'eval_steps_per_second': 57.467, 'epoch': 2.66}
+Model weights saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-6000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-6000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-6000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-3000] due to args.save_total_limit
+ 39%|███▉      | 7000/18024 [23:23<34:53,  5.27it/s]***** Running Evaluation *****
+{'loss': 0.5108, 'learning_rate': 2.1021499060150377e-05, 'epoch': 2.71}
+{'loss': 0.5145, 'learning_rate': 2.0845277255639096e-05, 'epoch': 2.75}
+{'loss': 0.5088, 'learning_rate': 2.066905545112782e-05, 'epoch': 2.8}
+{'loss': 0.5078, 'learning_rate': 2.0492833646616544e-05, 'epoch': 2.84}
+{'loss': 0.5072, 'learning_rate': 2.0316611842105263e-05, 'epoch': 2.88}
+{'loss': 0.5064, 'learning_rate': 2.0140390037593986e-05, 'epoch': 2.93}
+{'loss': 0.5017, 'learning_rate': 1.9964168233082708e-05, 'epoch': 2.97}
+{'loss': 0.4966, 'learning_rate': 1.978794642857143e-05, 'epoch': 3.02}
+{'loss': 0.4825, 'learning_rate': 1.961172462406015e-05, 'epoch': 3.06}
+{'loss': 0.4827, 'learning_rate': 1.9435502819548872e-05, 'epoch': 3.11}
+  Num examples = 37530
+  Batch size = 16
+ 39%|███▉      | 7000/18024 [23:33<34:53,  5.27itSaving model checkpoint to ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-7000
+Configuration saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-7000/config.json
+{'eval_loss': 0.6915960907936096, 'eval_accuracy': 0.6541433519850786, 'eval_f1': 0.6508114843156316, 'eval_matthews_correlation': 0.3031893012120659, 'eval_precision': 0.6526287905885275, 'eval_recall': 0.650567517463462, 'eval_confusion_matrix': [[14108, 5844], [7136, 10442]], 'eval_runtime': 10.2369, 'eval_samples_per_second': 3666.15, 'eval_steps_per_second': 57.342, 'epoch': 3.11}
+Model weights saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-7000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-7000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-7000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-4000] due to args.save_total_limit
+ 44%|████▍     | 8000/18024 [26:45<31:45,  5.26it/s]***** Running Evaluation *****
+{'loss': 0.4711, 'learning_rate': 1.9259281015037595e-05, 'epoch': 3.15}
+{'loss': 0.47, 'learning_rate': 1.9083059210526317e-05, 'epoch': 3.2}
+{'loss': 0.4803, 'learning_rate': 1.8906837406015036e-05, 'epoch': 3.24}
+{'loss': 0.4775, 'learning_rate': 1.873061560150376e-05, 'epoch': 3.28}
+{'loss': 0.4809, 'learning_rate': 1.855439379699248e-05, 'epoch': 3.33}
+{'loss': 0.4747, 'learning_rate': 1.8378171992481203e-05, 'epoch': 3.37}
+{'loss': 0.4748, 'learning_rate': 1.8201950187969926e-05, 'epoch': 3.42}
+{'loss': 0.4736, 'learning_rate': 1.8025728383458648e-05, 'epoch': 3.46}
+{'loss': 0.4791, 'learning_rate': 1.784950657894737e-05, 'epoch': 3.51}
+{'loss': 0.4713, 'learning_rate': 1.7673284774436093e-05, 'epoch': 3.55}
+  Num examples = 37530
+  Batch size = 16
+ 44%|████▍     | 8000/18024 [26:55<31:45,  5.26itSaving model checkpoint to ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-8000
+Configuration saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-8000/config.json
+{'eval_loss': 0.6988236308097839, 'eval_accuracy': 0.6599253930189182, 'eval_f1': 0.6585487553276272, 'eval_matthews_correlation': 0.31709758685368566, 'eval_precision': 0.6585536414369909, 'eval_recall': 0.6585439455649298, 'eval_confusion_matrix': [[13575, 6377], [6386, 11192]], 'eval_runtime': 10.2195, 'eval_samples_per_second': 3672.394, 'eval_steps_per_second': 57.439, 'epoch': 3.55}
+Model weights saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-8000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-8000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-8000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-5000] due to args.save_total_limit
+ 50%|████▉     | 9000/18024 [30:07<28:43,  5.24it/s]***** Running Evaluation *****
+{'loss': 0.4686, 'learning_rate': 1.7497062969924812e-05, 'epoch': 3.59}
+{'loss': 0.4762, 'learning_rate': 1.7320841165413535e-05, 'epoch': 3.64}
+{'loss': 0.4727, 'learning_rate': 1.7144619360902257e-05, 'epoch': 3.68}
+{'loss': 0.464, 'learning_rate': 1.6968397556390976e-05, 'epoch': 3.73}
+{'loss': 0.467, 'learning_rate': 1.67921757518797e-05, 'epoch': 3.77}
+{'loss': 0.4777, 'learning_rate': 1.661595394736842e-05, 'epoch': 3.82}
+{'loss': 0.4687, 'learning_rate': 1.6439732142857143e-05, 'epoch': 3.86}
+{'loss': 0.4647, 'learning_rate': 1.6263510338345862e-05, 'epoch': 3.91}
+{'loss': 0.462, 'learning_rate': 1.6087288533834585e-05, 'epoch': 3.95}
+{'loss': 0.468, 'learning_rate': 1.591106672932331e-05, 'epoch': 3.99}
+  Num examples = 37530
+  Batch size = 16
+ 50%|████▉     | 9000/18024 [30:17<28:43,  5.24itSaving model checkpoint to ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-9000
+Configuration saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-9000/config.json
+{'eval_loss': 0.7177552580833435, 'eval_accuracy': 0.6632294164668265, 'eval_f1': 0.6557469988004696, 'eval_matthews_correlation': 0.3211666166175427, 'eval_precision': 0.6647408905580314, 'eval_recall': 0.656530651376479, 'eval_confusion_matrix': [[15212, 4740], [7899, 9679]], 'eval_runtime': 10.2768, 'eval_samples_per_second': 3651.906, 'eval_steps_per_second': 57.119, 'epoch': 3.99}
+Model weights saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-9000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-9000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-9000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-6000] due to args.save_total_limit
+ 55%|█████▌    | 10000/18024 [33:30<25:31,  5.24it/s]***** Running Evaluation *****
+{'loss': 0.4436, 'learning_rate': 1.5734844924812033e-05, 'epoch': 4.04}
+{'loss': 0.4389, 'learning_rate': 1.5558623120300752e-05, 'epoch': 4.08}
+{'loss': 0.4396, 'learning_rate': 1.5382401315789475e-05, 'epoch': 4.13}
+{'loss': 0.4406, 'learning_rate': 1.5206179511278197e-05, 'epoch': 4.17}
+{'loss': 0.4509, 'learning_rate': 1.5031719924812031e-05, 'epoch': 4.22}
+{'loss': 0.4419, 'learning_rate': 1.4855498120300752e-05, 'epoch': 4.26}
+{'loss': 0.4407, 'learning_rate': 1.4679276315789473e-05, 'epoch': 4.3}
+{'loss': 0.4414, 'learning_rate': 1.4503054511278197e-05, 'epoch': 4.35}
+{'loss': 0.4412, 'learning_rate': 1.4326832706766918e-05, 'epoch': 4.39}
+{'loss': 0.4457, 'learning_rate': 1.415061090225564e-05, 'epoch': 4.44}
+  Num examples = 37530
+  Batch size = 16
+ 55%|█████▌    | 10000/18024 [33:40<25:31,  5.24iSaving model checkpoint to ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-10000
+Configuration saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-10000/config.json
+{'eval_loss': 0.7445967197418213, 'eval_accuracy': 0.6666666666666666, 'eval_f1': 0.6614515665753058, 'eval_matthews_correlation': 0.3279371008931491, 'eval_precision': 0.6665135691587183, 'eval_recall': 0.661462430187439, 'eval_confusion_matrix': [[14839, 5113], [7397, 10181]], 'eval_runtime': 10.2456, 'eval_samples_per_second': 3663.034, 'eval_steps_per_second': 57.293, 'epoch': 4.44}
+Model weights saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-10000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-10000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-10000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-7000] due to args.save_total_limit
+ 61%|██████    | 11000/18024 [36:52<22:22,  5.23it/s]***** Running Evaluation *****
+{'loss': 0.4384, 'learning_rate': 1.397438909774436e-05, 'epoch': 4.48}
+{'loss': 0.4358, 'learning_rate': 1.3798167293233083e-05, 'epoch': 4.53}
+{'loss': 0.442, 'learning_rate': 1.3621945488721804e-05, 'epoch': 4.57}
+{'loss': 0.4404, 'learning_rate': 1.3445723684210528e-05, 'epoch': 4.62}
+{'loss': 0.4395, 'learning_rate': 1.3269501879699249e-05, 'epoch': 4.66}
+{'loss': 0.444, 'learning_rate': 1.3093280075187971e-05, 'epoch': 4.7}
+{'loss': 0.4359, 'learning_rate': 1.2917058270676692e-05, 'epoch': 4.75}
+{'loss': 0.4363, 'learning_rate': 1.2740836466165413e-05, 'epoch': 4.79}
+{'loss': 0.4377, 'learning_rate': 1.2564614661654135e-05, 'epoch': 4.84}
+{'loss': 0.4375, 'learning_rate': 1.2388392857142856e-05, 'epoch': 4.88}
+  Num examples = 37530
+  Batch size = 16
+ 61%|██████    | 11000/18024 [37:02<22:22,  5.23iSaving model checkpoint to ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-11000
+Configuration saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-11000/config.json
+{'eval_loss': 0.7689145803451538, 'eval_accuracy': 0.6635225153210764, 'eval_f1': 0.6613119613428089, 'eval_matthews_correlation': 0.32303460045048904, 'eval_precision': 0.661978666625373, 'eval_recall': 0.6610572479423367, 'eval_confusion_matrix': [[13967, 5985], [6643, 10935]], 'eval_runtime': 10.2546, 'eval_samples_per_second': 3659.824, 'eval_steps_per_second': 57.243, 'epoch': 4.88}
+Model weights saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-11000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-11000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-11000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-8000] due to args.save_total_limit
+ 67%|██████▋   | 12000/18024 [40:14<19:13,  5.22it/s]***** Running Evaluation *****
+{'loss': 0.4383, 'learning_rate': 1.221217105263158e-05, 'epoch': 4.93}
+{'loss': 0.4324, 'learning_rate': 1.2035949248120301e-05, 'epoch': 4.97}
+{'loss': 0.4297, 'learning_rate': 1.1859727443609023e-05, 'epoch': 5.01}
+{'loss': 0.4149, 'learning_rate': 1.1683505639097744e-05, 'epoch': 5.06}
+{'loss': 0.4164, 'learning_rate': 1.1507283834586466e-05, 'epoch': 5.1}
+{'loss': 0.4107, 'learning_rate': 1.1331062030075187e-05, 'epoch': 5.15}
+{'loss': 0.416, 'learning_rate': 1.115484022556391e-05, 'epoch': 5.19}
+{'loss': 0.4151, 'learning_rate': 1.0978618421052632e-05, 'epoch': 5.24}
+{'loss': 0.4197, 'learning_rate': 1.0802396616541355e-05, 'epoch': 5.28}
+{'loss': 0.4188, 'learning_rate': 1.0626174812030075e-05, 'epoch': 5.33}
+  Num examples = 37530
+  Batch size = 16
+ 67%|██████▋   | 12000/18024 [40:25<19:13,  5.22iSaving model checkpoint to ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-12000
+Configuration saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-12000/config.json
+{'eval_loss': 0.8119626045227051, 'eval_accuracy': 0.6701305622168932, 'eval_f1': 0.6654652184252097, 'eval_matthews_correlation': 0.3350306409629381, 'eval_precision': 0.6697370308482087, 'eval_recall': 0.6653226903745232, 'eval_confusion_matrix': [[14791, 5161], [7219, 10359]], 'eval_runtime': 10.239, 'eval_samples_per_second': 3665.397, 'eval_steps_per_second': 57.33, 'epoch': 5.33}
+Model weights saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-12000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-12000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-12000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-9000] due to args.save_total_limit
+ 72%|███████▏  | 13000/18024 [43:37<15:59,  5.23it/s]***** Running Evaluation *****
+{'loss': 0.4273, 'learning_rate': 1.0449953007518798e-05, 'epoch': 5.37}
+{'loss': 0.4178, 'learning_rate': 1.0273731203007518e-05, 'epoch': 5.41}
+{'loss': 0.4131, 'learning_rate': 1.0099271616541354e-05, 'epoch': 5.46}
+{'loss': 0.4088, 'learning_rate': 9.923049812030075e-06, 'epoch': 5.5}
+{'loss': 0.4172, 'learning_rate': 9.746828007518798e-06, 'epoch': 5.55}
+{'loss': 0.42, 'learning_rate': 9.572368421052632e-06, 'epoch': 5.59}
+{'loss': 0.4103, 'learning_rate': 9.396146616541354e-06, 'epoch': 5.64}
+{'loss': 0.4127, 'learning_rate': 9.219924812030075e-06, 'epoch': 5.68}
+{'loss': 0.4148, 'learning_rate': 9.043703007518797e-06, 'epoch': 5.73}
+{'loss': 0.417, 'learning_rate': 8.867481203007518e-06, 'epoch': 5.77}
+  Num examples = 37530
+  Batch size = 16
+ 72%|███████▏  | 13000/18024 [43:47<15:59,  5.23iSaving model checkpoint to ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-13000
+Configuration saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-13000/config.json
+{'eval_loss': 0.8013006448745728, 'eval_accuracy': 0.672875033306688, 'eval_f1': 0.6696520379848748, 'eval_matthews_correlation': 0.34102107600694526, 'eval_precision': 0.6717245898396449, 'eval_recall': 0.6693050692238229, 'eval_confusion_matrix': [[14480, 5472], [6805, 10773]], 'eval_runtime': 10.2475, 'eval_samples_per_second': 3662.351, 'eval_steps_per_second': 57.282, 'epoch': 5.77}
+Model weights saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-13000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-13000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-13000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-10000] due to args.save_total_limit
+ 78%|███████▊  | 14000/18024 [46:58<12:42,  5.27it/s]***** Running Evaluation *****
+{'loss': 0.4187, 'learning_rate': 8.69125939849624e-06, 'epoch': 5.81}
+{'loss': 0.4175, 'learning_rate': 8.515037593984963e-06, 'epoch': 5.86}
+{'loss': 0.4063, 'learning_rate': 8.338815789473685e-06, 'epoch': 5.9}
+{'loss': 0.415, 'learning_rate': 8.162593984962406e-06, 'epoch': 5.95}
+{'loss': 0.4075, 'learning_rate': 7.986372180451129e-06, 'epoch': 5.99}
+{'loss': 0.3995, 'learning_rate': 7.81015037593985e-06, 'epoch': 6.04}
+{'loss': 0.3948, 'learning_rate': 7.633928571428572e-06, 'epoch': 6.08}
+{'loss': 0.3975, 'learning_rate': 7.4577067669172934e-06, 'epoch': 6.12}
+{'loss': 0.3966, 'learning_rate': 7.281484962406015e-06, 'epoch': 6.17}
+{'loss': 0.3982, 'learning_rate': 7.105263157894737e-06, 'epoch': 6.21}
+  Num examples = 37530
+  Batch size = 16
+ 78%|███████▊  | 14000/18024 [47:09<12:42,  5.27iSaving model checkpoint to ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-14000
+Configuration saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-14000/config.json
+{'eval_loss': 0.8827975392341614, 'eval_accuracy': 0.6772981614708233, 'eval_f1': 0.6747575335883513, 'eval_matthews_correlation': 0.3503778454892152, 'eval_precision': 0.6759754157450484, 'eval_recall': 0.6744059448444841, 'eval_confusion_matrix': [[14368, 5584], [6527, 11051]], 'eval_runtime': 10.2271, 'eval_samples_per_second': 3669.662, 'eval_steps_per_second': 57.397, 'epoch': 6.21}
+Model weights saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-14000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-14000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-14000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-11000] due to args.save_total_limit
+ 83%|████████▎ | 15000/18024 [50:21<09:34,  5.27it/s]***** Running Evaluation *****
+{'loss': 0.3892, 'learning_rate': 6.929041353383459e-06, 'epoch': 6.26}
+{'loss': 0.4022, 'learning_rate': 6.752819548872181e-06, 'epoch': 6.3}
+{'loss': 0.3962, 'learning_rate': 6.576597744360902e-06, 'epoch': 6.35}
+{'loss': 0.397, 'learning_rate': 6.400375939849625e-06, 'epoch': 6.39}
+{'loss': 0.3952, 'learning_rate': 6.224154135338346e-06, 'epoch': 6.44}
+{'loss': 0.4001, 'learning_rate': 6.047932330827068e-06, 'epoch': 6.48}
+{'loss': 0.3907, 'learning_rate': 5.87171052631579e-06, 'epoch': 6.52}
+{'loss': 0.3928, 'learning_rate': 5.695488721804512e-06, 'epoch': 6.57}
+{'loss': 0.39, 'learning_rate': 5.5192669172932335e-06, 'epoch': 6.61}
+{'loss': 0.3883, 'learning_rate': 5.343045112781954e-06, 'epoch': 6.66}
+  Num examples = 37530
+  Batch size = 16
+ 83%|████████▎ | 15000/18024 [50:31<09:34,  5.27iSaving model checkpoint to ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-15000
+Configuration saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-15000/config.json
+{'eval_loss': 0.8725327253341675, 'eval_accuracy': 0.672954969357847, 'eval_f1': 0.6699922500015554, 'eval_matthews_correlation': 0.34133324814080374, 'eval_precision': 0.6716985943133157, 'eval_recall': 0.6696408563394336, 'eval_confusion_matrix': [[14406, 5546], [6728, 10850]], 'eval_runtime': 10.2066, 'eval_samples_per_second': 3677.043, 'eval_steps_per_second': 57.512, 'epoch': 6.66}
+Model weights saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-15000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-15000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-15000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-12000] due to args.save_total_limit
+ 89%|████████▉ | 16000/18024 [53:42<06:23,  5.27it/s]***** Running Evaluation *****
+{'loss': 0.397, 'learning_rate': 5.166823308270677e-06, 'epoch': 6.7}
+{'loss': 0.3936, 'learning_rate': 4.990601503759398e-06, 'epoch': 6.75}
+{'loss': 0.4015, 'learning_rate': 4.81437969924812e-06, 'epoch': 6.79}
+{'loss': 0.3936, 'learning_rate': 4.638157894736842e-06, 'epoch': 6.83}
+{'loss': 0.3956, 'learning_rate': 4.461936090225564e-06, 'epoch': 6.88}
+{'loss': 0.3997, 'learning_rate': 4.2857142857142855e-06, 'epoch': 6.92}
+{'loss': 0.4013, 'learning_rate': 4.109492481203008e-06, 'epoch': 6.97}
+{'loss': 0.3895, 'learning_rate': 3.9332706766917295e-06, 'epoch': 7.01}
+{'loss': 0.3843, 'learning_rate': 3.757048872180451e-06, 'epoch': 7.06}
+{'loss': 0.3833, 'learning_rate': 3.580827067669173e-06, 'epoch': 7.1}
+  Num examples = 37530
+  Batch size = 16
+ 89%|████████▉ | 16000/18024 [53:52<06:23,  5.27iSaving model checkpoint to ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-16000
+Configuration saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-16000/config.json
+{'eval_loss': 0.9078042507171631, 'eval_accuracy': 0.6749267252864375, 'eval_f1': 0.671798526612748, 'eval_matthews_correlation': 0.34520960538434065, 'eval_precision': 0.6737797792683398, 'eval_recall': 0.6714377704807615, 'eval_confusion_matrix': [[14497, 5455], [6745, 10833]], 'eval_runtime': 10.2297, 'eval_samples_per_second': 3668.743, 'eval_steps_per_second': 57.382, 'epoch': 7.1}
+Model weights saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-16000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-16000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-16000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-13000] due to args.save_total_limit
+ 94%|█████████▍| 17000/18024 [57:03<03:14,  5.27it/s]***** Running Evaluation *****
+{'loss': 0.3748, 'learning_rate': 3.404605263157895e-06, 'epoch': 7.15}
+{'loss': 0.3786, 'learning_rate': 3.2283834586466167e-06, 'epoch': 7.19}
+{'loss': 0.3879, 'learning_rate': 3.0521616541353387e-06, 'epoch': 7.23}
+{'loss': 0.3767, 'learning_rate': 2.87593984962406e-06, 'epoch': 7.28}
+{'loss': 0.3865, 'learning_rate': 2.699718045112782e-06, 'epoch': 7.32}
+{'loss': 0.3781, 'learning_rate': 2.5252584586466165e-06, 'epoch': 7.37}
+{'loss': 0.3841, 'learning_rate': 2.3490366541353386e-06, 'epoch': 7.41}
+{'loss': 0.3888, 'learning_rate': 2.17281484962406e-06, 'epoch': 7.46}
+{'loss': 0.3804, 'learning_rate': 1.996593045112782e-06, 'epoch': 7.5}
+{'loss': 0.3777, 'learning_rate': 1.8203712406015038e-06, 'epoch': 7.54}
+  Num examples = 37530
+  Batch size = 16
+ 94%|█████████▍| 17000/18024 [57:13<03:14,  5.27iSaving model checkpoint to ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-17000
+Configuration saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-17000/config.json
+{'eval_loss': 0.9137850403785706, 'eval_accuracy': 0.6752731148414601, 'eval_f1': 0.6722861418586381, 'eval_matthews_correlation': 0.34598861384067464, 'eval_precision': 0.6740726702280644, 'eval_recall': 0.6719226239687048, 'eval_confusion_matrix': [[14463, 5489], [6698, 10880]], 'eval_runtime': 10.2162, 'eval_samples_per_second': 3673.588, 'eval_steps_per_second': 57.458, 'epoch': 7.54}
+Model weights saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-17000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-17000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-17000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-15000] due to args.save_total_limit
+100%|█████████▉| 18000/18024 [1:00:26<00:04,  5.24it/s]***** Running Evaluation *****
+{'loss': 0.3738, 'learning_rate': 1.6441494360902256e-06, 'epoch': 7.59}
+{'loss': 0.3764, 'learning_rate': 1.4679276315789476e-06, 'epoch': 7.63}
+{'loss': 0.3835, 'learning_rate': 1.2917058270676692e-06, 'epoch': 7.68}
+{'loss': 0.3859, 'learning_rate': 1.115484022556391e-06, 'epoch': 7.72}
+{'loss': 0.3768, 'learning_rate': 9.392622180451128e-07, 'epoch': 7.77}
+{'loss': 0.3808, 'learning_rate': 7.630404135338347e-07, 'epoch': 7.81}
+{'loss': 0.3765, 'learning_rate': 5.868186090225564e-07, 'epoch': 7.86}
+{'loss': 0.3853, 'learning_rate': 4.105968045112782e-07, 'epoch': 7.9}
+{'loss': 0.3804, 'learning_rate': 2.34375e-07, 'epoch': 7.94}
+{'loss': 0.382, 'learning_rate': 5.81531954887218e-08, 'epoch': 7.99}
+  Num examples = 37530
+  Batch size = 16
+100%|█████████▉| 18000/18024 [1:00:36<00:04,  5.2Saving model checkpoint to ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-18000
+Configuration saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-18000/config.json
+{'eval_loss': 0.9208655953407288, 'eval_accuracy': 0.6756994404476419, 'eval_f1': 0.6727062976503864, 'eval_matthews_correlation': 0.3468440066675169, 'eval_precision': 0.6745102846187099, 'eval_recall': 0.672340508790103, 'eval_confusion_matrix': [[14474, 5478], [6693, 10885]], 'eval_runtime': 10.2734, 'eval_samples_per_second': 3653.111, 'eval_steps_per_second': 57.138, 'epoch': 7.99}
+Model weights saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-18000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-18000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-18000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-16000] due to args.save_total_limit
+100%|██████████| 18024/18024 [1:00:42<00:00,  5.20it/s]
+
+Training completed. Do not forget to share your model on huggingface.co/models =)
+
+
+Loading best model from ../finetuned_models/per_antibiotic_models_v3/TET/checkpoint-14000 (score: 0.6747575335883513).
+100%|██████████| 18024/18024 [1:00:43<00:00,  4.95it/s]
+{'train_runtime': 3643.3745, 'train_samples_per_second': 633.252, 'train_steps_per_second': 4.947, 'train_loss': 0.4830680484513521, 'epoch': 8.0}
+***** Running Evaluation *****
+  Num examples = 34095
+  Batch size = 16
+100%|██████████| 533/533 [00:09<00:00, 56.00it/s]
+Configuration saved in ../finetuned_models/per_antibiotic_models_v3/TET/best/config.json
+Model weights saved in ../finetuned_models/per_antibiotic_models_v3/TET/best/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_antibiotic_models_v3/TET/best/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_antibiotic_models_v3/TET/best/special_tokens_map.json

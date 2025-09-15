@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "../train.py", line 390, in <module>
+    train()
+  File "../train.py", line 299, in train
+    train_dataset = SupervisedDataset(tokenizer=tokenizer,
+  File "../train.py", line 133, in __init__
+    with open(data_path, "r") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '../data/per_species/dnabert_finetune_dataset_augmented_v2/dnabert_finetune_dataset_augmented_v2/train.csv'

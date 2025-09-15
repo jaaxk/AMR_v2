@@ -1,0 +1,402 @@
+WARNING:root:Perform single sequence classification (no additional features)...
+--- Logging error ---
+Traceback (most recent call last):
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 1085, in emit
+    msg = self.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 929, in format
+    return fmt.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 668, in format
+    record.message = record.getMessage()
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 373, in getMessage
+    msg = msg % self.args
+TypeError: not all arguments converted during string formatting
+Call stack:
+  File "../train.py", line 390, in <module>
+    train()
+  File "../train.py", line 299, in train
+    train_dataset = SupervisedDataset(tokenizer=tokenizer,
+  File "../train.py", line 169, in __init__
+    logging.warning("Number of labels:", self.num_labels)
+Message: 'Number of labels:'
+Arguments: (2,)
+WARNING:root:Perform single sequence classification (no additional features)...
+--- Logging error ---
+Traceback (most recent call last):
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 1085, in emit
+    msg = self.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 929, in format
+    return fmt.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 668, in format
+    record.message = record.getMessage()
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 373, in getMessage
+    msg = msg % self.args
+TypeError: not all arguments converted during string formatting
+Call stack:
+  File "../train.py", line 390, in <module>
+    train()
+  File "../train.py", line 302, in train
+    val_dataset = SupervisedDataset(tokenizer=tokenizer,
+  File "../train.py", line 169, in __init__
+    logging.warning("Number of labels:", self.num_labels)
+Message: 'Number of labels:'
+Arguments: (2,)
+WARNING:root:Perform single sequence classification (no additional features)...
+--- Logging error ---
+Traceback (most recent call last):
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 1085, in emit
+    msg = self.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 929, in format
+    return fmt.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 668, in format
+    record.message = record.getMessage()
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 373, in getMessage
+    msg = msg % self.args
+TypeError: not all arguments converted during string formatting
+Call stack:
+  File "../train.py", line 390, in <module>
+    train()
+  File "../train.py", line 305, in train
+    test_dataset = SupervisedDataset(tokenizer=tokenizer,
+  File "../train.py", line 169, in __init__
+    logging.warning("Number of labels:", self.num_labels)
+Message: 'Number of labels:'
+Arguments: (2,)
+Initializing CUSTOM BertForSequenceClassification
+/gpfs/scratch/jvaska/cache/modules/transformers_modules/bacteria_model/bert_layers.py:126: UserWarning: Unable to import Triton; defaulting MosaicBERT attention implementation to pytorch (this will reduce throughput when using this model).
+  warnings.warn(
+Dropout layer: Dropout(p=0.1, inplace=False)
+Dropout probability: 0.1
+Some weights of the model checkpoint at ../pretrained_models/bacteria_model were not used when initializing BertForSequenceClassification: ['cls.predictions.transform.dense.weight', 'cls.predictions.decoder.bias', 'cls.predictions.decoder.weight', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.transform.dense.bias', 'cls.predictions.transform.LayerNorm.weight']
+- This IS expected if you are initializing BertForSequenceClassification from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertForSequenceClassification from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of BertForSequenceClassification were not initialized from the model checkpoint at ../pretrained_models/bacteria_model and are newly initialized: ['bert.pooler.dense.weight', 'classifier.2.bias', 'classifier.0.weight', 'classifier.0.bias', 'bert.pooler.dense.bias', 'classifier.2.weight']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+Using cuda_amp half precision backend
+***** Running training *****
+  Num examples = 500,000
+  Num Epochs = 4
+  Instantaneous batch size per device = 8
+  Total train batch size (w. parallel, distributed & accumulation) = 128
+  Gradient Accumulation steps = 4
+  Total optimization steps = 15,624
+  Number of trainable parameters = 117,167,234
+Automatic Weights & Biases logging enabled, to disable set os.environ["WANDB_DISABLED"] = "true"
+  6%|▋         | 1000/15624 [03:10<46:02,  5.29it/s]***** Running Evaluation *****
+{'loss': 0.6912, 'learning_rate': 3e-06, 'epoch': 0.03}
+{'loss': 0.6662, 'learning_rate': 5.9700000000000004e-06, 'epoch': 0.05}
+{'loss': 0.6017, 'learning_rate': 8.97e-06, 'epoch': 0.08}
+{'loss': 0.5271, 'learning_rate': 1.197e-05, 'epoch': 0.1}
+{'loss': 0.4799, 'learning_rate': 1.488e-05, 'epoch': 0.13}
+{'loss': 0.4542, 'learning_rate': 1.7879999999999998e-05, 'epoch': 0.15}
+{'loss': 0.4438, 'learning_rate': 2.088e-05, 'epoch': 0.18}
+{'loss': 0.4391, 'learning_rate': 2.3880000000000002e-05, 'epoch': 0.2}
+{'loss': 0.4339, 'learning_rate': 2.688e-05, 'epoch': 0.23}
+{'loss': 0.4287, 'learning_rate': 2.9880000000000002e-05, 'epoch': 0.26}
+  Num examples = 64567
+  Batch size = 16
+  6%|▋         | 1000/15624 [03:29<46:02,  5.29it/sSaving model checkpoint to ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-1000
+Configuration saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-1000/config.json
+{'eval_loss': 0.6421902179718018, 'eval_accuracy': 0.6728979199900879, 'eval_f1': 0.6582140706655243, 'eval_matthews_correlation': 0.31755553734650444, 'eval_precision': 0.6607386565471838, 'eval_recall': 0.6568408021218992, 'eval_confusion_matrix': [[15032, 11474], [9646, 28415]], 'eval_runtime': 18.3968, 'eval_samples_per_second': 3509.68, 'eval_steps_per_second': 54.846, 'epoch': 0.26}
+Model weights saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-1000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-1000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-1000/special_tokens_map.json
+ 13%|█▎        | 2000/15624 [06:39<42:52,  5.30it/s]***** Running Evaluation *****
+{'loss': 0.4211, 'learning_rate': 2.9803063457330417e-05, 'epoch': 0.28}
+{'loss': 0.4182, 'learning_rate': 2.9597921225382932e-05, 'epoch': 0.31}
+{'loss': 0.4123, 'learning_rate': 2.9392778993435447e-05, 'epoch': 0.33}
+{'loss': 0.4069, 'learning_rate': 2.9187636761487966e-05, 'epoch': 0.36}
+{'loss': 0.4036, 'learning_rate': 2.8984545951859956e-05, 'epoch': 0.38}
+{'loss': 0.4013, 'learning_rate': 2.877940371991247e-05, 'epoch': 0.41}
+{'loss': 0.4033, 'learning_rate': 2.857426148796499e-05, 'epoch': 0.44}
+{'loss': 0.3946, 'learning_rate': 2.8369119256017505e-05, 'epoch': 0.46}
+{'loss': 0.3944, 'learning_rate': 2.816397702407002e-05, 'epoch': 0.49}
+{'loss': 0.3903, 'learning_rate': 2.7958834792122536e-05, 'epoch': 0.51}
+  Num examples = 64567
+  Batch size = 16
+ 13%|█▎        | 2000/15624 [06:58<42:52,  5.30it/sSaving model checkpoint to ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-2000
+Configuration saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-2000/config.json
+{'eval_loss': 0.6792850494384766, 'eval_accuracy': 0.6848699800207536, 'eval_f1': 0.6786144827216432, 'eval_matthews_correlation': 0.3594090103119951, 'eval_precision': 0.6776952717009155, 'eval_recall': 0.6817364573870963, 'eval_confusion_matrix': [[17606, 8900], [11447, 26614]], 'eval_runtime': 18.4073, 'eval_samples_per_second': 3507.684, 'eval_steps_per_second': 54.815, 'epoch': 0.51}
+Model weights saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-2000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-2000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-2000/special_tokens_map.json
+ 19%|█▉        | 3000/15624 [10:08<39:56,  5.27it/s]***** Running Evaluation *****
+{'loss': 0.3782, 'learning_rate': 2.7753692560175058e-05, 'epoch': 0.54}
+{'loss': 0.3711, 'learning_rate': 2.7548550328227573e-05, 'epoch': 0.56}
+{'loss': 0.3741, 'learning_rate': 2.734340809628009e-05, 'epoch': 0.59}
+{'loss': 0.377, 'learning_rate': 2.7138265864332604e-05, 'epoch': 0.61}
+{'loss': 0.3691, 'learning_rate': 2.6933123632385123e-05, 'epoch': 0.64}
+{'loss': 0.371, 'learning_rate': 2.6727981400437638e-05, 'epoch': 0.67}
+{'loss': 0.369, 'learning_rate': 2.6522839168490154e-05, 'epoch': 0.69}
+{'loss': 0.3508, 'learning_rate': 2.631769693654267e-05, 'epoch': 0.72}
+{'loss': 0.3524, 'learning_rate': 2.6112554704595188e-05, 'epoch': 0.74}
+{'loss': 0.3623, 'learning_rate': 2.5907412472647703e-05, 'epoch': 0.77}
+  Num examples = 64567
+  Batch size = 16
+ 19%|█▉        | 3000/15624 [10:26<39:56,  5.27it/sSaving model checkpoint to ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-3000
+Configuration saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-3000/config.json
+{'eval_loss': 0.7671940922737122, 'eval_accuracy': 0.689469853020893, 'eval_f1': 0.683994539022645, 'eval_matthews_correlation': 0.371144773097767, 'eval_precision': 0.6832287419753628, 'eval_recall': 0.6879460082418658, 'eval_confusion_matrix': [[18009, 8497], [11553, 26508]], 'eval_runtime': 18.4042, 'eval_samples_per_second': 3508.281, 'eval_steps_per_second': 54.825, 'epoch': 0.77}
+Model weights saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-3000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-3000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-3000/special_tokens_map.json
+ 26%|██▌       | 4000/15624 [13:37<36:30,  5.31it/s]***** Running Evaluation *****
+{'loss': 0.3548, 'learning_rate': 2.570227024070022e-05, 'epoch': 0.79}
+{'loss': 0.3509, 'learning_rate': 2.5497128008752734e-05, 'epoch': 0.82}
+{'loss': 0.3482, 'learning_rate': 2.5291985776805253e-05, 'epoch': 0.84}
+{'loss': 0.3491, 'learning_rate': 2.5086843544857768e-05, 'epoch': 0.87}
+{'loss': 0.3458, 'learning_rate': 2.4881701312910287e-05, 'epoch': 0.9}
+{'loss': 0.3376, 'learning_rate': 2.4676559080962802e-05, 'epoch': 0.92}
+{'loss': 0.3419, 'learning_rate': 2.4471416849015317e-05, 'epoch': 0.95}
+{'loss': 0.3347, 'learning_rate': 2.426832603938731e-05, 'epoch': 0.97}
+{'loss': 0.3311, 'learning_rate': 2.4063183807439826e-05, 'epoch': 1.0}
+{'loss': 0.3347, 'learning_rate': 2.3858041575492345e-05, 'epoch': 1.02}
+  Num examples = 64567
+  Batch size = 16
+ 26%|██▌       | 4000/15624 [13:55<36:30,  5.31it/sSaving model checkpoint to ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-4000
+Configuration saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-4000/config.json
+{'eval_loss': 0.7769767045974731, 'eval_accuracy': 0.6940387504452739, 'eval_f1': 0.6834740387997085, 'eval_matthews_correlation': 0.3669681450426513, 'eval_precision': 0.6837431411544965, 'eval_recall': 0.6832253691619619, 'eval_confusion_matrix': [[16508, 9998], [9757, 28304]], 'eval_runtime': 18.3788, 'eval_samples_per_second': 3513.124, 'eval_steps_per_second': 54.9, 'epoch': 1.02}
+Model weights saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-4000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-4000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-4000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-1000] due to args.save_total_limit
+ 32%|███▏      | 5000/15624 [17:05<33:31,  5.28it/s]***** Running Evaluation *****
+{'loss': 0.3259, 'learning_rate': 2.365289934354486e-05, 'epoch': 1.05}
+{'loss': 0.3326, 'learning_rate': 2.3447757111597375e-05, 'epoch': 1.08}
+{'loss': 0.3252, 'learning_rate': 2.3244666301969368e-05, 'epoch': 1.1}
+{'loss': 0.3264, 'learning_rate': 2.3039524070021884e-05, 'epoch': 1.13}
+{'loss': 0.3213, 'learning_rate': 2.28343818380744e-05, 'epoch': 1.15}
+{'loss': 0.3273, 'learning_rate': 2.2629239606126914e-05, 'epoch': 1.18}
+{'loss': 0.3256, 'learning_rate': 2.2424097374179433e-05, 'epoch': 1.2}
+{'loss': 0.3263, 'learning_rate': 2.221895514223195e-05, 'epoch': 1.23}
+{'loss': 0.3235, 'learning_rate': 2.2013812910284464e-05, 'epoch': 1.25}
+{'loss': 0.321, 'learning_rate': 2.180867067833698e-05, 'epoch': 1.28}
+  Num examples = 64567
+  Batch size = 16
+ 32%|███▏      | 5000/15624 [17:24<33:31,  5.28it/sSaving model checkpoint to ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-5000
+Configuration saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-5000/config.json
+{'eval_loss': 0.8973237872123718, 'eval_accuracy': 0.6939458237179984, 'eval_f1': 0.6863250354137085, 'eval_matthews_correlation': 0.37341085282909287, 'eval_precision': 0.6853322105324597, 'eval_recall': 0.688088817116506, 'eval_confusion_matrix': [[17371, 9135], [10626, 27435]], 'eval_runtime': 18.4088, 'eval_samples_per_second': 3507.407, 'eval_steps_per_second': 54.811, 'epoch': 1.28}
+Model weights saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-5000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-5000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-5000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-2000] due to args.save_total_limit
+ 38%|███▊      | 6000/15624 [20:34<30:17,  5.30it/s]***** Running Evaluation *****
+{'loss': 0.3233, 'learning_rate': 2.1603528446389498e-05, 'epoch': 1.31}
+{'loss': 0.3239, 'learning_rate': 2.1398386214442013e-05, 'epoch': 1.33}
+{'loss': 0.3142, 'learning_rate': 2.119324398249453e-05, 'epoch': 1.36}
+{'loss': 0.3111, 'learning_rate': 2.0988101750547044e-05, 'epoch': 1.38}
+{'loss': 0.3143, 'learning_rate': 2.0782959518599563e-05, 'epoch': 1.41}
+{'loss': 0.3097, 'learning_rate': 2.057781728665208e-05, 'epoch': 1.43}
+{'loss': 0.3148, 'learning_rate': 2.0372675054704597e-05, 'epoch': 1.46}
+{'loss': 0.3125, 'learning_rate': 2.0167532822757112e-05, 'epoch': 1.48}
+{'loss': 0.304, 'learning_rate': 1.996239059080963e-05, 'epoch': 1.51}
+{'loss': 0.3142, 'learning_rate': 1.9757248358862146e-05, 'epoch': 1.54}
+  Num examples = 64567
+  Batch size = 16
+ 38%|███▊      | 6000/15624 [20:52<30:17,  5.30it/sSaving model checkpoint to ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-6000
+Configuration saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-6000/config.json
+{'eval_loss': 0.8698903918266296, 'eval_accuracy': 0.6969814301423328, 'eval_f1': 0.6905277865925304, 'eval_matthews_correlation': 0.3827615562482778, 'eval_precision': 0.6894376912057535, 'eval_recall': 0.6933437955365478, 'eval_confusion_matrix': [[17839, 8667], [10898, 27163]], 'eval_runtime': 18.3853, 'eval_samples_per_second': 3511.876, 'eval_steps_per_second': 54.881, 'epoch': 1.54}
+Model weights saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-6000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-6000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-6000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-3000] due to args.save_total_limit
+ 45%|████▍     | 7000/15624 [24:03<27:11,  5.29it/s]***** Running Evaluation *****
+{'loss': 0.3165, 'learning_rate': 1.9552106126914662e-05, 'epoch': 1.56}
+{'loss': 0.3132, 'learning_rate': 1.9346963894967177e-05, 'epoch': 1.59}
+{'loss': 0.3048, 'learning_rate': 1.9141821663019692e-05, 'epoch': 1.61}
+{'loss': 0.3077, 'learning_rate': 1.893667943107221e-05, 'epoch': 1.64}
+{'loss': 0.3143, 'learning_rate': 1.8731537199124727e-05, 'epoch': 1.66}
+{'loss': 0.3076, 'learning_rate': 1.8526394967177242e-05, 'epoch': 1.69}
+{'loss': 0.3101, 'learning_rate': 1.8321252735229757e-05, 'epoch': 1.72}
+{'loss': 0.3014, 'learning_rate': 1.8116110503282276e-05, 'epoch': 1.74}
+{'loss': 0.3025, 'learning_rate': 1.791096827133479e-05, 'epoch': 1.77}
+{'loss': 0.3024, 'learning_rate': 1.770582603938731e-05, 'epoch': 1.79}
+  Num examples = 64567
+  Batch size = 16
+ 45%|████▍     | 7000/15624 [24:21<27:11,  5.29it/sSaving model checkpoint to ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-7000
+Configuration saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-7000/config.json
+{'eval_loss': 0.9697597026824951, 'eval_accuracy': 0.6956804559604751, 'eval_f1': 0.6905896794460313, 'eval_matthews_correlation': 0.38483111978546514, 'eval_precision': 0.689881475302387, 'eval_recall': 0.6949834633940636, 'eval_confusion_matrix': [[18318, 8188], [11461, 26600]], 'eval_runtime': 18.3964, 'eval_samples_per_second': 3509.753, 'eval_steps_per_second': 54.848, 'epoch': 1.79}
+Model weights saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-7000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-7000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-7000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-4000] due to args.save_total_limit
+ 51%|█████     | 8000/15624 [27:31<24:07,  5.27it/s]***** Running Evaluation *****
+{'loss': 0.2979, 'learning_rate': 1.7500683807439825e-05, 'epoch': 1.82}
+{'loss': 0.2944, 'learning_rate': 1.7295541575492344e-05, 'epoch': 1.84}
+{'loss': 0.2977, 'learning_rate': 1.709039934354486e-05, 'epoch': 1.87}
+{'loss': 0.2999, 'learning_rate': 1.6885257111597375e-05, 'epoch': 1.89}
+{'loss': 0.2972, 'learning_rate': 1.668011487964989e-05, 'epoch': 1.92}
+{'loss': 0.2909, 'learning_rate': 1.6477024070021883e-05, 'epoch': 1.95}
+{'loss': 0.2934, 'learning_rate': 1.62718818380744e-05, 'epoch': 1.97}
+{'loss': 0.2885, 'learning_rate': 1.6066739606126914e-05, 'epoch': 2.0}
+{'loss': 0.2896, 'learning_rate': 1.5861597374179433e-05, 'epoch': 2.02}
+{'loss': 0.2837, 'learning_rate': 1.5656455142231948e-05, 'epoch': 2.05}
+  Num examples = 64567
+  Batch size = 16
+ 51%|█████     | 8000/15624 [27:49<24:07,  5.27it/sSaving model checkpoint to ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-8000
+Configuration saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-8000/config.json
+{'eval_loss': 0.9843536019325256, 'eval_accuracy': 0.6969659423544535, 'eval_f1': 0.6946946784774424, 'eval_matthews_correlation': 0.40157898210282655, 'eval_precision': 0.6975520852473884, 'eval_recall': 0.7040799501873066, 'eval_confusion_matrix': [[19716, 6790], [12776, 25285]], 'eval_runtime': 18.4236, 'eval_samples_per_second': 3504.579, 'eval_steps_per_second': 54.767, 'epoch': 2.05}
+Model weights saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-8000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-8000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-8000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-5000] due to args.save_total_limit
+ 58%|█████▊    | 9000/15624 [31:00<20:50,  5.30it/s]***** Running Evaluation *****
+{'loss': 0.2779, 'learning_rate': 1.5451312910284464e-05, 'epoch': 2.07}
+{'loss': 0.2881, 'learning_rate': 1.524617067833698e-05, 'epoch': 2.1}
+{'loss': 0.2829, 'learning_rate': 1.5041028446389496e-05, 'epoch': 2.12}
+{'loss': 0.2856, 'learning_rate': 1.4835886214442015e-05, 'epoch': 2.15}
+{'loss': 0.2864, 'learning_rate': 1.463074398249453e-05, 'epoch': 2.18}
+{'loss': 0.2847, 'learning_rate': 1.4425601750547047e-05, 'epoch': 2.2}
+{'loss': 0.2916, 'learning_rate': 1.4220459518599562e-05, 'epoch': 2.23}
+{'loss': 0.2868, 'learning_rate': 1.401531728665208e-05, 'epoch': 2.25}
+{'loss': 0.2857, 'learning_rate': 1.3810175054704595e-05, 'epoch': 2.28}
+{'loss': 0.2795, 'learning_rate': 1.3605032822757112e-05, 'epoch': 2.3}
+  Num examples = 64567
+  Batch size = 16
+ 58%|█████▊    | 9000/15624 [31:18<20:50,  5.30it/sSaving model checkpoint to ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-9000
+Configuration saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-9000/config.json
+{'eval_loss': 0.9960336685180664, 'eval_accuracy': 0.7032230086576734, 'eval_f1': 0.6977978943417371, 'eval_matthews_correlation': 0.39850660114158354, 'eval_precision': 0.6968177675664948, 'eval_recall': 0.7017189722210471, 'eval_confusion_matrix': [[18377, 8129], [11033, 27028]], 'eval_runtime': 18.3792, 'eval_samples_per_second': 3513.045, 'eval_steps_per_second': 54.899, 'epoch': 2.3}
+Model weights saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-9000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-9000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-9000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-6000] due to args.save_total_limit
+ 64%|██████▍   | 10000/15624 [34:28<17:41,  5.30it/s]***** Running Evaluation *****
+{'loss': 0.2825, 'learning_rate': 1.3399890590809627e-05, 'epoch': 2.33}
+{'loss': 0.2916, 'learning_rate': 1.3194748358862146e-05, 'epoch': 2.36}
+{'loss': 0.2853, 'learning_rate': 1.2989606126914661e-05, 'epoch': 2.38}
+{'loss': 0.2826, 'learning_rate': 1.2784463894967178e-05, 'epoch': 2.41}
+{'loss': 0.2825, 'learning_rate': 1.2579321663019694e-05, 'epoch': 2.43}
+{'loss': 0.2794, 'learning_rate': 1.2376230853391685e-05, 'epoch': 2.46}
+{'loss': 0.2818, 'learning_rate': 1.2171088621444202e-05, 'epoch': 2.48}
+{'loss': 0.2973, 'learning_rate': 1.1965946389496718e-05, 'epoch': 2.51}
+{'loss': 0.2796, 'learning_rate': 1.1760804157549235e-05, 'epoch': 2.53}
+{'loss': 0.292, 'learning_rate': 1.155566192560175e-05, 'epoch': 2.56}
+  Num examples = 64567
+  Batch size = 16
+ 64%|██████▍   | 10000/15624 [34:47<17:41,  5.30it/Saving model checkpoint to ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-10000
+Configuration saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-10000/config.json
+{'eval_loss': 1.0412077903747559, 'eval_accuracy': 0.6991961838090666, 'eval_f1': 0.6963903767241576, 'eval_matthews_correlation': 0.4025451643027722, 'eval_precision': 0.6980407843345715, 'eval_recall': 0.704557119191406, 'eval_confusion_matrix': [[19469, 7037], [12385, 25676]], 'eval_runtime': 18.394, 'eval_samples_per_second': 3510.225, 'eval_steps_per_second': 54.855, 'epoch': 2.56}
+Model weights saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-10000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-10000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-10000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-7000] due to args.save_total_limit
+ 70%|███████   | 11000/15624 [38:45<14:31,  5.31it/s]***** Running Evaluation *****
+{'loss': 0.2891, 'learning_rate': 1.1350519693654267e-05, 'epoch': 2.59}
+{'loss': 0.2799, 'learning_rate': 1.1145377461706784e-05, 'epoch': 2.61}
+{'loss': 0.2727, 'learning_rate': 1.0940235229759301e-05, 'epoch': 2.64}
+{'loss': 0.278, 'learning_rate': 1.0735092997811817e-05, 'epoch': 2.66}
+{'loss': 0.2808, 'learning_rate': 1.0529950765864334e-05, 'epoch': 2.69}
+{'loss': 0.2783, 'learning_rate': 1.0324808533916849e-05, 'epoch': 2.71}
+{'loss': 0.276, 'learning_rate': 1.0119666301969366e-05, 'epoch': 2.74}
+{'loss': 0.2747, 'learning_rate': 9.914524070021881e-06, 'epoch': 2.76}
+{'loss': 0.2793, 'learning_rate': 9.7093818380744e-06, 'epoch': 2.79}
+{'loss': 0.2745, 'learning_rate': 9.504239606126915e-06, 'epoch': 2.82}
+  Num examples = 64567
+  Batch size = 16
+ 70%|███████   | 11000/15624 [39:04<14:31,  5.31it/Saving model checkpoint to ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-11000
+Configuration saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-11000/config.json
+{'eval_loss': 1.0876578092575073, 'eval_accuracy': 0.7027893505970543, 'eval_f1': 0.6993205812991707, 'eval_matthews_correlation': 0.4059729809235812, 'eval_precision': 0.699837986165317, 'eval_recall': 0.7061846003387402, 'eval_confusion_matrix': [[19221, 7285], [11905, 26156]], 'eval_runtime': 18.3942, 'eval_samples_per_second': 3510.191, 'eval_steps_per_second': 54.854, 'epoch': 2.82}
+Model weights saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-11000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-11000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-11000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-8000] due to args.save_total_limit
+ 77%|███████▋  | 12000/15624 [42:14<11:24,  5.30it/s]***** Running Evaluation *****
+{'loss': 0.2804, 'learning_rate': 9.29909737417943e-06, 'epoch': 2.84}
+{'loss': 0.2771, 'learning_rate': 9.093955142231948e-06, 'epoch': 2.87}
+{'loss': 0.2753, 'learning_rate': 8.888812910284463e-06, 'epoch': 2.89}
+{'loss': 0.2672, 'learning_rate': 8.68367067833698e-06, 'epoch': 2.92}
+{'loss': 0.2743, 'learning_rate': 8.478528446389496e-06, 'epoch': 2.94}
+{'loss': 0.272, 'learning_rate': 8.273386214442014e-06, 'epoch': 2.97}
+{'loss': 0.2742, 'learning_rate': 8.06824398249453e-06, 'epoch': 3.0}
+{'loss': 0.2711, 'learning_rate': 7.863101750547047e-06, 'epoch': 3.02}
+{'loss': 0.266, 'learning_rate': 7.657959518599562e-06, 'epoch': 3.05}
+{'loss': 0.2639, 'learning_rate': 7.452817286652079e-06, 'epoch': 3.07}
+  Num examples = 64567
+  Batch size = 16
+ 77%|███████▋  | 12000/15624 [42:32<11:24,  5.30it/Saving model checkpoint to ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-12000
+Configuration saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-12000/config.json
+{'eval_loss': 1.082876205444336, 'eval_accuracy': 0.6985766722938963, 'eval_f1': 0.695605548689199, 'eval_matthews_correlation': 0.4003505643490946, 'eval_precision': 0.6969778648444966, 'eval_recall': 0.7034246011616221, 'eval_confusion_matrix': [[19363, 7143], [12319, 25742]], 'eval_runtime': 18.3675, 'eval_samples_per_second': 3515.284, 'eval_steps_per_second': 54.934, 'epoch': 3.07}
+Model weights saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-12000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-12000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-12000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-9000] due to args.save_total_limit
+ 83%|████████▎ | 13000/15624 [45:42<08:15,  5.30it/s]***** Running Evaluation *****
+{'loss': 0.2736, 'learning_rate': 7.24972647702407e-06, 'epoch': 3.1}
+{'loss': 0.2715, 'learning_rate': 7.044584245076587e-06, 'epoch': 3.12}
+{'loss': 0.2693, 'learning_rate': 6.839442013129103e-06, 'epoch': 3.15}
+{'loss': 0.2673, 'learning_rate': 6.634299781181619e-06, 'epoch': 3.17}
+{'loss': 0.2646, 'learning_rate': 6.429157549234136e-06, 'epoch': 3.2}
+{'loss': 0.2665, 'learning_rate': 6.2240153172866525e-06, 'epoch': 3.23}
+{'loss': 0.2595, 'learning_rate': 6.018873085339169e-06, 'epoch': 3.25}
+{'loss': 0.2671, 'learning_rate': 5.813730853391685e-06, 'epoch': 3.28}
+{'loss': 0.2651, 'learning_rate': 5.608588621444202e-06, 'epoch': 3.3}
+{'loss': 0.2648, 'learning_rate': 5.403446389496718e-06, 'epoch': 3.33}
+  Num examples = 64567
+  Batch size = 16
+ 83%|████████▎ | 13000/15624 [46:01<08:15,  5.30it/Saving model checkpoint to ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-13000
+Configuration saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-13000/config.json
+{'eval_loss': 1.154534935951233, 'eval_accuracy': 0.6984063066272245, 'eval_f1': 0.6948976697241203, 'eval_matthews_correlation': 0.3971145031180019, 'eval_precision': 0.6954750690191815, 'eval_recall': 0.7016880328754134, 'eval_confusion_matrix': [[19085, 7421], [12052, 26009]], 'eval_runtime': 18.3865, 'eval_samples_per_second': 3511.66, 'eval_steps_per_second': 54.877, 'epoch': 3.33}
+Model weights saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-13000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-13000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-13000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-10000] due to args.save_total_limit
+ 90%|████████▉ | 14000/15624 [49:11<05:06,  5.29it/s]***** Running Evaluation *****
+{'loss': 0.2634, 'learning_rate': 5.198304157549234e-06, 'epoch': 3.35}
+{'loss': 0.2573, 'learning_rate': 4.9931619256017514e-06, 'epoch': 3.38}
+{'loss': 0.265, 'learning_rate': 4.788019693654268e-06, 'epoch': 3.4}
+{'loss': 0.2741, 'learning_rate': 4.582877461706783e-06, 'epoch': 3.43}
+{'loss': 0.2668, 'learning_rate': 4.377735229759299e-06, 'epoch': 3.46}
+{'loss': 0.2647, 'learning_rate': 4.172592997811816e-06, 'epoch': 3.48}
+{'loss': 0.2627, 'learning_rate': 3.9674507658643325e-06, 'epoch': 3.51}
+{'loss': 0.2665, 'learning_rate': 3.762308533916849e-06, 'epoch': 3.53}
+{'loss': 0.2645, 'learning_rate': 3.5571663019693653e-06, 'epoch': 3.56}
+{'loss': 0.2645, 'learning_rate': 3.352024070021882e-06, 'epoch': 3.58}
+  Num examples = 64567
+  Batch size = 16
+ 90%|████████▉ | 14000/15624 [49:29<05:06,  5.29it/Saving model checkpoint to ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-14000
+Configuration saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-14000/config.json
+{'eval_loss': 1.1382769346237183, 'eval_accuracy': 0.701751668809144, 'eval_f1': 0.6976281995475561, 'eval_matthews_correlation': 0.40079146305366425, 'eval_precision': 0.6974550447720774, 'eval_recall': 0.7033802137622218, 'eval_confusion_matrix': [[18885, 7621], [11636, 26425]], 'eval_runtime': 18.3633, 'eval_samples_per_second': 3516.097, 'eval_steps_per_second': 54.947, 'epoch': 3.58}
+Model weights saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-14000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-14000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-14000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-12000] due to args.save_total_limit
+ 96%|█████████▌| 15000/15624 [52:39<01:57,  5.30it/s]***** Running Evaluation *****
+{'loss': 0.2549, 'learning_rate': 3.146881838074398e-06, 'epoch': 3.61}
+{'loss': 0.2622, 'learning_rate': 2.9417396061269148e-06, 'epoch': 3.64}
+{'loss': 0.2581, 'learning_rate': 2.736597374179431e-06, 'epoch': 3.66}
+{'loss': 0.2557, 'learning_rate': 2.5335065645514223e-06, 'epoch': 3.69}
+{'loss': 0.259, 'learning_rate': 2.3283643326039385e-06, 'epoch': 3.71}
+{'loss': 0.264, 'learning_rate': 2.123222100656455e-06, 'epoch': 3.74}
+{'loss': 0.2659, 'learning_rate': 1.918079868708972e-06, 'epoch': 3.76}
+{'loss': 0.2568, 'learning_rate': 1.712937636761488e-06, 'epoch': 3.79}
+{'loss': 0.2632, 'learning_rate': 1.5077954048140044e-06, 'epoch': 3.81}
+{'loss': 0.2623, 'learning_rate': 1.3026531728665206e-06, 'epoch': 3.84}
+  Num examples = 64567
+  Batch size = 16
+ 96%|█████████▌| 15000/15624 [52:58<01:57,  5.30it/Saving model checkpoint to ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-15000
+Configuration saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-15000/config.json
+{'eval_loss': 1.170677661895752, 'eval_accuracy': 0.7031610575061564, 'eval_f1': 0.699329230505348, 'eval_matthews_correlation': 0.40491703722261685, 'eval_precision': 0.6994087272787556, 'eval_recall': 0.7055549539764422, 'eval_confusion_matrix': [[19056, 7450], [11716, 26345]], 'eval_runtime': 18.3704, 'eval_samples_per_second': 3514.729, 'eval_steps_per_second': 54.925, 'epoch': 3.84}
+Model weights saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-15000/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-15000/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-15000/special_tokens_map.json
+Deleting older checkpoint [../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-11000] due to args.save_total_limit
+100%|██████████| 15624/15624 [54:57<00:00,  5.28it/s]  
+{'loss': 0.2561, 'learning_rate': 1.0975109409190373e-06, 'epoch': 3.87}
+{'loss': 0.2571, 'learning_rate': 8.923687089715536e-07, 'epoch': 3.89}
+{'loss': 0.2605, 'learning_rate': 6.872264770240701e-07, 'epoch': 3.92}
+{'loss': 0.2663, 'learning_rate': 4.820842450765864e-07, 'epoch': 3.94}
+{'loss': 0.27, 'learning_rate': 2.7694201312910284e-07, 'epoch': 3.97}
+{'loss': 0.2546, 'learning_rate': 7.179978118161925e-08, 'epoch': 3.99}
+
+Training completed. Do not forget to share your model on huggingface.co/models =)
+
+
+Loading best model from ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/checkpoint-15000 (score: 0.699329230505348).
+100%|██████████| 15624/15624 [54:57<00:00,  4.74it/s]
+{'train_runtime': 3297.5143, 'train_samples_per_second': 606.517, 'train_steps_per_second': 4.738, 'train_loss': 0.31668369140126923, 'epoch': 4.0}
+***** Running Evaluation *****
+  Num examples = 64567
+  Batch size = 16
+100%|██████████| 1009/1009 [00:18<00:00, 54.58it/s]
+Configuration saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/best/config.json
+Model weights saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/best/pytorch_model.bin
+tokenizer config file saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/best/tokenizer_config.json
+Special tokens file saved in ../finetuned_models/per_species_models_v2/klebsiella_pneumoniae/best/special_tokens_map.json

@@ -1,0 +1,1 @@
+{"columns": ["Actual", "Predicted", "nPredictions"], "data": [["Resistant", "Resistant", 14839.0], ["Resistant", "Susceptible", 5113.0], ["Susceptible", "Resistant", 7397.0], ["Susceptible", "Susceptible", 10181.0]]}

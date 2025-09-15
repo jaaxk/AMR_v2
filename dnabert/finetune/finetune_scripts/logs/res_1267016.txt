@@ -1,0 +1,416 @@
+wandb: Appending key for api.wandb.ai to your netrc file: /gpfs/home/jvaska/.netrc
+wandb: W&B API key is configured. Use `wandb login --relogin` to force relogin
+Running finetuning with dataset ../data/per_species/dnabert_finetune_dataset_augmented_v2/dnabert_finetune_dataset_augmented_v2 and run name per_species_models_v2_dnabert_finetune_dataset_augmented_v2
+Traceback (most recent call last):
+Traceback (most recent call last):
+  File "../train.py", line 390, in <module>
+Traceback (most recent call last):
+  File "../train.py", line 390, in <module>
+wandb: Using wandb-core as the SDK backend.  Please refer to https://wandb.me/wandb-core for more information.
+  File "../train.py", line 390, in <module>
+    train()    
+train()  File "../train.py", line 299, in train
+
+      File "../train.py", line 299, in train
+train()
+  File "../train.py", line 299, in train
+    train_dataset = SupervisedDataset(tokenizer=tokenizer, 
+      File "../train.py", line 133, in __init__
+train_dataset = SupervisedDataset(tokenizer=tokenizer, 
+  File "../train.py", line 133, in __init__
+    train_dataset = SupervisedDataset(tokenizer=tokenizer, 
+  File "../train.py", line 133, in __init__
+    with open(data_path, "r") as f:
+    FileNotFoundErrorwith open(data_path, "r") as f:: 
+[Errno 2] No such file or directory: '../data/per_species/dnabert_finetune_dataset_augmented_v2/dnabert_finetune_dataset_augmented_v2/train.csv'    FileNotFoundError
+with open(data_path, "r") as f:: 
+[Errno 2] No such file or directory: '../data/per_species/dnabert_finetune_dataset_augmented_v2/dnabert_finetune_dataset_augmented_v2/train.csv'FileNotFoundError
+: [Errno 2] No such file or directory: '../data/per_species/dnabert_finetune_dataset_augmented_v2/dnabert_finetune_dataset_augmented_v2/train.csv'
+wandb: Currently logged in as: jackvaska8 (jackvaska8-stony-brook-university) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: Tracking run with wandb version 0.19.9
+wandb: Run data is saved locally in /gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/finetune/finetune_scripts/wandb/run-20250909_114333-55m7c99g
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run per_species_models_v2_dnabert_finetune_dataset_augmented_v2
+wandb: ⭐️ View project at https://wandb.ai/jackvaska8-stony-brook-university/AMR-DNABERT2-finetune
+wandb: 🚀 View run at https://wandb.ai/jackvaska8-stony-brook-university/AMR-DNABERT2-finetune/runs/55m7c99g
+Traceback (most recent call last):
+  File "../train.py", line 390, in <module>
+    train()
+  File "../train.py", line 299, in train
+    train_dataset = SupervisedDataset(tokenizer=tokenizer,
+  File "../train.py", line 133, in __init__
+    with open(data_path, "r") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '../data/per_species/dnabert_finetune_dataset_augmented_v2/dnabert_finetune_dataset_augmented_v2/train.csv'
+[1;34mwandb[0m: 
+[1;34mwandb[0m: 🚀 View run [33mper_species_models_v2_dnabert_finetune_dataset_augmented_v2[0m at: [34mhttps://wandb.ai/jackvaska8-stony-brook-university/AMR-DNABERT2-finetune/runs/55m7c99g[0m
+[1;34mwandb[0m: Find logs at: [1;35mwandb/run-20250909_114333-55m7c99g/logs[0m
+ERROR:torch.distributed.elastic.multiprocessing.api:failed (exitcode: 1) local_rank: 0 (pid: 637337) of binary: /gpfs/scratch/jvaska/envs/dna/bin/python3.8
+Traceback (most recent call last):
+  File "/gpfs/scratch/jvaska/envs/dna/bin/torchrun", line 8, in <module>
+    sys.exit(main())
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 346, in wrapper
+    return f(*args, **kwargs)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/site-packages/torch/distributed/run.py", line 762, in main
+    run(args)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/site-packages/torch/distributed/run.py", line 753, in run
+    elastic_launch(
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/site-packages/torch/distributed/launcher/api.py", line 132, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/site-packages/torch/distributed/launcher/api.py", line 246, in launch_agent
+    raise ChildFailedError(
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+../train.py FAILED
+------------------------------------------------------------
+Failures:
+[1]:
+  time      : 2025-09-09_11:43:36
+  host      : a100-04.cm.cluster
+  rank      : 1 (local_rank: 1)
+  exitcode  : 1 (pid: 637338)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+[2]:
+  time      : 2025-09-09_11:43:36
+  host      : a100-04.cm.cluster
+  rank      : 2 (local_rank: 2)
+  exitcode  : 1 (pid: 637339)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+[3]:
+  time      : 2025-09-09_11:43:36
+  host      : a100-04.cm.cluster
+  rank      : 3 (local_rank: 3)
+  exitcode  : 1 (pid: 637340)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2025-09-09_11:43:36
+  host      : a100-04.cm.cluster
+  rank      : 0 (local_rank: 0)
+  exitcode  : 1 (pid: 637337)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================
+Best model directory: ../finetuned_models/per_species_models_v2/dnabert_finetune_dataset_augmented_v2/best
+cp: target '../finetuned_models/per_species_models_v2/dnabert_finetune_dataset_augmented_v2/best' is not a directory
+cp: cannot create regular file '../finetuned_models/per_species_models_v2/dnabert_finetune_dataset_augmented_v2/best/run_script.txt': No such file or directory
+Running finetuning with dataset ../data/per_species/dnabert_finetune_dataset_augmented_v2/pseudomonas_aeruginosa and run name per_species_models_v2_pseudomonas_aeruginosa
+wandb: Using wandb-core as the SDK backend.  Please refer to https://wandb.me/wandb-core for more information.
+wandb: Currently logged in as: jackvaska8 (jackvaska8-stony-brook-university) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: Tracking run with wandb version 0.19.9
+wandb: Run data is saved locally in /gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/finetune/finetune_scripts/wandb/run-20250909_114344-eeebu7fd
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run per_species_models_v2_pseudomonas_aeruginosa
+wandb: ⭐️ View project at https://wandb.ai/jackvaska8-stony-brook-university/AMR-DNABERT2-finetune
+wandb: 🚀 View run at https://wandb.ai/jackvaska8-stony-brook-university/AMR-DNABERT2-finetune/runs/eeebu7fd
+WARNING:root:Perform single sequence classification (no additional features)...
+WARNING:root:Perform single sequence classification (no additional features)...
+WARNING:root:Perform single sequence classification (no additional features)...
+WARNING:root:Perform single sequence classification (no additional features)...
+--- Logging error ---
+Traceback (most recent call last):
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 1085, in emit
+    msg = self.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 929, in format
+    return fmt.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 668, in format
+    record.message = record.getMessage()
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 373, in getMessage
+    msg = msg % self.args
+TypeError: not all arguments converted during string formatting
+Call stack:
+  File "../train.py", line 390, in <module>
+    train()
+  File "../train.py", line 299, in train
+    train_dataset = SupervisedDataset(tokenizer=tokenizer,
+  File "../train.py", line 169, in __init__
+    logging.warning("Number of labels:", self.num_labels)
+Message: 'Number of labels:'
+Arguments: (2,)
+--- Logging error ---
+Traceback (most recent call last):
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 1085, in emit
+    msg = self.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 929, in format
+    return fmt.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 668, in format
+    record.message = record.getMessage()
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 373, in getMessage
+    msg = msg % self.args
+TypeError: not all arguments converted during string formatting
+Call stack:
+  File "../train.py", line 390, in <module>
+    train()
+  File "../train.py", line 299, in train
+    train_dataset = SupervisedDataset(tokenizer=tokenizer,
+  File "../train.py", line 169, in __init__
+    logging.warning("Number of labels:", self.num_labels)
+Message: 'Number of labels:'
+Arguments: (2,)
+--- Logging error ---
+Traceback (most recent call last):
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 1085, in emit
+    msg = self.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 929, in format
+    return fmt.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 668, in format
+    record.message = record.getMessage()
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 373, in getMessage
+    msg = msg % self.args
+TypeError: not all arguments converted during string formatting
+Call stack:
+  File "../train.py", line 390, in <module>
+    train()
+  File "../train.py", line 299, in train
+    train_dataset = SupervisedDataset(tokenizer=tokenizer,
+  File "../train.py", line 169, in __init__
+    logging.warning("Number of labels:", self.num_labels)
+Message: 'Number of labels:'
+Arguments: (2,)
+WARNING:root:Perform single sequence classification (no additional features)...
+--- Logging error ---
+Traceback (most recent call last):
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 1085, in emit
+    msg = self.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 929, in format
+    return fmt.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 668, in format
+    record.message = record.getMessage()
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 373, in getMessage
+    msg = msg % self.args
+TypeError: not all arguments converted during string formatting
+Call stack:
+  File "../train.py", line 390, in <module>
+    train()
+  File "../train.py", line 299, in train
+    train_dataset = SupervisedDataset(tokenizer=tokenizer,
+  File "../train.py", line 169, in __init__
+    logging.warning("Number of labels:", self.num_labels)
+Message: 'Number of labels:'
+Arguments: (2,)
+--- Logging error ---
+Traceback (most recent call last):
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 1085, in emit
+    msg = self.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 929, in format
+    return fmt.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 668, in format
+    record.message = record.getMessage()
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 373, in getMessage
+    msg = msg % self.args
+TypeError: not all arguments converted during string formatting
+Call stack:
+  File "../train.py", line 390, in <module>
+    train()
+  File "../train.py", line 302, in train
+    val_dataset = SupervisedDataset(tokenizer=tokenizer,
+  File "../train.py", line 169, in __init__
+    logging.warning("Number of labels:", self.num_labels)
+Message: 'Number of labels:'
+Arguments: (2,)
+WARNING:root:Perform single sequence classification (no additional features)...
+WARNING:root:Perform single sequence classification (no additional features)...
+WARNING:root:Perform single sequence classification (no additional features)...
+--- Logging error ---
+Traceback (most recent call last):
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 1085, in emit
+    msg = self.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 929, in format
+    return fmt.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 668, in format
+    record.message = record.getMessage()
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 373, in getMessage
+    msg = msg % self.args
+TypeError: not all arguments converted during string formatting
+Call stack:
+  File "../train.py", line 390, in <module>
+    train()
+  File "../train.py", line 305, in train
+    test_dataset = SupervisedDataset(tokenizer=tokenizer,
+  File "../train.py", line 169, in __init__
+    logging.warning("Number of labels:", self.num_labels)
+Message: 'Number of labels:'
+Arguments: (2,)
+--- Logging error ---
+Traceback (most recent call last):
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 1085, in emit
+    msg = self.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 929, in format
+    return fmt.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 668, in format
+    record.message = record.getMessage()
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 373, in getMessage
+    msg = msg % self.args
+TypeError: not all arguments converted during string formatting
+Call stack:
+  File "../train.py", line 390, in <module>
+    train()
+  File "../train.py", line 302, in train
+    val_dataset = SupervisedDataset(tokenizer=tokenizer,
+  File "../train.py", line 169, in __init__
+    logging.warning("Number of labels:", self.num_labels)
+Message: 'Number of labels:'
+Arguments: (2,)
+--- Logging error ---
+Traceback (most recent call last):
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 1085, in emit
+    msg = self.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 929, in format
+    return fmt.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 668, in format
+    record.message = record.getMessage()
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 373, in getMessage
+    msg = msg % self.args
+TypeError: not all arguments converted during string formatting
+Call stack:
+  File "../train.py", line 390, in <module>
+    train()
+  File "../train.py", line 302, in train
+    val_dataset = SupervisedDataset(tokenizer=tokenizer,
+  File "../train.py", line 169, in __init__
+    logging.warning("Number of labels:", self.num_labels)
+Message: 'Number of labels:'
+Arguments: (2,)
+WARNING:root:Perform single sequence classification (no additional features)...
+WARNING:root:Perform single sequence classification (no additional features)...
+--- Logging error ---
+Traceback (most recent call last):
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 1085, in emit
+    msg = self.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 929, in format
+    return fmt.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 668, in format
+    record.message = record.getMessage()
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 373, in getMessage
+    msg = msg % self.args
+TypeError: not all arguments converted during string formatting
+Call stack:
+  File "../train.py", line 390, in <module>
+    train()
+  File "../train.py", line 305, in train
+    test_dataset = SupervisedDataset(tokenizer=tokenizer,
+  File "../train.py", line 169, in __init__
+    logging.warning("Number of labels:", self.num_labels)
+Message: 'Number of labels:'
+Arguments: (2,)
+--- Logging error ---
+Traceback (most recent call last):
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 1085, in emit
+    msg = self.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 929, in format
+    return fmt.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 668, in format
+    record.message = record.getMessage()
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 373, in getMessage
+    msg = msg % self.args
+TypeError: not all arguments converted during string formatting
+Call stack:
+  File "../train.py", line 390, in <module>
+    train()
+  File "../train.py", line 305, in train
+    test_dataset = SupervisedDataset(tokenizer=tokenizer,
+  File "../train.py", line 169, in __init__
+    logging.warning("Number of labels:", self.num_labels)
+Message: 'Number of labels:'
+Arguments: (2,)
+Initializing CUSTOM BertForSequenceClassificationInitializing CUSTOM BertForSequenceClassification
+Initializing CUSTOM BertForSequenceClassification
+
+WARNING:root:Perform single sequence classification (no additional features)...
+/gpfs/scratch/jvaska/cache/modules/transformers_modules/bacteria_model/bert_layers.py:126: UserWarning: Unable to import Triton; defaulting MosaicBERT attention implementation to pytorch (this will reduce throughput when using this model).
+  warnings.warn(
+/gpfs/scratch/jvaska/cache/modules/transformers_modules/bacteria_model/bert_layers.py:126: UserWarning: Unable to import Triton; defaulting MosaicBERT attention implementation to pytorch (this will reduce throughput when using this model).
+  warnings.warn(
+/gpfs/scratch/jvaska/cache/modules/transformers_modules/bacteria_model/bert_layers.py:126: UserWarning: Unable to import Triton; defaulting MosaicBERT attention implementation to pytorch (this will reduce throughput when using this model).
+  warnings.warn(
+Dropout layer: Dropout(p=0.1, inplace=False)
+Dropout probability: 0.1
+Dropout layer: Dropout(p=0.1, inplace=False)
+Dropout probability: 0.1
+Dropout layer: Dropout(p=0.1, inplace=False)
+Dropout probability: 0.1
+Some weights of the model checkpoint at ../pretrained_models/bacteria_model were not used when initializing BertForSequenceClassification: ['cls.predictions.transform.dense.bias', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.transform.dense.weight', 'cls.predictions.decoder.bias', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.decoder.weight']
+- This IS expected if you are initializing BertForSequenceClassification from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertForSequenceClassification from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of BertForSequenceClassification were not initialized from the model checkpoint at ../pretrained_models/bacteria_model and are newly initialized: ['classifier.2.bias', 'bert.pooler.dense.bias', 'classifier.0.bias', 'classifier.2.weight', 'classifier.0.weight', 'bert.pooler.dense.weight']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+Some weights of the model checkpoint at ../pretrained_models/bacteria_model were not used when initializing BertForSequenceClassification: ['cls.predictions.decoder.bias', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.dense.bias', 'cls.predictions.decoder.weight', 'cls.predictions.transform.LayerNorm.bias']
+- This IS expected if you are initializing BertForSequenceClassification from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertForSequenceClassification from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of BertForSequenceClassification were not initialized from the model checkpoint at ../pretrained_models/bacteria_model and are newly initialized: ['classifier.2.bias', 'classifier.0.weight', 'classifier.2.weight', 'bert.pooler.dense.weight', 'bert.pooler.dense.bias', 'classifier.0.bias']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+Some weights of the model checkpoint at ../pretrained_models/bacteria_model were not used when initializing BertForSequenceClassification: ['cls.predictions.decoder.weight', 'cls.predictions.decoder.bias', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.dense.bias', 'cls.predictions.transform.LayerNorm.bias']
+- This IS expected if you are initializing BertForSequenceClassification from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertForSequenceClassification from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of BertForSequenceClassification were not initialized from the model checkpoint at ../pretrained_models/bacteria_model and are newly initialized: ['classifier.2.bias', 'bert.pooler.dense.bias', 'classifier.2.weight', 'bert.pooler.dense.weight', 'classifier.0.bias', 'classifier.0.weight']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+--- Logging error ---
+Traceback (most recent call last):
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 1085, in emit
+    msg = self.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 929, in format
+    return fmt.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 668, in format
+    record.message = record.getMessage()
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 373, in getMessage
+    msg = msg % self.args
+TypeError: not all arguments converted during string formatting
+Call stack:
+  File "../train.py", line 390, in <module>
+    train()
+  File "../train.py", line 302, in train
+    val_dataset = SupervisedDataset(tokenizer=tokenizer,
+  File "../train.py", line 169, in __init__
+    logging.warning("Number of labels:", self.num_labels)
+Message: 'Number of labels:'
+Arguments: (2,)
+WARNING:root:Perform single sequence classification (no additional features)...
+--- Logging error ---
+Traceback (most recent call last):
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 1085, in emit
+    msg = self.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 929, in format
+    return fmt.format(record)
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 668, in format
+    record.message = record.getMessage()
+  File "/gpfs/scratch/jvaska/envs/dna/lib/python3.8/logging/__init__.py", line 373, in getMessage
+    msg = msg % self.args
+TypeError: not all arguments converted during string formatting
+Call stack:
+  File "../train.py", line 390, in <module>
+    train()
+  File "../train.py", line 305, in train
+    test_dataset = SupervisedDataset(tokenizer=tokenizer,
+  File "../train.py", line 169, in __init__
+    logging.warning("Number of labels:", self.num_labels)
+Message: 'Number of labels:'
+Arguments: (2,)
+Initializing CUSTOM BertForSequenceClassification
+/gpfs/scratch/jvaska/cache/modules/transformers_modules/bacteria_model/bert_layers.py:126: UserWarning: Unable to import Triton; defaulting MosaicBERT attention implementation to pytorch (this will reduce throughput when using this model).
+  warnings.warn(
+Dropout layer: Dropout(p=0.1, inplace=False)
+Dropout probability: 0.1
+Some weights of the model checkpoint at ../pretrained_models/bacteria_model were not used when initializing BertForSequenceClassification: ['cls.predictions.decoder.weight', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.transform.dense.bias', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.decoder.bias']
+- This IS expected if you are initializing BertForSequenceClassification from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertForSequenceClassification from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of BertForSequenceClassification were not initialized from the model checkpoint at ../pretrained_models/bacteria_model and are newly initialized: ['classifier.0.weight', 'classifier.2.bias', 'classifier.0.bias', 'bert.pooler.dense.weight', 'classifier.2.weight', 'bert.pooler.dense.bias']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+Using cuda_amp half precision backend
+***** Running training *****
+  Num examples = 208,930
+  Num Epochs = 4
+  Instantaneous batch size per device = 8
+  Total train batch size (w. parallel, distributed & accumulation) = 128
+  Gradient Accumulation steps = 4
+  Total optimization steps = 6,528
+  Number of trainable parameters = 117,167,234
+Automatic Weights & Biases logging enabled, to disable set os.environ["WANDB_DISABLED"] = "true"
+  0%|          | 0/6528 [00:00<?, ?it/s][W reducer.cpp:1298] Warning: find_unused_parameters=True was specified in DDP constructor, but did not find any unused parameters in the forward pass. This flag results in an extra traversal of the autograd graph every iteration,  which can adversely affect performance. If your model indeed never has any unused parameters in the forward pass, consider turning this flag off. Note that this warning may be a false positive if your model has flow control causing later iterations to have unused parameters. (function operator())
+[W reducer.cpp:1298] Warning: find_unused_parameters=True was specified in DDP constructor, but did not find any unused parameters in the forward pass. This flag results in an extra traversal of the autograd graph every iteration,  which can adversely affect performance. If your model indeed never has any unused parameters in the forward pass, consider turning this flag off. Note that this warning may be a false positive if your model has flow control causing later iterations to have unused parameters. (function operator())
+[W reducer.cpp:1298] Warning: find_unused_parameters=True was specified in DDP constructor, but did not find any unused parameters in the forward pass. This flag results in an extra traversal of the autograd graph every iteration,  which can adversely affect performance. If your model indeed never has any unused parameters in the forward pass, consider turning this flag off. Note that this warning may be a false positive if your model has flow control causing later iterations to have unused parameters. (function operator())
+[W reducer.cpp:1298] Warning: find_unused_parameters=True was specified in DDP constructor, but did not find any unused parameters in the forward pass. This flag results in an extra traversal of the autograd graph every iteration,  which can adversely affect performance. If your model indeed never has any unused parameters in the forward pass, consider turning this flag off. Note that this warning may be a false positive if your model has flow control causing later iterations to have unused parameters. (function operator())
+  0%|          | 1/6528 [00:02<4:55:02,  2.71s/it]  0%|          | 2/6528 [00:02<2:15:21,  1.24s/it]  0%|          | 3/6528 [00:03<1:23:00,  1.31it/s]  0%|          | 4/6528 [00:03<58:22,  1.86it/s]    0%|          | 5/6528 [00:03<44:54,  2.42it/s]  0%|          | 6/6528 [00:03<36:39,  2.96it/s]  0%|          | 7/6528 [00:03<31:37,  3.44it/s]  0%|          | 8/6528 [00:04<28:06,  3.86it/s]  0%|          | 9/6528 [00:04<25:56,  4.19it/s]  0%|          | 10/6528 [00:04<24:23,  4.45it/s]  0%|          | 11/6528 [00:04<23:16,  4.67it/s]  0%|          | 12/6528 [00:04<22:26,  4.84it/s]  0%|          | 13/6528 [00:05<22:05,  4.91it/s]  0%|          | 14/6528 [00:05<21:39,  5.01it/s]  0%|          | 15/6528 [00:05<21:26,  5.06it/s]  0%|          | 16/6528 [00:05<21:09,  5.13it/s]  0%|          | 17/6528 [00:05<21:05,  5.15it/s]  0%|          | 18/6528 [00:05<20:59,  5.17it/s]  0%|          | 19/6528 [00:06<20:51,  5.20it/s]  0%|          | 20/6528 [00:06<20:45,  5.22it/s]  0%|          | 21/6528 [00:06<20:43,  5.23it/s]  0%|          | 22/6528 [00:06<20:38,  5.25it/s]  0%|          | 23/6528 [00:06<20:43,  5.23it/s]  0%|          | 24/6528 [00:07<20:41,  5.24it/s]  0%|          | 25/6528 [00:07<20:38,  5.25it/s]  0%|          | 26/6528 [00:07<20:44,  5.22it/s]  0%|          | 27/6528 [00:07<20:47,  5.21it/s]  0%|          | 28/6528 [00:07<20:43,  5.23it/s]  0%|          | 29/6528 [00:08<20:40,  5.24it/s]  0%|          | 30/6528 [00:08<20:39,  5.24it/s]  0%|          | 31/6528 [00:08<20:39,  5.24it/s]  0%|          | 32/6528 [00:08<20:42,  5.23it/s]  1%|          | 33/6528 [00:08<20:49,  5.20it/s]  1%|          | 34/6528 [00:09<20:46,  5.21it/s]  1%|          | 35/6528 [00:09<21:00,  5.15it/s]  1%|          | 36/6528 [00:09<21:18,  5.08it/s]  1%|          | 37/6528 [00:09<21:23,  5.06it/s]  1%|          | 38/6528 [00:09<21:20,  5.07it/s]  1%|          | 39/6528 [00:10<21:20,  5.07it/s]  1%|          | 40/6528 [00:10<21:20,  5.07it/s]  1%|          | 41/6528 [00:10<21:19,  5.07it/s]  1%|          | 42/6528 [00:10<21:18,  5.07it/s]  1%|          | 43/6528 [00:10<21:18,  5.07it/s]  1%|          | 44/6528 [00:11<21:26,  5.04it/s]  1%|          | 45/6528 [00:11<21:27,  5.04it/s]  1%|          | 46/6528 [00:11<21:25,  5.04it/s]  1%|          | 47/6528 [00:11<21:28,  5.03it/s]  1%|          | 48/6528 [00:11<21:25,  5.04it/s]  1%|          | 49/6528 [00:12<21:29,  5.03it/s]  1%|          | 50/6528 [00:12<21:33,  5.01it/s]  1%|          | 51/6528 [00:12<21:29,  5.02it/s]  1%|          | 52/6528 [00:12<21:27,  5.03it/s]  1%|          | 53/6528 [00:12<21:34,  5.00it/s]  1%|          | 54/6528 [00:13<21:32,  5.01it/s]  1%|          | 55/6528 [00:13<21:27,  5.03it/s]  1%|          | 56/6528 [00:13<21:21,  5.05it/s]  1%|          | 57/6528 [00:13<21:19,  5.06it/s]  1%|          | 58/6528 [00:13<21:18,  5.06it/s]  1%|          | 59/6528 [00:14<21:16,  5.07it/s]  1%|          | 60/6528 [00:14<21:14,  5.07it/s]  1%|          | 61/6528 [00:14<21:20,  5.05it/s]  1%|          | 62/6528 [00:14<21:26,  5.02it/s]  1%|          | 63/6528 [00:14<21:24,  5.03it/s]  1%|          | 64/6528 [00:15<21:26,  5.03it/s]  1%|          | 65/6528 [00:15<21:19,  5.05it/s]  1%|          | 66/6528 [00:15<21:16,  5.06it/s]  1%|          | 67/6528 [00:15<21:14,  5.07it/s]  1%|          | 68/6528 [00:15<21:21,  5.04it/s]  1%|          | 69/6528 [00:16<21:22,  5.04it/s]  1%|          | 70/6528 [00:16<21:18,  5.05it/s]  1%|          | 71/6528 [00:16<21:15,  5.06it/s]  1%|          | 72/6528 [00:16<21:12,  5.07it/s]  1%|          | 73/6528 [00:16<21:16,  5.05it/s]  1%|          | 74/6528 [00:16<21:14,  5.06it/s]  1%|          | 75/6528 [00:17<21:11,  5.07it/s]  1%|          | 76/6528 [00:17<21:15,  5.06it/s]  1%|          | 77/6528 [00:17<21:15,  5.06it/s]  1%|          | 78/6528 [00:17<21:13,  5.07it/s]  1%|          | 79/6528 [00:17<21:11,  5.07it/s]  1%|          | 80/6528 [00:18<21:09,  5.08it/s]  1%|          | 81/6528 [00:18<21:07,  5.08it/s]  1%|▏         | 82/6528 [00:18<21:06,  5.09it/s]  1%|▏         | 83/6528 [00:18<21:06,  5.09it/s]  1%|▏         | 84/6528 [00:18<21:07,  5.08it/s]  1%|▏         | 85/6528 [00:19<21:08,  5.08it/s]  1%|▏         | 86/6528 [00:19<21:05,  5.09it/s]  1%|▏         | 87/6528 [00:19<21:04,  5.09it/s]  1%|▏         | 88/6528 [00:19<21:05,  5.09it/s]  1%|▏         | 89/6528 [00:19<21:03,  5.09it/s]  1%|▏         | 90/6528 [00:20<21:04,  5.09it/s]  1%|▏         | 91/6528 [00:20<21:02,  5.10it/s]  1%|▏         | 92/6528 [00:20<21:03,  5.10it/s]  1%|▏         | 93/6528 [00:20<21:02,  5.10it/s]  1%|▏         | 94/6528 [00:20<21:04,  5.09it/s]  1%|▏         | 95/6528 [00:21<21:03,  5.09it/s]  1%|▏         | 96/6528 [00:21<21:00,  5.10it/s]  1%|▏         | 97/6528 [00:21<20:58,  5.11it/s]  2%|▏         | 98/6528 [00:21<21:00,  5.10it/s]  2%|▏         | 99/6528 [00:21<20:58,  5.11it/s]  2%|▏         | 100/6528 [00:22<20:58,  5.11it/s]                                                  {'loss': 0.6906, 'learning_rate': 3e-06, 'epoch': 0.06}
+  2%|▏         | 100/6528 [00:22<20:58,  5.11it/s]  2%|▏         | 101/6528 [00:22<21:00,  5.10it/s]  2%|▏         | 102/6528 [00:22<20:59,  5.10it/s]  2%|▏         | 103/6528 [00:22<20:57,  5.11it/s]  2%|▏         | 104/6528 [00:22<21:00,  5.10it/s]  2%|▏         | 105/6528 [00:23<21:02,  5.09it/s]  2%|▏         | 106/6528 [00:23<21:00,  5.09it/s]  2%|▏         | 107/6528 [00:23<21:06,  5.07it/s]  2%|▏         | 108/6528 [00:23<21:04,  5.08it/s]  2%|▏         | 109/6528 [00:23<21:01,  5.09it/s]  2%|▏         | 110/6528 [00:24<21:02,  5.08it/s]  2%|▏         | 111/6528 [00:24<21:01,  5.09it/s]  2%|▏         | 112/6528 [00:24<21:00,  5.09it/s]  2%|▏         | 113/6528 [00:24<20:59,  5.09it/s]  2%|▏         | 114/6528 [00:24<21:00,  5.09it/s]  2%|▏         | 115/6528 [00:25<21:01,  5.08it/s]  2%|▏         | 116/6528 [00:25<21:03,  5.08it/s]  2%|▏         | 117/6528 [00:25<21:02,  5.08it/s]  2%|▏         | 118/6528 [00:25<21:02,  5.08it/s]  2%|▏         | 119/6528 [00:25<21:07,  5.06it/s]slurmstepd: error: *** JOB 1267016 ON a100-04 CANCELLED AT 2025-09-09T11:44:44 ***
