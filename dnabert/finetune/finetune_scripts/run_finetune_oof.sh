@@ -14,10 +14,10 @@ source /gpfs/scratch/jvaska/miniconda3/etc/profile.d/conda.sh #for conda envs to
 conda activate dna
 
 # paths
-export DATA_DIR="../data/per_antibiotic/finetune_augment_TESTSPLIT_v3" #this is base dir containing per antibiotic directories with train/test/dev each
-export BASE_RUN_NAME="per_antibiotic_models_hit_count_v3" #base run name, _{antibiotic} will be attached
-export BASE_OUT_DIR="../finetuned_models/${BASE_RUN_NAME}"
-export MODEL_PATH="../pretrained_models/bacteria_model"
+export DATA_DIR=$1 #this is base dir containing each fold directory, each containing train.csv, test.csv, dev.csv
+export BASE_RUN_NAME=$2 #base run name, _{fold} will be attached
+export BASE_OUT_DIR="/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/finetune/finetuned_models/${BASE_RUN_NAME}"
+export MODEL_PATH="/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/finetune/pretrained_models/bacteria_model"
 
 
 # training params
@@ -25,7 +25,7 @@ export EPOCHS=8
 export MAX_LENGTH=250 #should be 1/4 of the length of the sequences
 export num_gpu=4
 export OMP_NUM_THREADS=16
-export EVAL_AND_SAVE_STEPS=1000
+export EVAL_AND_SAVE_STEPS=700
 
 # hyperparams to tune
 export LR=3e-5
@@ -36,20 +36,19 @@ export GRADIENT_ACCUMULATION_STEPS=4 #simulate larger batch size (effective batc
 
 wandb login 0e16ac7c39d857e9bc3de95f06818dd4899bc8c1
 
-for ANTIBIOTIC in $(ls -d ${DATA_DIR}/*); do
-    ANTIBIOTIC=$(basename ${ANTIBIOTIC})
-    echo "Running finetuning for antibiotic: $ANTIBIOTIC"
-    export WANDB_NAME=${BASE_RUN_NAME}_${ANTIBIOTIC}
-    export RUN_NAME=${BASE_RUN_NAME}_${ANTIBIOTIC}
-    export OUT_DIR=${BASE_OUT_DIR}/${ANTIBIOTIC}
-    export DATA_PATH=${DATA_DIR}/${ANTIBIOTIC}
+for FOLD in $(ls -d ${DATA_DIR}/*); do
+    FOLD=$(basename ${FOLD})
+    echo "Running finetuning for: $FOLD"
+    export WANDB_NAME=${BASE_RUN_NAME}_${FOLD}
+    export RUN_NAME=${BASE_RUN_NAME}_${FOLD}
+    export OUT_DIR=${BASE_OUT_DIR}/${FOLD}
+    export DATA_PATH=${DATA_DIR}/${FOLD}
 
     echo "Running finetuning with dataset $DATA_PATH and run name $RUN_NAME"
 
 
 
-    # **relative path to train.py**
-    torchrun --nproc_per_node=${num_gpu} ../train.py \
+    torchrun --nproc_per_node=${num_gpu} /gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/finetune/train.py \
         --model_name_or_path ${MODEL_PATH} \
         --data_path  ${DATA_PATH} \
         --kmer -1 \
@@ -69,8 +68,7 @@ for ANTIBIOTIC in $(ls -d ${DATA_DIR}/*); do
         --logging_steps 100 \
         --overwrite_output_dir True \
         --log_level info \
-        --find_unused_parameters False \
-        --use_hit_count True
+        --find_unused_parameters False
 
     export BEST_MODEL_DIR=$OUT_DIR/best
     echo "Best model directory: $BEST_MODEL_DIR"

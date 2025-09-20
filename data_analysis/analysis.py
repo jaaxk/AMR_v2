@@ -1,4 +1,5 @@
 import pandas as pd
+import os
 
 """#read full dataset
 df = pd.read_csv('../data_pipeline/datasets/sequence_based/per_species/train/full_sequence_dataset.csv')
@@ -45,7 +46,7 @@ mi_df = pd.DataFrame({
 print(mi_df.head(50))  # top 20 most informative features
 print(mi_df[mi_df['feature'].str.contains('_hit_count')].head(50))"""
 
-
+"""
 # read eval results to determine best hyperparams
 df = pd.read_csv('/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/rf/eval_results/rf_models.csv')
 print(df.tail())
@@ -67,5 +68,30 @@ hits_only_df = df[df['feature_type'] == 'hits']
 hits_only_max_row = hits_only_df.loc[hits_only_df['accuracy'].idxmax()]
 print(hits_only_max_row)
 
+"""
 
 
+"""# get RF feature imporance from each species
+import joblib
+models_dir = '/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/rf/models/rf/per_species/per_antibiotic_models_v3_both_dev_best_params'
+for model_file in os.listdir(models_dir):
+    if model_file.endswith('.joblib'):
+        model_path = os.path.join(models_dir, model_file)
+        model = joblib.load(model_path)
+        print(model_path)
+        df = pd.DataFrame(model.feature_importances_, index=model.feature_names_in_, columns=['importance'])
+        #print top 100 feature types for each species
+        df = df.sort_values(by='importance', ascending=False).head(100)
+        #get number of pred_resistant and hit_count features
+        num_pred_resistant = len([col for col in df.index if 'pred_resistant' in col])
+        num_hit_count = len([col for col in df.index if 'hit_count' in col])
+        print(f'Number of pred_resistant features: {num_pred_resistant}')
+        print(f'Number of hit_count features: {num_hit_count}')
+        print(f'%DNABERT features: {num_pred_resistant / (num_pred_resistant + num_hit_count) * 100}')
+        print()
+        """
+
+df = pd.read_csv('/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/finetune/data/oof/run1/fold_1/meta_dataset.csv')
+df['len'] = df['sequence'].str.len()
+print(df['len'].value_counts())
+print(len(df))

@@ -117,6 +117,8 @@ def train(args):
                 df = pd.concat([pd.read_csv(os.path.join(args.dataset_dir, species, f"{species}_full_rf_dataset_train.csv")), pd.read_csv(os.path.join(args.dataset_dir, species, f"{species}_full_rf_dataset_dev.csv"))])
             elif args.train_on == 'test_dev': #train on test and dev set (for final CAMDA eval)
                 df = pd.concat([pd.read_csv(os.path.join(args.dataset_dir, species, f"{species}_full_rf_dataset_test.csv")), pd.read_csv(os.path.join(args.dataset_dir, species, f"{species}_full_rf_dataset_dev.csv"))])
+            elif args.train_on=='all':
+                df = pd.read_csv(os.path.join(args.dataset_dir, species, f"{species}_full_rf_dataset.csv"))
             else:
                 raise ValueError(f"Invalid train_on value: {args.train_on}")
 
@@ -126,8 +128,8 @@ def train(args):
             y = df['ground_truth_phenotype']
             X = filter_top_n_mi(X=X, y=y, species=species, models_dir=args.out_dir, top_n_mi_score=args.top_n_mi_score)
 
-            print(args.feature_type)
-            print(X.columns)
+            #print(args.feature_type)
+            #print(X.columns)
             assert len(X) == len(y)
 
             model = RandomForestClassifier(n_estimators=args.n_estimators)
@@ -288,16 +290,16 @@ def main():
     parser.add_argument('--grouping', type=str, choices=['full', 'per_antibiotic', 'per_species'], help='Grouping for models (per_species=9 models, per_antibiotic=4 models, full=1 model)', default='per_species')
     parser.add_argument('--model_name', type=str, help='Name of DNABERT model used and info about this run', default=None)
     parser.add_argument('--out_dir', type=str, help='Directory to save models', default=None)
-    parser.add_argument('--train_on', type=str, choices=['test', 'dev', 'test_dev', 'train', 'train_dev'], help='Which portion of TRAIN set to train on. If using DNABERT, it is NOT recommended to train on train portion of train set. Eval is always on TEST', default='dev')
+    parser.add_argument('--train_on', type=str, choices=['test', 'dev', 'test_dev', 'train', 'train_dev', 'all'], help='Which portion of TRAIN set to train on. If using DNABERT, it is NOT recommended to train on train portion of train set. Eval is always on TEST', default='dev')
     parser.add_argument('--feature_type', type=str, choices=['dnabert', 'hits', 'both'], help='Whether to use DNABERT features, hits, or both', default='both')
     parser.add_argument('--eval', type=bool, help='Whether to evaluate models', default=False)
 
     parser.add_argument('--tune_hyperparams', type=bool, help='Whether to tune hyperparameters', default=False)
     parser.add_argument('--tune_metric', type=str, choices=['accuracy', 'precision', 'recall', 'f1', 'aucroc'], help='Metric to tune hyperparameters on', default='accuracy')
-    #tunable hyperparams
-    parser.add_argument('--n_estimators', type=int, help='Number of trees in the random forest', default=100)
-    parser.add_argument('--max_depth', type=int, help='Maximum depth of the trees', default=None)
-    parser.add_argument('--top_n_mi_score', type=int, help='Number of features to keep based on mutual information score', default=None)
+    #tunable hyperparams - defaults are best parameters from tuning
+    parser.add_argument('--n_estimators', type=int, help='Number of trees in the random forest', default=250)
+    parser.add_argument('--max_depth', type=int, help='Maximum depth of the trees', default=40)
+    parser.add_argument('--top_n_mi_score', type=int, help='Number of features to keep based on mutual information score', default=300)
 
     args = parser.parse_args()
     if args.out_dir is None:

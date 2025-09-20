@@ -73,6 +73,8 @@ class TrainingArguments(transformers.TrainingArguments):
     seed: int = field(default=42)
     metric_for_best_model: str = field(default="f1") #New! gets best model based on macro averaged f1 score since we have class imbalance in dev and test sets
     greater_is_better: bool = field(default=True) #This needs to be specified when metric_for_best_model is not loss
+    use_hit_count: bool = field(default=False)
+    use_species_antibiotic: bool = field(default=False)
     
 
 def safe_save_model_for_hf_trainer(trainer: transformers.Trainer, output_dir: str):
@@ -125,9 +127,13 @@ class SupervisedDataset(Dataset):
     def __init__(self, 
                  data_path: str, 
                  tokenizer: transformers.PreTrainedTokenizer, 
-                 kmer: int = -1):
+                 kmer: int = -1,
+                 use_hit_count: bool = False,
+                 use_species_antibiotic: bool = False):
 
         super(SupervisedDataset, self).__init__()
+        self.use_hit_count = use_hit_count
+        self.use_species_antibiotic = use_species_antibiotic
 
         # load data from the disk
         with open(data_path, "r") as f:
@@ -135,9 +141,23 @@ class SupervisedDataset(Dataset):
 
         if len(data[0]) == 7:
             # data is in the format of [text, label]
-            logging.warning("Perform single sequence classification (no additional features)...")
+            logging.warning("Perform single sequence classification...")
             texts = [d[0] for d in data]
             labels = [int(d[-1]) for d in data]
+
+            if use_hit_count:
+                hit_counts = [int(d[3]) for d in data]
+                print("USING HIT COUNTS")
+            else:
+                hit_counts = None
+
+            if use_species_antibiotic:
+                species = [d[4] for d in data]
+                antibiotic = [d[5] for d in data]
+                print("USING SPECIES AND ANTIBIOTIC")
+            else:
+                species = None
+                antibiotic = None
 
         else:
             raise ValueError("Data format not supported.")
@@ -166,13 +186,31 @@ class SupervisedDataset(Dataset):
         self.labels = labels
         self.num_labels = len(set(labels))
 
-        logging.warning("Number of labels:", self.num_labels)
+        if use_hit_count:
+            self.hit_counts = hit_counts
+        else:
+            self.hit_counts = None
+        if use_species_antibiotic:
+            self.species = species
+            self.antibiotic = antibiotic
+        else:
+            self.species = None
+            self.antibiotic = None
+
+        logging.warning("Number of labels: %d" % self.num_labels)
 
     def __len__(self):
+        
         return len(self.input_ids)
 
     def __getitem__(self, i) -> Dict[str, torch.Tensor]:
-        return dict(input_ids=self.input_ids[i], labels=self.labels[i])
+        if self.use_hit_count:
+            return dict(input_ids=self.input_ids[i], labels=self.labels[i], hit_counts=self.hit_counts[i])
+        elif self.use_species_antibiotic:
+            return dict(input_ids=self.input_ids[i], labels=self.labels[i], species=self.species[i], antibiotic=self.antibiotic[i])
+        else:
+            return dict(input_ids=self.input_ids[i], labels=self.labels[i])
+
 
 
 @dataclass
@@ -181,22 +219,47 @@ class DataCollatorForSupervisedDataset(object):
 
     tokenizer: transformers.PreTrainedTokenizer
     class_weights: Optional[torch.Tensor] = None
+    use_hit_count: bool = False
+    use_species_antibiotic: bool = False
+
 
     def __call__(self, instances: Sequence[Dict]) -> Dict[str, torch.Tensor]:
         input_ids, labels = tuple([instance[key] for instance in instances] for key in ("input_ids", "labels"))
+        if self.use_hit_count:
+            hit_counts = [instance["hit_counts"] for instance in instances]
+        if self.use_species_antibiotic:
+            species = [instance["species"] for instance in instances]
+            antibiotic = [instance["antibiotic"] for instance in instances]
 
         input_ids = torch.nn.utils.rnn.pad_sequence(
             input_ids, batch_first=True, padding_value=self.tokenizer.pad_token_id
         )
 
         labels = torch.Tensor(labels).long()
-
+        if self.use_hit_count:
+            hit_counts = torch.tensor(hit_counts, dtype=torch.float32).unsqueeze(1) #make it (batch_size, 1)
+            return dict(
+                input_ids=input_ids,
+                attention_mask=input_ids.ne(self.tokenizer.pad_token_id),
+                labels=labels,
+                hit_counts=hit_counts,
+            )
+        if self.use_species_antibiotic:
+            species = torch.tensor(species, dtype=torch.long).unsqueeze(1)
+            antibiotic = torch.tensor(antibiotic, dtype=torch.long).unsqueeze(1)
+            return dict(
+                input_ids=input_ids,
+                attention_mask=input_ids.ne(self.tokenizer.pad_token_id),
+                labels=labels,
+                species=species,
+                antibiotic=antibiotic,
+            )
         return dict(
             input_ids=input_ids,
             attention_mask=input_ids.ne(self.tokenizer.pad_token_id),
             labels=labels,
-            class_weights=self.class_weights
         )
+
 """
 Manually calculate the accuracy, f1, matthews_correlation, precision, recall with sklearn.
 """
@@ -298,21 +361,36 @@ def train():
     # define datasets and data collator
     train_dataset = SupervisedDataset(tokenizer=tokenizer, 
                                       data_path=os.path.join(data_args.data_path, "train.csv"), 
-                                      kmer=data_args.kmer)
+                                      kmer=data_args.kmer,
+                                      use_hit_count=training_args.use_hit_count,
+                                      use_species_antibiotic=training_args.use_species_antibiotic)
     val_dataset = SupervisedDataset(tokenizer=tokenizer, 
                                      data_path=os.path.join(data_args.data_path, "dev.csv"), 
-                                     kmer=data_args.kmer)
+                                     kmer=data_args.kmer,
+                                     use_hit_count=training_args.use_hit_count,
+                                     use_species_antibiotic=training_args.use_species_antibiotic)
     test_dataset = SupervisedDataset(tokenizer=tokenizer, 
                                      data_path=os.path.join(data_args.data_path, "test.csv"), 
-                                     kmer=data_args.kmer)
-    data_collator = DataCollatorForSupervisedDataset(tokenizer=tokenizer, class_weights=class_weights)
+                                     kmer=data_args.kmer,
+                                     use_hit_count=training_args.use_hit_count,
+                                     use_species_antibiotic=training_args.use_species_antibiotic)
+    data_collator = DataCollatorForSupervisedDataset(tokenizer=tokenizer, use_hit_count=training_args.use_hit_count, use_species_antibiotic=training_args.use_species_antibiotic)
 
+
+    # load config first to add use_hit_count
+    config = transformers.AutoConfig.from_pretrained(
+        model_args.model_name_or_path,
+        num_labels=train_dataset.num_labels,
+        use_hit_count=training_args.use_hit_count,
+        use_species_antibiotic=training_args.use_species_antibiotic,
+        trust_remote_code=True,
+    )
 
     # load model
     model = transformers.AutoModelForSequenceClassification.from_pretrained(
         model_args.model_name_or_path,
         cache_dir=training_args.cache_dir,
-        num_labels=train_dataset.num_labels,
+        config=config,
         trust_remote_code=True,
     )
 

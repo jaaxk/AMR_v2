@@ -38,14 +38,29 @@ def filter_feature_type(X, feature_type):
 
     if feature_type == 'dnabert':
         cols_to_keep = [col for col in X.columns if 'pred_resistant' in col]
+        cols_to_keep.append('accession')
         X = X[cols_to_keep]
     elif feature_type == 'hits':
         cols_to_keep = [col for col in X.columns if 'hit_count' in col]
+        cols_to_keep.append('accession')
         X = X[cols_to_keep]
     elif feature_type == 'both':
         return X
     else:
         raise ValueError(f"Invalid feature type: {feature_type}")
+
+def filter_top_n_mi(X, species, models_dir):
+    
+    path_to_load = os.path.join(models_dir, 'mi_features', f'{species}_mi_features.txt')
+    if os.path.exists(path_to_load):
+        with open(path_to_load, 'r') as f:
+            features_to_keep = [line.strip() for line in f]
+            features_to_keep.append('accession')
+        X = X[features_to_keep]
+    else:
+        print(f'No MI features found for {species}, using all features')
+        
+    return X
 
 def main():
     parser = argparse.ArgumentParser()
@@ -71,6 +86,7 @@ def main():
             model = joblib.load(model_path)
             df = pd.read_csv(os.path.join(args.test_dataset_dir, species, f"{species}_full_rf_dataset.csv"))
             df = filter_feature_type(df, args.feature_type)
+            df = filter_top_n_mi(df, species, args.models_dir)
             preds = model.predict(df.drop(['accession'], axis=1))
             assert len(preds) == len(df)
             for acc, pred in zip(df['accession'], preds):

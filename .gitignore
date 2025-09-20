@@ -5,6 +5,9 @@ data_pipeline/work/*
 dnabert/finetune/data/dnabert_finetune_dataset_v1
 dnabert/inference/outputs/
 dnabert/inference/res.txt
+dnabert/finetune/finetune_scripts/wandb/*
+dnabert/finetune/finetune_scripts/logs/*
+dnabert/finetune/finetune_scripts/wandb*
 rf/res.txt
 dnabert/finetune/data/*
 rf/models/*

@@ -4,9 +4,8 @@
 #SBATCH --output=res.txt
 
 python train_rf.py \
-    --model_name per_antibiotic_models_v3_both_dev \
+    --model_name oof_run1 \
     --grouping per_species \
-    --train_on dev \
+    --train_on all \
     --feature_type both \
-    --dataset_dir /gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/inference/outputs/rf_datasets/per_antibiotic_models_v3/per_antibiotic/train \
-    --eval True
+    --dataset_dir /gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/inference/outputs/rf_datasets/oof/run1
