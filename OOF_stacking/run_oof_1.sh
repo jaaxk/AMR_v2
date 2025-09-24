@@ -4,4 +4,6 @@
 #SBATCH --output=res.txt
 #SBATCH --mem 150G
 
-python oof_1.py
+python -u oof_1.py \
+	--run_name run2 \
+	--grouping per_antibiotic

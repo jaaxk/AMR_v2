@@ -42,7 +42,8 @@ import numpy as np
 import csv
 import io
 from contextlib import redirect_stdout
-
+import matplotlib.pyplot as plt
+import glob
 
 # methods
 
@@ -52,12 +53,15 @@ def filter_feature_type(X, feature_type, top_n_mi_score=None):
     to be used for X dataset (features) """
 
     X = X.drop(['accession', 'species', 'antibiotic', 'ground_truth_phenotype'], axis=1) # we dont need species and antibiotic if were doing per-species models (all the same)
+    extra_cols_to_keep = []#['random']
 
     if feature_type == 'dnabert':
         cols_to_keep = [col for col in X.columns if 'pred_resistant' in col]
+        cols_to_keep.extend(extra_cols_to_keep)
         X = X[cols_to_keep]
     elif feature_type == 'hits':
         cols_to_keep = [col for col in X.columns if 'hit_count' in col]
+        cols_to_keep.extend(extra_cols_to_keep)
         X = X[cols_to_keep]
     elif feature_type == 'both':
         return X
@@ -71,6 +75,7 @@ def filter_top_n_mi(X, species, models_dir, y=None, top_n_mi_score=None):
     if top_n_mi_score is None:
         return X
     else:
+        extra_cols_to_keep = []#['random']
         if y is not None:
             from sklearn.feature_selection import mutual_info_classif
             mi_scores = mutual_info_classif(X, y, discrete_features='auto')
@@ -79,7 +84,8 @@ def filter_top_n_mi(X, species, models_dir, y=None, top_n_mi_score=None):
                 "mi_score": mi_scores
             }).sort_values(by="mi_score", ascending=False)
 
-            features_to_keep = mi_df.head(top_n_mi_score).feature
+            features_to_keep = list(mi_df.head(top_n_mi_score).feature)
+            features_to_keep.extend(extra_cols_to_keep)
             X = X[features_to_keep]
             #save features so we can load them during inference
             os.makedirs(os.path.join(models_dir, 'mi_features'), exist_ok=True)
@@ -92,38 +98,333 @@ def filter_top_n_mi(X, species, models_dir, y=None, top_n_mi_score=None):
             path_to_load = os.path.join(models_dir, 'mi_features', f'{species}_mi_features.txt')
             with open(path_to_load, 'r') as f:
                 features_to_keep = [line.strip() for line in f]
+            features_to_keep.extend(extra_cols_to_keep)
             X = X[features_to_keep]
         
-
         return X
 
+def feature_plot(args):
+    """
+    Plot model performance vs number of features used.
+    For each feature type in ['dnabert', 'hits', 'both']:
+      - Build species-wise feature order from pretrained models using feature_names_in_ and feature_importances_
+        (filtered to the feature type rules)
+      - Sweep number of features: 1, 20, 40, ..., 2000
+      - Train and evaluate models at each sweep point (using the filtered features)
+      - Save per-species accuracies JSON and plots (per-species curves and averaged curve)
+      - Print and save top-5 features per species
+    Finally, create a combined averaged-curve plot across the three feature types.
+    """
+    # Ensure output directories exist
+    os.makedirs('eval_results/figures', exist_ok=True)
+    os.makedirs('eval_results', exist_ok=True)
+
+    # Directory containing pretrained models (hits-only if interleave, otherwise whatever user supplied)
+    models_dir = args.feature_plot
+
+    # Build base hits importance order per species (always needed)
+    base_hits_importances = {}
+    for species in species_list:
+        model_path = os.path.join(models_dir, f"{species}_{args.model_type}_model.joblib")
+        if not os.path.exists(model_path):
+            raise FileNotFoundError(f"Pretrained model not found: {model_path}")
+        model = joblib.load(model_path)
+        importances = model.feature_importances_
+        feature_names = list(model.feature_names_in_)
+        indices = np.argsort(importances)[::-1]
+        ordered_hits = [feature_names[i] for i in indices if 'hit_count' in feature_names[i]]
+        base_hits_importances[species] = ordered_hits
+
+    # Percentage sweep (1‒100 %)
+    percent_list = list(range(1, 101))
+
+    combined_avg = {}
+    prev_feature_type = args.feature_type
+    try:
+        for ft in ['both', 'dnabert', 'hits']:
+            args.feature_type = ft
+
+            # Construct feature_importances according to ft and interleave logic
+            global feature_importances
+            feature_importances = {}
+            for species, hits_list in base_hits_importances.items():
+                if ft == 'hits':
+                    if args.interleave:
+                        final_order = hits_list
+                    else:
+                        final_order = [h for h in hits_list if 'hit_count' in h]
+                elif ft == 'dnabert':
+                    if args.interleave:
+                        final_order = [h.replace('_hit_count', '_pred_resistant') for h in hits_list]
+                    else:
+                        final_order = [h for h in hits_list if 'pred_resistant' in h]
+                elif ft == 'both':
+                    if args.interleave:
+                        final_order = []
+                        for h in hits_list:
+                            dn = h.replace('_hit_count', '_pred_resistant')
+                            final_order.extend([h, dn])
+                    else:
+                        final_order = hits_list
+                else:
+                    raise ValueError
+                feature_importances[species] = final_order
+
+            # Persist the current feature_importances so feature_selection() can use them during train/eval
+            with open('eval_results/feature_importances.json', 'w') as f:
+                json.dump(feature_importances, f)
+
+            # Sweep and collect accuracies per species
+            species_accuracies = {species: [] for species in species_list}
+            for percent in tqdm(percent_list, desc=f"Evaluating feature type={ft}"):
+                args.num_features = int(percent / 100 * len(feature_importances[species_list[0]]))
+                if ft == 'both' and args.oof_stack:
+                    oof_train(args)
+                    eval_results = eval_oof(args)
+                else:  
+                    train(args)
+                    eval_results = eval(args)
+
+                for species in species_list:
+                    species_accuracies[species].append(eval_results['accuracy'][species])
+
+            # Save accuracies used for plotting
+            with open(f'eval_results/feature_plot_accuracies_{ft}.json', 'w') as f:
+                json.dump({
+                    'percent_list': percent_list,
+                    'accuracies': species_accuracies
+                }, f)
+
+            # Plot per-species curves
+            plt.figure(figsize=(12, 8))
+            for species in species_list:
+                plt.plot(percent_list, species_accuracies[species], label=species)
+            plt.xlabel('% of Features Kept')
+            plt.ylabel('Accuracy')
+            plt.title(f'Per-Species Accuracy vs % Features ({ft})')
+            plt.legend()
+            plt.grid(True)
+            per_species_plot_path = f'eval_results/figures/{args.model_name}/feature_plot_{ft}.png'
+            os.makedirs(os.path.dirname(per_species_plot_path), exist_ok=True)
+            plt.savefig(per_species_plot_path, bbox_inches='tight')
+            plt.close()
+            print(f"Per-species feature plot saved to {per_species_plot_path}")
+
+            # Averaged curve plot for this feature type
+            avg_accuracies = [
+                float(np.mean([species_accuracies[s][i] for s in species_list]))
+                for i in range(len(percent_list))
+            ]
+            combined_avg[ft] = avg_accuracies
+
+            plt.figure(figsize=(12, 8))
+            plt.plot(percent_list, avg_accuracies, marker='o')
+            plt.xlabel('% of Features Kept')
+            plt.ylabel('Average Accuracy (across species)')
+            plt.title(f'Average Accuracy vs % Features ({ft})')
+            plt.grid(True)
+            avg_plot_path = f'eval_results/figures/{args.model_name}/feature_plot_avg_{ft}.png'
+            os.makedirs(os.path.dirname(avg_plot_path), exist_ok=True)
+            plt.savefig(avg_plot_path, bbox_inches='tight')
+            plt.close()
+            print(f"Average feature plot saved to {avg_plot_path}")
+
+            # Print and save top-5 features per species for this feature type
+            top5 = {sp: feature_importances[sp][:5] for sp in species_list}
+            print(f"Top-5 features per species (by RF importance) for feature_type={ft}:")
+            for sp, feats in top5.items():
+                print(f"  {sp}: {feats}")
+            with open(f'eval_results/top5_features_{ft}.json', 'w') as f:
+                json.dump(top5, f)
+
+        # Combined plot: averaged accuracies vs num features for each feature type
+        plt.figure(figsize=(12, 8))
+        for ft in ['dnabert', 'hits', 'both']:
+            if ft in combined_avg:
+                plt.plot(percent_list, combined_avg[ft], label=ft)
+        plt.xlabel('% of Features Kept')
+        plt.ylabel('Average Accuracy (across species)')
+        plt.title('Average Accuracy vs % Features by Feature Type')
+        plt.legend(title='Feature Type')
+        plt.grid(True)
+        combined_plot_path = f'eval_results/figures/{args.model_name}/feature_plot_avg_by_feature_type.png'
+        os.makedirs(os.path.dirname(combined_plot_path), exist_ok=True)
+        plt.savefig(combined_plot_path, bbox_inches='tight')
+        plt.close()
+        print(f"Combined average feature plot saved to {combined_plot_path}")
+
+    finally:
+        # Restore the original feature_type
+        args.feature_type = prev_feature_type
 
 
+def feature_selection(num_features, df, species, args):
+    """
+    Select top num_features most important features from the dataframe.
+    
+    Args:
+        num_features: Number of top features to keep
+        df: Input dataframe containing features and metadata
+        
+    Returns:
+        DataFrame with only the selected features and required metadata columns
+    """
+    # Load feature importances if not already loaded
+    if 'feature_importances' not in globals():
+        raise RuntimeError("Feature importances not found. Run feature_plot() first.")
+    
+    # Get species from the dataframe
+    
+    if species not in feature_importances:
+        raise ValueError(f"No feature importances found for species: {species}")
+    
+    # Get the top N features for this species
+    available = feature_importances[species]
+    if len(available) == 0:
+        raise ValueError(f"No features recorded for species {species} under current feature_type. Check that the pretrained models include matching feature names.")
+
+    # use as many as are available (could be less than requested)
+    selected_features = available[:min(num_features, len(available))]
+    
+    # Identify metadata columns that should always be kept
+    metadata_columns = ['accession', 'species', 'antibiotic', 'random', 'ground_truth_phenotype']
+    metadata_columns = [col for col in metadata_columns if col in df.columns]
+    
+    # Select only the important features + metadata columns
+    columns_to_keep = list(set(selected_features + metadata_columns))
+    
+    return df[columns_to_keep]
+
+
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
+
+def oof_train(args):
+    """3-fold out-of-fold stacking with hits & DNABERT base models"""
+    original_train_on = args.train_on
+    base_out_dir = os.path.join(args.base_dir, 'rf', 'models', 'oof', args.model_name)
+    folds = sorted([d.split('_')[-1] for d in os.listdir(args.dataset_dir)])
+    folds = ['fold_'+f for f in folds]
+    assert len(folds) == 3, 'Expect dataset_dir to contain fold_0 fold_1 fold_2'
+
+    oof_preds_hits = {sp: [] for sp in species_list}
+    oof_preds_hits ={fold: oof_preds_hits for fold in folds}
+    oof_preds_dna  = {sp: [] for sp in species_list}
+    oof_preds_dna ={fold: oof_preds_dna for fold in folds}
+    oof_truth      = {sp: [] for sp in species_list}
+    oof_truth ={fold: oof_truth for fold in folds}
+
+    for held_out in folds:
+        train_on = ''.join(sorted([f[-1] for f in folds if f != held_out]))  # e.g. '01'
+        held_path = os.path.join(args.dataset_dir, held_out)
+        print(f"\n### OOF loop – hold {held_out}, train_on={train_on} ###")
+
+        for ft in ['hits', 'dnabert']:
+            args.feature_type = ft
+            args.train_on = train_on
+            args.out_dir = os.path.join(base_out_dir, ft, f"exclude_{held_out}")
+            os.makedirs(args.out_dir, exist_ok=True)
+            train(args)
+
+            # inference on held_out fold
+            for sp in species_list:
+                model = joblib.load(os.path.join(args.out_dir, f"{sp}_{args.model_type}_model.joblib"))
+                df = pd.read_csv(os.path.join(held_path, 'per_antibiotic', 'train', sp, f"{sp}_full_rf_dataset.csv"))
+                if args.feature_plot is not None:
+                    df = feature_selection(num_features=args.num_features, df=df, species=sp, args=args)
+                X_inf = filter_feature_type(df, ft)
+                proba = model.predict_proba(X_inf)[:,1].tolist()
+                if ft == 'hits':
+                    oof_preds_hits[held_out][sp].extend(proba)
+                else:
+                    oof_preds_dna[held_out][sp].extend(proba)
+                if ft == 'hits':  # capture truth once per loop
+                    oof_truth[held_out][sp].extend(df['ground_truth_phenotype'].tolist())
+
+    # ---- train meta learner per species ----
+    stack_dir = os.path.join(base_out_dir, 'stacker')
+    os.makedirs(stack_dir, exist_ok=True)
+    for sp in species_list:
+        if original_train_on == '01':
+            # train meta learner on fold_0 and fold_1 for evaluation on fold_2 (eval_oof)
+            sp_pred_hits = np.concatenate([oof_preds_hits['fold_0'][sp], oof_preds_hits['fold_1'][sp]], axis=0)
+            sp_pred_dna = np.concatenate([oof_preds_dna['fold_0'][sp], oof_preds_dna['fold_1'][sp]], axis=0)
+            sp_truth = np.concatenate([oof_truth['fold_0'][sp], oof_truth['fold_1'][sp]], axis=0)
+        elif original_train_on == 'all':
+            # train meta learner on all folds for final evaluation (dont run eval_oof)
+            sp_pred_hits = np.concatenate([oof_preds_hits['fold_0'][sp], oof_preds_hits['fold_1'][sp], oof_preds_hits['fold_2'][sp]], axis=0)
+            sp_pred_dna = np.concatenate([oof_preds_dna['fold_0'][sp], oof_preds_dna['fold_1'][sp], oof_preds_dna['fold_2'][sp]], axis=0)
+            sp_truth = np.concatenate([oof_truth['fold_0'][sp], oof_truth['fold_1'][sp], oof_truth['fold_2'][sp]], axis=0)
+        
+        X_meta = np.column_stack([sp_pred_hits, sp_pred_dna])
+        y_meta = np.array(sp_truth)
+        meta = LogisticRegression(max_iter=1000)
+        meta.fit(X_meta, y_meta)
+        print(os.path.join(stack_dir, f"{sp}_stacker.joblib"))
+        joblib.dump(meta, os.path.join(stack_dir, f"{sp}_stacker.joblib"))
+        acc = accuracy_score(y_meta, meta.predict(X_meta))
+        print(f"Stacker saved for {sp}, OOF-train accuracy={acc:.3f}")
+
+
+def eval_oof(args):
+    """Evaluate stacker on fold_2 (held-out)"""
+    base_out_dir = os.path.join(args.base_dir, 'rf', 'models', 'oof', args.model_name)
+    held_out = 'fold_2'
+    held_path = os.path.join(args.dataset_dir, held_out)
+    metrics = {
+        'accuracy': {}
+    }
+    for sp in species_list:
+        # load stacker
+        stacker = joblib.load(os.path.join(base_out_dir, 'stacker', f"{sp}_stacker.joblib"))
+        # build base predictions
+        base_preds = []
+        for ft in ['hits','dnabert']:
+            model = joblib.load(os.path.join(base_out_dir, ft, f"exclude_{held_out}", f"{sp}_{args.model_type}_model.joblib"))
+            df = pd.read_csv(os.path.join(held_path, 'per_antibiotic', 'train', sp, f"{sp}_full_rf_dataset.csv"))
+            if args.feature_plot is not None:
+                df = feature_selection(num_features=args.num_features, df=df, species=sp, args=args)
+            X_inf = filter_feature_type(df, ft)
+            base_preds.append(model.predict_proba(X_inf)[:,1])
+        X_meta = np.column_stack(base_preds)
+        y_true = df['ground_truth_phenotype'].values
+        metrics['accuracy'][sp] = accuracy_score(y_true, stacker.predict(X_meta))
+    print('\nOOF stacker accuracy on fold_2:')
+    for sp,a in metrics['accuracy'].items():
+        print(f"{sp:25s}: {a:.3f}")
+    print(f"mean: {np.mean(list(metrics['accuracy'].values())):.3f}")
+
+    return metrics
     
 
-    return X
-
 def train(args):
+    print(f"Training {args.model_type}")
 
     if args.grouping == 'per_species':
         for species in species_list:
-            if args.train_on == 'test': #dont train on this, save this for independent eval (unless submitting for final eval)
-                df = pd.read_csv(os.path.join(args.dataset_dir, species, f"{species}_full_rf_dataset_test.csv"))
-            elif args.train_on == 'dev': #recommended if using DNABERT features
-                df = pd.read_csv(os.path.join(args.dataset_dir, species, f"{species}_full_rf_dataset_dev.csv"))
-            elif args.train_on == 'train': #dont do this if using DNABERT features
-                df = pd.read_csv(os.path.join(args.dataset_dir, species, f"{species}_full_rf_dataset_train.csv"))
-            elif args.train_on == 'train_dev': #dont do this if using DNABERT features
-                df = pd.concat([pd.read_csv(os.path.join(args.dataset_dir, species, f"{species}_full_rf_dataset_train.csv")), pd.read_csv(os.path.join(args.dataset_dir, species, f"{species}_full_rf_dataset_dev.csv"))])
-            elif args.train_on == 'test_dev': #train on test and dev set (for final CAMDA eval)
-                df = pd.concat([pd.read_csv(os.path.join(args.dataset_dir, species, f"{species}_full_rf_dataset_test.csv")), pd.read_csv(os.path.join(args.dataset_dir, species, f"{species}_full_rf_dataset_dev.csv"))])
-            elif args.train_on=='all':
+            if args.train_on in ['01','02','12']:
+                # map which fold to hold out
+                exclude_fold = {'01':'2', '02':'1', '12':'0'}[args.train_on]
+                dfs = []
+                for dirname in os.listdir(args.dataset_dir):
+                    fold=dirname.split('_')[-1]
+                    if fold == exclude_fold:
+                        continue
+                    dfs.append(pd.read_csv(os.path.join(args.dataset_dir, dirname, 'per_antibiotic', 'train', species, f"{species}_full_rf_dataset.csv")))
+                df = pd.concat(dfs)
+                dfs = []
+                
+            elif args.train_on=='all': # if all is selcted, should pass path to dir containing per-species dirs
                 df = pd.read_csv(os.path.join(args.dataset_dir, species, f"{species}_full_rf_dataset.csv"))
             else:
                 raise ValueError(f"Invalid train_on value: {args.train_on}")
 
-            print(f"Training RF model for {species}")
+            #print(f"Training RF model for {species}")
 
+
+            if args.feature_plot is not None:
+                df = feature_selection(num_features=args.num_features, df=df, species=species, args=args)
+            
             X = filter_feature_type(df, args.feature_type)
             y = df['ground_truth_phenotype']
             X = filter_top_n_mi(X=X, y=y, species=species, models_dir=args.out_dir, top_n_mi_score=args.top_n_mi_score)
@@ -132,21 +433,38 @@ def train(args):
             #print(X.columns)
             assert len(X) == len(y)
 
-            model = RandomForestClassifier(n_estimators=args.n_estimators)
+            # Initialize model based on requested type
+            if args.model_type == 'xgb':
+                from xgboost import XGBClassifier
+                model = XGBClassifier(
+                    n_estimators=args.n_estimators if args.n_estimators is not None else 400,
+                    max_depth=args.max_depth if args.max_depth is not None else 6,
+                    learning_rate=0.05,
+                    subsample=0.8,
+                    colsample_bytree=0.8,
+                    objective='binary:logistic',
+                    eval_metric='logloss',
+                    use_label_encoder=False
+                )
+            else:  # Random Forest
+                model = RandomForestClassifier(
+                    n_estimators=args.n_estimators if args.n_estimators is not None else 100,
+                    max_depth=args.max_depth
+                )
+            
             model.fit(X, y)
 
-            #save model
-            model_path = os.path.join(args.out_dir, f"{species}_rf_model.joblib")
+            # save model (keep same filename pattern so feature_plot works)
+ 
+            model_path = os.path.join(args.out_dir, f"{species}_{args.model_type}_model.joblib")
             joblib.dump(model, model_path)
 
     else:
         raise NotImplementedError(f"Grouping {args.grouping} not implemented")
 
 
-
-
 def eval(args):
-    """Evaluate RF models on TEST PORTION OF TRAIN SET, not independent validation test set from CAMDA site"""
+    """Evaluate RF models on FOLD 2"""
 
 
     metrics = {
@@ -158,9 +476,15 @@ def eval(args):
         }
 
     for species in species_list:
-        model_path = os.path.join(args.out_dir, f"{species}_rf_model.joblib")
+        model_path = os.path.join(args.out_dir, f"{species}_{args.model_type}_model.joblib")
         model = joblib.load(model_path)
-        test_df = pd.read_csv(os.path.join(args.dataset_dir, species, f"{species}_full_rf_dataset_test.csv"))
+        for fold in os.listdir(args.dataset_dir):
+            if fold.endswith('fold_2'):
+                test_df = pd.read_csv(os.path.join(args.dataset_dir, fold, 'per_antibiotic', 'train', species, f"{species}_full_rf_dataset.csv"))
+                break
+        print(f'Evaluating on dataset: {args.dataset_dir}/{fold}/per_antibiotic/train/{species}/{species}_full_rf_dataset.csv')
+        if args.feature_plot is not None:
+            test_df = feature_selection(num_features=args.num_features, df=test_df, species=species, args=args)
         X = test_df
         X = filter_feature_type(X, args.feature_type)
         X = filter_top_n_mi(X=X, species=species, models_dir=args.out_dir, top_n_mi_score=args.top_n_mi_score)
@@ -199,7 +523,7 @@ def eval(args):
         with open('eval_results/rf_models.csv', 'w') as f:
             writer = csv.writer(f)
             #columns:
-            writer.writerow(['accuracy', 'model_name', 'train_on', 'feature_type', 'n_estimators', \
+            writer.writerow(['accuracy', 'model_name', 'model_type', 'train_on', 'feature_type', 'n_estimators', \
             'max_depth', 'top_n_mi_score', 'recall', 'precision', 'f1', 'aucroc', 'neisseria_gonorrhoeae_acc', \
             'staphylococcus_aureus_acc', 'streptococcus_pneumoniae_acc', 'salmonella_enterica_acc', 'klebsiella_pneumoniae_acc', \
             'escherichia_coli_acc', 'pseudomonas_aeruginosa_acc', 'acinetobacter_baumannii_acc', 'campylobacter_jejuni_acc', \
@@ -227,7 +551,7 @@ def eval(args):
         ERY_acc = np.mean([metrics['accuracy'][species] for species in antibiotic_to_species['ERY']])
         CAZ_acc = np.mean([metrics['accuracy'][species] for species in antibiotic_to_species['CAZ']])
         
-        writer.writerow([accuracy, args.model_name, args.train_on, args.feature_type, args.n_estimators, \
+        writer.writerow([accuracy, args.model_name, args.model_type, args.train_on, args.feature_type, args.n_estimators, \
         args.max_depth, args.top_n_mi_score, recall, precision, f1, aucroc, neisseria_gonorrhoeae_acc, \
         staphylococcus_aureus_acc, streptococcus_pneumoniae_acc, salmonella_enterica_acc, klebsiella_pneumoniae_acc,\
         escherichia_coli_acc, pseudomonas_aeruginosa_acc, acinetobacter_baumannii_acc, campylobacter_jejuni_acc, TET_acc,\
@@ -290,30 +614,53 @@ def main():
     parser.add_argument('--grouping', type=str, choices=['full', 'per_antibiotic', 'per_species'], help='Grouping for models (per_species=9 models, per_antibiotic=4 models, full=1 model)', default='per_species')
     parser.add_argument('--model_name', type=str, help='Name of DNABERT model used and info about this run', default=None)
     parser.add_argument('--out_dir', type=str, help='Directory to save models', default=None)
-    parser.add_argument('--train_on', type=str, choices=['test', 'dev', 'test_dev', 'train', 'train_dev', 'all'], help='Which portion of TRAIN set to train on. If using DNABERT, it is NOT recommended to train on train portion of train set. Eval is always on TEST', default='dev')
+    parser.add_argument('--train_on', type=str, choices=['01', 'all'], help='Which FOLDs to train on', default='all')
     parser.add_argument('--feature_type', type=str, choices=['dnabert', 'hits', 'both'], help='Whether to use DNABERT features, hits, or both', default='both')
-    parser.add_argument('--eval', type=bool, help='Whether to evaluate models', default=False)
+    parser.add_argument('--eval', action='store_true', help='Whether to evaluate models, this will eval on fold 3; train_on folds 01 should be selected', default=False)
+    parser.add_argument('--base_dir', default='/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2')
+    parser.add_argument('--model_type', type=str, choices=['rf', 'xgb'], default='rf', help='Which model type to train (rf or xgb)')
+    parser.add_argument('--interleave', action='store_true', help='If true, --feature_plot must point to HITS-only models. The routine constructs an interleaved ranking where each hit feature is paired with its corresponding DNABERT feature (<sig_seq_id>_pred_resistant). This ranking is then used for ft="dnabert" (DNABERT-only names), ft="hits" (hits-only), and ft="both" (hit, dnabert, hit, dnabert …). % of features is computed w.r.t. hits count.')
 
+    parser.add_argument('--feature_plot', type=str, help='Whether to plot accuracy vs num features, if path to models for features is passed, will plot accuracy vs num features for each model', default=None)
+    parser.add_argument('--oof_stack', action='store_true', help='If set, perform 3-fold out-of-fold stacking: train base hits and DNABERT models on complementary folds and a 2-feature logistic meta learner.')
     parser.add_argument('--tune_hyperparams', type=bool, help='Whether to tune hyperparameters', default=False)
     parser.add_argument('--tune_metric', type=str, choices=['accuracy', 'precision', 'recall', 'f1', 'aucroc'], help='Metric to tune hyperparameters on', default='accuracy')
     #tunable hyperparams - defaults are best parameters from tuning
-    parser.add_argument('--n_estimators', type=int, help='Number of trees in the random forest', default=250)
-    parser.add_argument('--max_depth', type=int, help='Maximum depth of the trees', default=40)
-    parser.add_argument('--top_n_mi_score', type=int, help='Number of features to keep based on mutual information score', default=300)
+    parser.add_argument('--n_estimators', type=int, help='Number of trees in the random forest', default=None) #default=250)
+    parser.add_argument('--max_depth', type=int, help='Maximum depth of the trees', default=None) #default=40)
+    parser.add_argument('--top_n_mi_score', type=int, help='Number of features to keep based on mutual information score', default=None) #, default=300
+
 
     args = parser.parse_args()
     if args.out_dir is None:
-        args.out_dir = os.path.join('models', 'rf', args.grouping, args.model_name)
+        if args.feature_plot is not None:
+            args.out_dir = os.path.join(args.base_dir, 'rf', 'models', args.model_type, args.grouping, args.model_name, 'feature_plot_temp')
+        else:
+            args.out_dir = os.path.join(args.base_dir, 'rf', 'models', args.model_type, args.grouping, args.model_name)
+        if args.oof_stack:
+            # store under models/oof/model_name
+            args.out_dir = os.path.join(args.base_dir, 'rf', 'models', 'oof', args.model_name)
+
     os.makedirs(args.out_dir, exist_ok=True)
+
+    # ----- dispatch for OOF stacking -----
+    if args.oof_stack and args.feature_plot is None:
+        oof_train(args)
+        if args.eval:
+            eval_oof(args)
+        return
 
     if args.tune_hyperparams:
         tune_hyperparams(args)
     else:
-        train(args)
-        if args.eval:
-            eval(args)
+        if args.feature_plot is not None:
+            feature_plot(args)
+        else:
+            train(args)
+            if args.eval:
+                eval(args)
+        
 
 
 if __name__ == '__main__':
     main()
-

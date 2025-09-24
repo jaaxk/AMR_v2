@@ -103,6 +103,8 @@ def load_model(model_path):
 def inference(dataset_path, preds_path, model, tokenizer, return_logits):
     #write preds as new column 'pred_phenotype' and write to new csv at preds_path
     df = pd.read_csv(dataset_path)
+    print(f"NUMBER OF NULL SEQUENCE ROWS: {df['sequence'].isnull().sum()}, dropping these rows")
+    df = df.dropna(subset=['sequence'])
     pred_phenos = []
     with torch.no_grad():
         for start in tqdm(range(0, len(df), BATCH_SIZE), desc='Running DNABERT inference'):
@@ -294,7 +296,6 @@ def main():
 
             model_path = os.path.join(args.model_path, antibiotic, 'best') #WARNING - if we change the model architecture, huggingface stores a model called 'best' in its cache, and won't reload it when this is called again, so make sure we clear cache or change the best model dirname from 'best'
             model, tokenizer = load_model(model_path)
-
             dataset_path = os.path.join(args.dataset_dir, antibiotic, f'{antibiotic}_sequence_dataset.csv') #load sequence dataset
             preds_path = f'{args.base_dir}/dnabert/inference/outputs/preds/{args.run_name}/per_antibiotic/{train_test}/{antibiotic}_preds.csv'
             if not os.path.exists(preds_path):

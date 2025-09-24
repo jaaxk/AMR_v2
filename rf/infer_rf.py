@@ -35,19 +35,23 @@ def filter_feature_type(X, feature_type):
     to be used for X dataset (features) """
 
     X = X.drop(['species', 'antibiotic'], axis=1) # we dont need species and antibiotic if were doing per-species models (all the same)
+    extra_cols_to_keep = ['accession']
+
 
     if feature_type == 'dnabert':
         cols_to_keep = [col for col in X.columns if 'pred_resistant' in col]
-        cols_to_keep.append('accession')
+        cols_to_keep.extend(extra_cols_to_keep)
         X = X[cols_to_keep]
     elif feature_type == 'hits':
         cols_to_keep = [col for col in X.columns if 'hit_count' in col]
-        cols_to_keep.append('accession')
+        cols_to_keep.extend(extra_cols_to_keep)
         X = X[cols_to_keep]
     elif feature_type == 'both':
         return X
     else:
         raise ValueError(f"Invalid feature type: {feature_type}")
+
+    return X
 
 def filter_top_n_mi(X, species, models_dir):
     

@@ -1,3 +1,6 @@
+data_pipeline/res_test.txt
+data_pipeline/res.txt
+OOF_stacking/res.txt
 data_pipeline/data/dbgwas/per_species
 data_pipeline/data/*
 data_pipeline/datasets/*

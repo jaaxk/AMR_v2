@@ -246,6 +246,22 @@ def generate_sequence_dataset(accession_list, output_dir, grouping, train, acces
 
         return sequences
 
+    def get_random_seq(accession):
+        #get random seq by finding first contig >seq_len, if none then just return empty string
+        assembly_path = os.path.join(assemblies_dir, f'{accession}.fasta')
+        if not os.path.exists(assembly_path):
+            print(f'Assembly file not found for accession: {accession}')
+            return ''
+        for record in SeqIO.parse(assembly_path, 'fasta'):
+            if len(str(record.seq)) > SEQ_LENGTH:
+                sequence = str(record.seq)[0:SEQ_LENGTH]
+                return sequence
+
+        #if never returned, return empty string
+        return ''
+
+
+
 
 
     if not os.path.exists(output_dir):
@@ -282,6 +298,11 @@ def generate_sequence_dataset(accession_list, output_dir, grouping, train, acces
                 phenotype = label_map[accession_to_phenotype[accession]]
 
             sequences = get_flanking_regions(accession, sseqids, sstarts, sends)
+            if not sequences: #if no sequences, we need to add something so that the accession stays in the set
+                sequences.append(get_random_seq(accession))
+                query_ids.append('random') #random is ID for no hits
+                hit_counts['random'] = 1
+
             #write rows for accession by iterating through lists
             for sequence, query_id in zip(sequences, query_ids):
                 if train:
@@ -332,7 +353,7 @@ def main():
     parser.add_argument('--grouping', type=str, help='Grouping', choices=['full', 'per_species', 'per_antibiotic'], default='per_species')
     parser.add_argument('--split', type=str, help='Path to directory containing train/test/dev accession lists (train.txt, test.txt, dev.txt)', default=None)
     parser.add_argument('--perspecies_dbgwas_dir', type=str, help='Path to directory containing significant sequences from DBGWAS', default=f'./data/dbgwas/p{DBGWAS_SIG_LEVEL}/per_species')
-    parser.add_argument('--train', type=bool)
+    parser.add_argument('--train', action='store_true')
     parser.add_argument('--group_only', type=str, default=None, help='give path to full sequence dataset if already created to group to new grouping')
     args = parser.parse_args()
     print(f'Arguments: {args}')

@@ -91,7 +91,86 @@ for model_file in os.listdir(models_dir):
         print()
         """
 
-df = pd.read_csv('/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/finetune/data/oof/run1/fold_1/meta_dataset.csv')
+"""df = pd.read_csv('/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/finetune/data/oof/run1/fold_1/meta_dataset.csv')
 df['len'] = df['sequence'].str.len()
 print(df['len'].value_counts())
-print(len(df))
+print(len(df))"""
+"""
+fold_0_meta_accs = set(pd.read_csv('/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/finetune/data/oof/run1/fold_0/meta_dataset.csv')['accession'].tolist())
+print(len(fold_0_meta_accs))
+
+df_list = []
+
+for species_dir in os.listdir('/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/inference/outputs/rf_datasets/run1_fold_0/full/train'):
+    df_list.append(pd.read_csv(f'/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/inference/outputs/rf_datasets/run1_fold_0/full/train/{species_dir}/{species_dir}_full_rf_dataset.csv'))
+
+fold_0_meta_train_set = pd.concat(df_list, axis=0)
+print(fold_0_meta_train_set.head())
+fold_0_meta_train_set_accs = set(fold_0_meta_train_set['accession'].tolist())
+
+print(len(fold_0_meta_train_set_accs))
+
+print(f'Intersection: {len(set(fold_0_meta_train_set_accs).intersection(set(fold_0_meta_accs)))}')"""
+"""
+
+#fold 0: how many meta_accs are missing from meta_dataset?
+meta_accs = set([line for line in open('/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/finetune/data/oof/run1/fold_0/meta_accs_0.txt')])
+meta_accs_in_dataset = set(pd.read_csv('/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/finetune/data/oof/run1/fold_0/meta_dataset.csv')['accession'].tolist())
+
+print(f'Meta accs: {len(meta_accs)}')
+print(f'Meta accs in dataset: {len(meta_accs_in_dataset)}')
+
+missing_accs = meta_accs.difference(meta_accs_in_dataset)
+
+#are the missing accs in the full dataset that we started with?
+full_dataset_accs = set(pd.read_csv('/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/data_pipeline/datasets/sequence_based/per_species/train/full_sequence_dataset.csv')['accession'].unique().tolist())
+print(f'num mising accs: {len(missing_accs)}')
+print(f'num missing accs in full set: {len(missing_accs.intersection(full_dataset_accs))}')"""
+
+"""
+
+df_list=[]
+for species_dir in os.listdir('/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/inference/outputs/rf_datasets/run2_testset/per_antibiotic/test'):
+    df_list.append(pd.read_csv(f'/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/inference/outputs/rf_datasets/run2_testset/per_antibiotic/test/{species_dir}/{species_dir}_full_rf_dataset.csv'))
+
+full_test_df = pd.concat(df_list, axis=0)
+
+accs_in_test_df = set(full_test_df['accession'].tolist())
+print(f'accs in test df: {len(accs_in_test_df)}')
+
+accs_in_test_template = set(pd.read_csv('/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/data_pipeline/data/metadata/testing_template.csv')['accession'].tolist())
+print(f'accs in test template: {len(accs_in_test_template)}')
+print(f'intersection: {len(accs_in_test_df.intersection(accs_in_test_template))}')
+
+#accs_in_full_test_dataset = set(pd.read_csv('/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/data_pipeline/datasets/sequence_based/per_antibiotic/test/full_sequence_dataset.csv')['accession'].unique().tolist())
+#print(f'accs in test dataset: {len(accs_in_full_test_dataset)}')
+
+#print(f'intersection: {len(accs_in_full_test_dataset.intersection(accs_in_test_template))}')
+"""
+
+
+
+"""meta_dataset_df = pd.read_csv('/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/finetune/data/oof/run2/fold_2/meta_dataset.csv')
+print(meta_dataset_df['sequence'].isnull().sum())
+
+bad_rows = meta_dataset_df[~meta_dataset_df['sequence'].apply(lambda x: isinstance(x, str))]
+print(bad_rows.head())"""
+
+
+"""
+models_dir = '/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/rf/models/rf/per_species/oof_run2_allfolds_HITSONLY'
+for model_file in os.listdir(models_dir):
+    if model_file.endswith('.joblib'):
+        model_path = os.path.join(models_dir, model_file)
+        model = joblib.load(model_path)
+        print(model_path)
+        df = pd.DataFrame(model.feature_importances_, index=model.feature_names_in_, columns=['importance'])
+        print(len(df))
+        print(df.head(50))"""
+
+import joblib
+model_path = '/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/rf/models/xgb/per_species/oof_run2_01_both_xgb/neisseria_gonorrhoeae_xgb_model.joblib'
+model = joblib.load(model_path)
+print(model_path)
+features = list(model.feature_names_in_)
+print(features)
