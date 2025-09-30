@@ -1,10 +1,10 @@
 """
 Run inference on a specified DNABERT model
-This script is mean to be used with datasets formatted by the data_pipeline/pipeline.py script with the --model_type sequence_based option
-Output is a dataset for input to a random forest model, with columns: accession, species, antibiotic, hit count for each feature, predicted resistant for each feature, ground truth phenotype (if train) TODO: add option for consensus prediction
+This script is mean to be used with datasets formatted by the data_pipeline/pipeline.py script (or from oof_1.py) with the --model_type sequence_based option
+Output is a dataset for input to a random forest model, with columns: accession, species, antibiotic, hit count for each feature, predicted resistant for each feature, ground truth phenotype (if train)
 
 Key Options:
-    - "output_format": "random_forest" or "consensus"
+    - "output_format": "random_forest"
     - "grouping": "full", "per_antibiotic", or "per_species" - this is the grouping that the DNABERT models were trained on, output will always be per-species datasets here
 
 Paths to specigy:
@@ -101,11 +101,12 @@ def load_model(model_path):
 
 
 def inference(dataset_path, preds_path, model, tokenizer, return_logits):
-    #write preds as new column 'pred_phenotype' and write to new csv at preds_path
+    #write preds as new columns 'pred_res' and 'pred_sus' and write to new csv at preds_path
     df = pd.read_csv(dataset_path)
     print(f"NUMBER OF NULL SEQUENCE ROWS: {df['sequence'].isnull().sum()}, dropping these rows")
     df = df.dropna(subset=['sequence'])
-    pred_phenos = []
+    pred_res = []
+    pred_sus = []
     with torch.no_grad():
         for start in tqdm(range(0, len(df), BATCH_SIZE), desc='Running DNABERT inference'):
             batch = df[start:start+BATCH_SIZE]
@@ -119,15 +120,19 @@ def inference(dataset_path, preds_path, model, tokenizer, return_logits):
                 #'species': torch.tensor(species, dtype=torch.long).to(device).unsqueeze(1).to(device),
             }
             logits = model(**inputs).logits
-            if return_logits:
-                preds = torch.softmax(logits, dim=-1).cpu().numpy()[:, 0]  # take only resistant class
-                pred_phenos.extend([float(x) for x in preds.flatten()])
+            if return_logits is not None:
+                preds_res = torch.softmax(logits, dim=-1).cpu().numpy()[:, 0]  # take only resistant class
+                preds_sus = torch.softmax(logits, dim=-1).cpu().numpy()[:, 1]  # take only susceptible class
+                pred_res.extend([float(x) for x in preds_res.flatten()])
+                pred_sus.extend([float(x) for x in preds_sus.flatten()])
             else:   
                 preds = torch.argmax(logits, dim=-1).cpu().numpy()
 
-                pred_phenos.extend([int(x) for x in preds.flatten()])
+                pred_res.extend([int(x) for x in preds.flatten()])
 
-    df['pred_phenotype'] = pred_phenos
+    df['pred_res'] = pred_res
+    if return_logits is not None:
+        df['pred_sus'] = pred_sus
     df.to_csv(preds_path, index=False)
 
 
@@ -167,10 +172,12 @@ def get_rf_dataset(preds_path, output_path, train, sig_seqs_path, accessions, re
             for query_id in accession_df['query_id'].unique().tolist():
                 query_id_df = accession_df[accession_df['query_id'] == query_id] #this df now only has a single query id for a single accession
                 #get number predicted resistant for each query id
-                if not return_logits:
-                    num_pred_resistant = query_id_df['pred_phenotype'].map({0: 1, 1: 0}).sum() # need to flip because Susceptible is 1
-                else:
-                    num_pred_resistant = query_id_df['pred_phenotype'].sum()
+                if return_logits is not None:
+                    num_pred_resistant = query_id_df['pred_res'].map({0: 1, 1: 0}).sum() # need to flip because Susceptible is 1
+                elif return_logits == 'sum':
+                    num_pred_resistant = query_id_df['pred_res'].sum()
+                elif return_logits == 'average':
+                    num_pred_resistant = query_id_df['pred_res'].mean()
                 query_id_to_hitcount[f'{query_id}_hit_count'] = query_id_df['hit_count'].iloc[0]
                 query_id_to_predresistant[f'{query_id}_pred_resistant'] = num_pred_resistant
 
@@ -253,7 +260,7 @@ def main():
     parser.add_argument('--split', type=bool, help='will look for dev_accs.txt and test_accs.txt to split each final dataset into train/test/dev according to split that dnabert was trained with', default=False)
     parser.add_argument('--metadata_dir', default='/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/data_pipeline/data/metadata')
     parser.add_argument('--base_dir', type=str, help='base directory that this script is in', default='/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2')
-    parser.add_argument('--return_logits', type=bool, help='Dont take argmax while filling out pred_phenos csv. Input to RF will be sum of resistant probabilities', default=False)
+    parser.add_argument('--return_logits', type=str, choices=['sum', 'average', None], help='Dont take argmax while filling out pred_phenos csv. Input to RF will be sum of resistant probabilities', default=None)
     args = parser.parse_args()
     print(f'Arguments: {args}')
     train_test = 'train' if args.train else 'test'

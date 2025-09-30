@@ -21,3 +21,5 @@ dnabert/finetune/finetuned_models
 dnabert/finetune/pretrained_models
 dnabert/finetune/wandb
 dnabert/finetune/logs
+rf/res1.txt
+data_analysis/missing_accs/*

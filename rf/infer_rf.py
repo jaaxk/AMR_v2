@@ -14,6 +14,8 @@ import pandas as pd
 import joblib
 import os
 from tqdm import tqdm
+from sklearn.linear_model import LogisticRegression
+import numpy as np
 
 # lists/mappings
 species_list = [
@@ -34,8 +36,15 @@ def filter_feature_type(X, feature_type):
     as well as other unnecessary columns like accession, species, antibiotic, ground_truth_phenotype,
     to be used for X dataset (features) """
 
-    X = X.drop(['species', 'antibiotic'], axis=1) # we dont need species and antibiotic if were doing per-species models (all the same)
-    extra_cols_to_keep = ['accession']
+    try:
+        X = X.drop(['species', 'antibiotic'], axis=1) # we dont need species and antibiotic if were doing per-species models (all the same)
+    except KeyError:
+        print('no species or antibiotic columns found')
+    
+    if 'accession' in X.columns:
+        extra_cols_to_keep = ['accession']
+    else:
+        extra_cols_to_keep = []
 
 
     if feature_type == 'dnabert':
@@ -66,6 +75,46 @@ def filter_top_n_mi(X, species, models_dir):
         
     return X
 
+
+def infer_oof(test_df, species, args):
+    """gets final preds by averaging preds from all 3 xgb/rf models and passing to stacker"""
+
+    # load all the models
+    dnabert_xgb1 = joblib.load(os.path.join(args.models_dir, 'dnabert', 'exclude_fold_2', f'{species}_xgb_model.joblib'))
+    dnabert_xgb2 = joblib.load(os.path.join(args.models_dir, 'dnabert', 'exclude_fold_1', f'{species}_xgb_model.joblib'))
+    dnabert_xgb3 = joblib.load(os.path.join(args.models_dir, 'dnabert', 'exclude_fold_0', f'{species}_xgb_model.joblib'))
+    hits_xgb1 = joblib.load(os.path.join(args.models_dir, 'hits', 'exclude_fold_2', f'{species}_xgb_model.joblib'))
+    hits_xgb2 = joblib.load(os.path.join(args.models_dir, 'hits', 'exclude_fold_1', f'{species}_xgb_model.joblib'))
+    hits_xgb3 = joblib.load(os.path.join(args.models_dir, 'hits', 'exclude_fold_0', f'{species}_xgb_model.joblib'))
+    stacker = joblib.load(os.path.join(args.models_dir, 'stacker', f'{species}_stacker.joblib'))
+
+    # get preds from all 3 models
+    # Average positive-class probabilities from each base model (column index 1)
+    dnabert_avg = np.mean(
+        np.stack([
+            dnabert_xgb1.predict_proba(filter_feature_type(test_df, 'dnabert'))[:, 1],
+            dnabert_xgb2.predict_proba(filter_feature_type(test_df, 'dnabert'))[:, 1],
+            dnabert_xgb3.predict_proba(filter_feature_type(test_df, 'dnabert'))[:, 1]
+        ], axis=0),
+        axis=0
+    )
+    hits_avg = np.mean(
+        np.stack([
+            hits_xgb1.predict_proba(filter_feature_type(test_df, 'hits'))[:, 1],
+            hits_xgb2.predict_proba(filter_feature_type(test_df, 'hits'))[:, 1],
+            hits_xgb3.predict_proba(filter_feature_type(test_df, 'hits'))[:, 1]
+        ], axis=0),
+        axis=0
+    )
+
+    # Build meta-features in the same order used during training: hits first, then DNABERT
+    X_meta = np.column_stack([hits_avg, dnabert_avg])
+    final_preds = stacker.predict(X_meta)
+
+    return final_preds
+
+        
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--model_name', type=str, help='Name of DNABERT model used', default=None)
@@ -75,6 +124,7 @@ def main():
     parser.add_argument('--test_dataset_dir', type=str, help='Path to directory containing test datasets formatted by dnabert/inference/inference.py')
     parser.add_argument('--out_path', type=str, help='Path to save filled template', default=None)
     parser.add_argument('--feature_type', type=str, choices=['dnabert', 'hits', 'both'], help='Feature type for RF models', default='both')
+    parser.add_argument('--oof_stack', action='store_true', help='Whether to use OOF stacker predictions')
     args = parser.parse_args()
 
     if args.models_dir is None:
@@ -86,18 +136,27 @@ def main():
     acc_to_prediction = {}
     if args.grouping == 'per_species':
         for species in tqdm(species_list, desc='Running per-species RF inference'):
-            model_path = os.path.join(args.models_dir, f"{species}_rf_model.joblib")
-            model = joblib.load(model_path)
+            
             df = pd.read_csv(os.path.join(args.test_dataset_dir, species, f"{species}_full_rf_dataset.csv"))
             df = filter_feature_type(df, args.feature_type)
             df = filter_top_n_mi(df, species, args.models_dir)
-            preds = model.predict(df.drop(['accession'], axis=1))
+            if not args.oof_stack:
+                model_path = os.path.join(args.models_dir, f"{species}_rf_model.joblib")
+                model = joblib.load(model_path)
+                preds = model.predict(df.drop(['accession'], axis=1))
+
+            else:
+                preds = infer_oof(df.drop(['accession'], axis=1), species, args)
+                #print(type(preds))
+                #print(type(preds[0]))
+                #print(preds[0])
             assert len(preds) == len(df)
             for acc, pred in zip(df['accession'], preds):
                 acc_to_prediction[acc] = pred
 
         testing_template['phenotype'] = testing_template['accession'].map(acc_to_prediction)
         testing_template['phenotype'] = testing_template['phenotype'].map(phenotype_mapping)
+        print(f'WARNING, nan values found in phenotype column: {testing_template[testing_template["phenotype"].isna()].shape[0]}')
         testing_template['phenotype'] = testing_template['phenotype'].fillna('Resistant')
         testing_template['measurement_value'] = 0
         testing_template.to_csv(args.out_path, index=None)

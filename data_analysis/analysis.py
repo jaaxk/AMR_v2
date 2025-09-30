@@ -168,9 +168,566 @@ for model_file in os.listdir(models_dir):
         print(len(df))
         print(df.head(50))"""
 
-import joblib
+"""import joblib
 model_path = '/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/rf/models/xgb/per_species/oof_run2_01_both_xgb/neisseria_gonorrhoeae_xgb_model.joblib'
 model = joblib.load(model_path)
 print(model_path)
 features = list(model.feature_names_in_)
-print(features)
+print(features)"""
+
+"""
+
+import os
+from pathlib import Path
+import pandas as pd
+import numpy as np
+
+# Species mapping for iteration
+species_mapping = {
+    'klebsiella_pneumoniae': 0,
+    'streptococcus_pneumoniae': 1,
+    'escherichia_coli': 2,
+    'campylobacter_jejuni': 3,
+    'salmonella_enterica': 4,
+    'neisseria_gonorrhoeae': 5,
+    'staphylococcus_aureus': 6,
+    'pseudomonas_aeruginosa': 7,
+    'acinetobacter_baumannii': 8
+}
+
+# Paths provided
+NEW_TRAIN_ROOT = Path("/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/inference/outputs/rf_datasets/oof/run2")
+OLD_TRAIN_FULL_ROOT = Path("/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/inference/outputs/rf_datasets/original_dataset/train/FULL")
+
+NEW_TEST_ROOT = Path("/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/inference/outputs/rf_datasets/run2_testset")
+OLD_TEST_ROOT = Path("/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/inference/outputs/rf_datasets/original_dataset/test")
+
+def find_first_existing(paths):
+    for p in paths:
+        if p.exists():
+            return p
+    return None
+
+def candidate_new_train_paths(species):
+    # Handle possible filename typo (_datase.csv vs _dataset.csv)
+    return [
+        NEW_TRAIN_ROOT / species / f"{species}_full_rf_dataset.csv",
+        NEW_TRAIN_ROOT / species / f"{species}_full_rf_datase.csv",
+    ]
+
+def candidate_new_test_paths(species):
+    # We don't know exact nesting; search a few plausible patterns and fall back to glob
+    candidates = [
+        NEW_TEST_ROOT / "per_antibiotic" / "test" / species / f"{species}_full_rf_dataset.csv",
+        NEW_TEST_ROOT / species / f"{species}_full_rf_dataset.csv",
+        NEW_TEST_ROOT / "test" / species / f"{species}_full_rf_dataset.csv",
+    ]
+    existing = find_first_existing(candidates)
+    if existing:
+        return existing
+    # fallback: glob
+    hits = list(NEW_TEST_ROOT.rglob(f"{species}_full_rf_dataset.csv"))
+    return hits[0] if hits else None
+
+def load_df(p: Path, kind: str, species: str):
+    if p is None:
+        print(f"[WARN] {kind} dataset missing for {species}")
+        return None
+    try:
+        return pd.read_csv(p)
+    except Exception as e:
+        print(f"[ERROR] Failed reading {kind} for {species} at {p}: {e}")
+        return None
+
+def filter_hits_only_train(df: pd.DataFrame):
+    # Mirror train_rf.filter_feature_type for 'hits'
+    df = df.copy()
+    meta_cols = [c for c in ['accession','species','antibiotic','ground_truth_phenotype'] if c in df.columns]
+    hits_cols = [c for c in df.columns if 'hit_count' in c]
+    return df[meta_cols + hits_cols]
+
+def filter_hits_only_infer(df: pd.DataFrame):
+    # Mirror infer_rf.filter_feature_type for 'hits'
+    df = df.copy()
+    # species/antibiotic may not exist
+    for c in ['species','antibiotic']:
+        if c in df.columns:
+            df = df.drop(columns=c)
+    # keep accession if present
+    cols = [c for c in df.columns if 'hit_count' in c]
+    if 'accession' in df.columns:
+        cols = ['accession'] + cols
+    return df[cols]
+
+def compare_feature_sets(hits_old, hits_new):
+    set_old = set(hits_old)
+    set_new = set(hits_new)
+    only_old = sorted(list(set_old - set_new))
+    only_new = sorted(list(set_new - set_old))
+    same_order = (hits_old == hits_new)
+    return only_old, only_new, same_order
+
+def per_feature_numeric_diffs(df_old, df_new, feature_cols):
+    # Compare on the intersection of accessions if present; else compare row-aligned
+    if 'accession' in df_old.columns and 'accession' in df_new.columns:
+        common = sorted(list(set(df_old['accession']) & set(df_new['accession'])))
+        A = df_old.set_index('accession').loc[common, feature_cols]
+        B = df_new.set_index('accession').loc[common, feature_cols]
+    else:
+        # align by index length minimum
+        n = min(len(df_old), len(df_new))
+        A = df_old.iloc[:n][feature_cols]
+        B = df_new.iloc[:n][feature_cols]
+
+    diffs = (A - B).abs()
+    summary = pd.DataFrame({
+        'mean_abs_diff': diffs.mean(axis=0),
+        'nonzero_diff_count': (diffs > 0).sum(axis=0)
+    }).sort_values(by=['nonzero_diff_count','mean_abs_diff'], ascending=False)
+    return summary, len(A)
+
+def summarize_metadata(df, is_train):
+    out = {}
+    if 'species' in df.columns:
+        out['species_unique'] = sorted(df['species'].unique().tolist())
+    if 'antibiotic' in df.columns:
+        out['antibiotic_unique'] = sorted(pd.Series(df['antibiotic']).unique().tolist())
+    if is_train and 'ground_truth_phenotype' in df.columns:
+        out['phenotype_counts'] = df['ground_truth_phenotype'].value_counts().to_dict()
+    if 'accession' in df.columns:
+        out['n_accessions'] = df['accession'].nunique()
+    return out
+
+def analyze_pair(old_df, new_df, species, is_train):
+    label = "TRAIN" if is_train else "TEST"
+    if old_df is None or new_df is None:
+        print(f"[SKIP] {label} {species}: one of the datasets is missing.")
+        return
+
+    # Mirror the filtering as close as possible to model input (hits-only)
+    old_f = filter_hits_only_train(old_df) if is_train else filter_hits_only_infer(old_df)
+    new_f = filter_hits_only_train(new_df) if is_train else filter_hits_only_infer(new_df)
+
+    # Accessions overlap
+    acc_overlap = None
+    if 'accession' in old_f.columns and 'accession' in new_f.columns:
+        acc_overlap = len(set(old_f['accession']).intersection(set(new_f['accession'])))
+
+    # Feature set diffs
+    old_hits = [c for c in old_f.columns if 'hit_count' in c]
+    new_hits = [c for c in new_f.columns if 'hit_count' in c]
+    only_old, only_new, same_order = compare_feature_sets(old_hits, new_hits)
+
+    print(f"\n=== {label} {species} ===")
+    print(f"Old rows: {len(old_f)} | New rows: {len(new_f)} | Accession overlap: {acc_overlap}")
+    print(f"Hit features: old={len(old_hits)}, new={len(new_hits)}")
+    print(f"Features only in OLD (count={len(only_old)}): {only_old[:10]}{' ...' if len(only_old) > 10 else ''}")
+    print(f"Features only in NEW (count={len(only_new)}): {only_new[:10]}{' ...' if len(only_new) > 10 else ''}")
+    print(f"Feature order identical: {same_order}")
+
+    # Compare numeric differences on common features
+    common_features = sorted(list(set(old_hits) & set(new_hits)))
+    if common_features:
+        diff_summary, n_comp = per_feature_numeric_diffs(old_f, new_f, common_features)
+        print(f"Compared numeric diffs on {len(common_features)} common features over {n_comp} aligned samples.")
+        print("Top differing features (up to 10):")
+        print(diff_summary.head(10))
+    else:
+        print("No common features to compare numerically.")
+
+    # Metadata sanity
+    meta_old = summarize_metadata(old_df, is_train)
+    meta_new = summarize_metadata(new_df, is_train)
+    print("Old metadata summary:", meta_old)
+    print("New metadata summary:", meta_new)
+
+def main_compare():
+    # TRAIN comparisons
+    for species in species_mapping.keys():
+        old_train = OLD_TRAIN_FULL_ROOT / species / f"{species}_full_rf_dataset.csv"
+        new_train = find_first_existing(candidate_new_train_paths(species))
+        old_df = load_df(old_train, "OLD TRAIN", species)
+        new_df = load_df(new_train, "NEW TRAIN", species)
+        analyze_pair(old_df, new_df, species, is_train=True)
+
+    # TEST comparisons
+    for species in species_mapping.keys():
+        old_test = OLD_TEST_ROOT / species / f"{species}_full_rf_dataset.csv"
+        new_test = candidate_new_test_paths(species)
+        old_df = load_df(old_test, "OLD TEST", species)
+        new_df = load_df(new_test, "NEW TEST", species)
+        analyze_pair(old_df, new_df, species, is_train=False)
+
+#if __name__ == "__main__":
+#    main_compare()
+"""
+"""
+new_df = pd.read_csv('/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/inference/outputs/rf_datasets/oof/run2/staphylococcus_aureus/staphylococcus_aureus_full_rf_dataset.csv')
+old_df = pd.read_csv('/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/inference/outputs/rf_datasets/original_dataset/train/FULL/staphylococcus_aureus/staphylococcus_aureus_full_rf_dataset.csv')
+
+new_accs = new_df['accession'].tolist()
+old_accs = old_df['accession'].tolist()
+
+print(len(new_accs))
+print(len(old_accs))
+
+print(len(set(new_accs)))
+print(len(set(old_accs)))
+"""
+"""
+# ---- Write NEW-only train accessions per species to ./missing_accs/{species}.txt ----
+import os
+from pathlib import Path
+import pandas as pd
+
+# Reuse existing constants if present; otherwise define them here
+try:
+    species_mapping
+except NameError:
+    species_mapping = {
+        'klebsiella_pneumoniae': 0,
+        'streptococcus_pneumoniae': 1,
+        'escherichia_coli': 2,
+        'campylobacter_jejuni': 3,
+        'salmonella_enterica': 4,
+        'neisseria_gonorrhoeae': 5,
+        'staphylococcus_aureus': 6,
+        'pseudomonas_aeruginosa': 7,
+        'acinetobacter_baumannii': 8
+    }
+
+try:
+    NEW_TRAIN_ROOT
+except NameError:
+    NEW_TRAIN_ROOT = Path("/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/inference/outputs/rf_datasets/oof/run2")
+try:
+    OLD_TRAIN_FULL_ROOT
+except NameError:
+    OLD_TRAIN_FULL_ROOT = Path("/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/inference/outputs/rf_datasets/original_dataset/train/FULL")
+
+def _find_first_existing(paths):
+    for p in paths:
+        if p.exists():
+            return p
+    return None
+
+def _candidate_new_train_paths(species):
+    # Handle possible filename typo (_datase.csv vs _dataset.csv)
+    return [
+        NEW_TRAIN_ROOT / species / f"{species}_full_rf_dataset.csv",
+        NEW_TRAIN_ROOT / species / f"{species}_full_rf_datase.csv",
+    ]
+
+def write_new_only_accessions():
+    out_root = Path("./missing_accs")
+    out_root.mkdir(parents=True, exist_ok=True)
+
+    summary = []
+    for species in species_mapping.keys():
+        old_path = OLD_TRAIN_FULL_ROOT / species / f"{species}_full_rf_dataset.csv"
+        new_path = _find_first_existing(_candidate_new_train_paths(species))
+
+        if not old_path.exists():
+            print(f"[WARN] Missing OLD train file for {species}: {old_path}")
+            continue
+        if new_path is None:
+            print(f"[WARN] Missing NEW train file for {species} (checked both _dataset and _datase variants).")
+            continue
+
+        try:
+            old_df = pd.read_csv(old_path, usecols=['accession'])
+            new_df = pd.read_csv(new_path, usecols=['accession'])
+        except Exception as e:
+            print(f"[ERROR] Failed to read accessions for {species}: {e}")
+            continue
+
+        old_accs = set(map(str, old_df['accession'].dropna().astype(str)))
+        new_accs = set(map(str, new_df['accession'].dropna().astype(str)))
+
+        new_only = sorted(list(new_accs - old_accs))
+
+        out_file = out_root / f"{species}.txt"
+        with open(out_file, "w") as f:
+            for acc in new_only:
+                f.write(f"{acc}\n")
+
+        print(f"[OK] {species}: wrote {len(new_only)} new-only accessions to {out_file}")
+        summary.append((species, len(new_only)))
+
+    # Optional: print a brief summary
+    if summary:
+        print("\nSummary (species -> new-only count):")
+        for sp, n in summary:
+            print(f"  {sp:25s}: {n}")
+    else:
+        print("No species processed or no new-only accessions found.")
+
+# Uncomment to run directly when executing this script
+#if __name__ == "__main__":
+#    write_new_only_accessions()
+"""
+"""
+import joblib
+model = joblib.load('/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/rf/models/rf/per_species/run2_hitsonly_skipaccs/neisseria_gonorrhoeae_rf_model.joblib')
+feature_names = model.feature_names_in_
+accs_to_skip = open('/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/data_analysis/missing_accs/neisseria_gonorrhoeae.txt').readlines()
+accs_to_skip = [acc.strip() for acc in accs_to_skip]
+#are they in feature_names?
+print([acc for acc in accs_to_skip if acc in feature_names])
+print(len(accs_to_skip))
+print(len(feature_names))
+print(len(set(accs_to_skip).intersection(set(feature_names))))
+print(len(set(accs_to_skip).difference(set(feature_names))))
+"""
+"""
+species_mapping = {
+        'klebsiella_pneumoniae': 0,
+        'streptococcus_pneumoniae': 1,
+        'escherichia_coli': 2,
+        'campylobacter_jejuni': 3,
+        'salmonella_enterica': 4,
+        'neisseria_gonorrhoeae': 5,
+        'staphylococcus_aureus': 6,
+        'pseudomonas_aeruginosa': 7,
+        'acinetobacter_baumannii': 8
+    }
+
+import pandas as pd
+from pathlib import Path
+from sklearn.feature_selection import mutual_info_classif
+import numpy as np
+
+# Reuse your existing species_mapping and paths:
+# species_mapping, NEW_TRAIN_ROOT, OLD_TRAIN_FULL_ROOT already defined above
+
+def _find_first_existing(paths):
+    for p in paths:
+        if p.exists():
+            return p
+    return None
+
+def _candidate_new_train_paths(species):
+    return [
+        NEW_TRAIN_ROOT / species / f"{species}_full_rf_dataset.csv",
+        NEW_TRAIN_ROOT / species / f"{species}_full_rf_datase.csv",
+    ]
+
+def load_train_pair(species):
+    old_path = OLD_TRAIN_FULL_ROOT / species / f"{species}_full_rf_dataset.csv"
+    new_path = _find_first_existing(_candidate_new_train_paths(species))
+    if not old_path.exists() or new_path is None:
+        print(f"[SKIP] Missing train files for {species}")
+        return None, None
+    try:
+        old_df = pd.read_csv(old_path)
+        new_df = pd.read_csv(new_path)
+        return old_df, new_df
+    except Exception as e:
+        print(f"[ERROR] Reading train for {species}: {e}")
+        return None, None
+
+def label_mismatch_report(old_df, new_df, species):
+    # Intersect by accession
+    common = sorted(list(set(old_df['accession']) & set(new_df['accession'])))
+    A = old_df.set_index('accession').loc[common]
+    B = new_df.set_index('accession').loc[common]
+    if 'ground_truth_phenotype' not in A.columns or 'ground_truth_phenotype' not in B.columns:
+        print(f"[WARN] Missing ground_truth_phenotype in {species}")
+        return
+
+    la = A['ground_truth_phenotype'].astype(int)
+    lb = B['ground_truth_phenotype'].astype(int)
+    mismask = la != lb
+    mismatches = la[mismask].index.tolist()
+
+    print(f"\n=== LABEL MISMATCHES (TRAIN) {species} ===")
+    print(f"Common accessions: {len(common)}")
+    print(f"Label mismatches: {mismask.sum()}")
+    if mismask.sum() > 0:
+        print(f"Sample mismatched accessions (up to 20): {mismatches[:20]}")
+
+    # Class proportions on common subset
+    def proportions(s):
+        vc = s.value_counts().to_dict()
+        total = len(s)
+        return {k: (v, v/total) for k,v in vc.items()}
+
+    print("OLD label proportions on common:", proportions(la))
+    print("NEW label proportions on common:", proportions(lb))
+
+def duplicate_and_conflict_report(df, species, tag):
+    # Duplicate accession rows
+    dup_counts = df['accession'].value_counts()
+    dups = dup_counts[dup_counts > 1].index.tolist()
+    print(f"\n=== DUPLICATES ({tag}) {species} ===")
+    print(f"Total duplicates: {len(dups)}")
+    if len(dups) > 0:
+        # Check conflicting labels among duplicates
+        conflicts = []
+        for acc in dups:
+            labels = df.loc[df['accession'] == acc, 'ground_truth_phenotype'].dropna().unique().tolist()
+            if len(labels) > 1:
+                conflicts.append((acc, labels))
+        print(f"Conflicting-label duplicates: {len(conflicts)}")
+        if conflicts:
+            print("Examples (up to 10):", conflicts[:10])
+
+def mi_drift_report(old_df, new_df, species, top_k=100, compute=True):
+    if not compute:
+        return
+    # Restrict to common accessions and common hit features
+    common = sorted(list(set(old_df['accession']) & set(new_df['accession'])))
+    A = old_df.set_index('accession').loc[common]
+    B = new_df.set_index('accession').loc[common]
+
+    hit_cols = [c for c in A.columns if 'hit_count' in c]
+    hit_cols = [c for c in hit_cols if c in B.columns]
+    if len(hit_cols) == 0:
+        print(f"[WARN] No common hit features for {species}")
+        return
+
+    Xa = A[hit_cols].values
+    Xb = B[hit_cols].values
+    ya = A['ground_truth_phenotype'].astype(int).values
+    yb = B['ground_truth_phenotype'].astype(int).values
+
+    # Compute MI against their respective labels
+    mia = mutual_info_classif(Xa, ya, discrete_features='auto', random_state=0)
+    mib = mutual_info_classif(Xb, yb, discrete_features='auto', random_state=0)
+
+    df_mi_a = pd.DataFrame({'feature': hit_cols, 'mi': mia}).sort_values('mi', ascending=False)
+    df_mi_b = pd.DataFrame({'feature': hit_cols, 'mi': mib}).sort_values('mi', ascending=False)
+
+    top_a = df_mi_a.head(top_k)['feature'].tolist()
+    top_b = df_mi_b.head(top_k)['feature'].tolist()
+    overlap = len(set(top_a) & set(top_b))
+
+    print(f"\n=== MI DRIFT (TRAIN) {species} ===")
+    print(f"Top-{top_k} overlap (OLD vs NEW): {overlap}/{top_k}")
+    if overlap < top_k:
+        # show top-10 MI diff by rank presence
+        only_a = [f for f in top_a if f not in top_b][:10]
+        only_b = [f for f in top_b if f not in top_a][:10]
+        print(f"Top features only in OLD (up to 10): {only_a}")
+        print(f"Top features only in NEW (up to 10): {only_b}")
+
+def run_train_set_differences(top_k_mi=100, COMPUTE_MI=False):
+    for species in species_mapping.keys():
+        old_df, new_df = load_train_pair(species)
+        if old_df is None or new_df is None:
+            continue
+
+        # Label mismatches on common accessions
+        label_mismatch_report(old_df, new_df, species)
+
+        # Duplicate + conflicting labels
+        duplicate_and_conflict_report(old_df, species, tag="OLD")
+        duplicate_and_conflict_report(new_df, species, tag="NEW")
+
+        # MI drift on common accessions (optional, expensive)
+        mi_drift_report(old_df, new_df, species, top_k=top_k_mi, compute=COMPUTE_MI)
+
+# Uncomment to run:
+#if __name__ == "__main__":
+#    run_train_set_differences(top_k_mi=100, COMPUTE_MI=False)
+
+
+import os
+from pathlib import Path
+import pandas as pd
+
+# Reuse existing globals if present:
+# species_mapping, NEW_TRAIN_ROOT, OLD_TRAIN_FULL_ROOT
+def _find_first_existing(paths):
+    for p in paths:
+        if p.exists():
+            return p
+    return None
+
+def _candidate_new_train_paths(species):
+    # Tries both _dataset and the common typo _datase
+    return [
+        NEW_TRAIN_ROOT / species / f"{species}_full_rf_dataset.csv",
+        NEW_TRAIN_ROOT / species / f"{species}_full_rf_datase.csv",
+    ]
+
+def write_label_mismatches():
+    out_root = Path("./mismatches")
+    out_root.mkdir(parents=True, exist_ok=True)
+
+    summary = []
+    for species in species_mapping.keys():
+        old_path = OLD_TRAIN_FULL_ROOT / species / f"{species}_full_rf_dataset.csv"
+        new_path = _find_first_existing(_candidate_new_train_paths(species))
+        if not old_path.exists() or new_path is None:
+            print(f"[SKIP] Missing train files for {species}")
+            continue
+
+        try:
+            old_df = pd.read_csv(old_path, usecols=['accession', 'ground_truth_phenotype'])
+            new_df = pd.read_csv(new_path, usecols=['accession', 'ground_truth_phenotype'])
+        except Exception as e:
+            print(f"[ERROR] Reading train for {species}: {e}")
+            continue
+
+        # Intersect and compare labels
+        common = sorted(list(set(old_df['accession']) & set(new_df['accession'])))
+        if len(common) == 0:
+            print(f"[INFO] No common accessions for {species}")
+            continue
+
+        A = old_df.set_index('accession').loc[common]['ground_truth_phenotype'].astype(int)
+        B = new_df.set_index('accession').loc[common]['ground_truth_phenotype'].astype(int)
+        mismask = A != B
+        mismatches = A[mismask].index.tolist()
+
+        out_file = out_root / f"{species}.txt"
+        with open(out_file, "w") as f:
+            for acc in mismatches:
+                f.write(f"{acc}\n")
+
+        print(f"[OK] {species}: wrote {len(mismatches)} label-mismatched accessions to {out_file}")
+        summary.append((species, len(mismatches)))
+
+    if summary:
+        print("\nSummary (species -> mismatch count):")
+        for sp, n in summary:
+            print(f"  {sp:25s}: {n}")
+    else:
+        print("No mismatches written (no species processed or no mismatches found).")
+
+# Uncomment to run directly:
+if __name__ == "__main__":
+    write_label_mismatches()
+"""
+
+#check phenotype balance
+train_df = pd.read_csv('/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/finetune/data/oof/run5/fold_0/dnabert_data/train.csv')
+print(train_df.head())
+print(train_df['phenotype'].value_counts())
+
+#ensure theres no accessions that are not in ./top_15p_features/{species}_top_15%_features.txt
+"""for species in ['klebsiella_pneumoniae', 'streptococcus_pneumoniae', 'escherichia_coli', 'campylobacter_jejuni', 'salmonella_enterica', 'neisseria_gonorrhoeae', 'staphylococcus_aureus', 'pseudomonas_aeruginosa', 'acinetobacter_baumannii']:
+    top_15p_features = open(f'./top_15p_features/{species}_top_15%_features.txt').readlines()
+    top_15p_features = [line.strip() for line in top_15p_features]
+    species_df = train_df[train_df['species'] == species]
+    species_df['accession'].isin(top_15p_features).all()
+    if not species_df['accession'].isin(top_15p_features).all():
+        print(f"[ERROR] {species} has accessions not in top 15% features")
+    else:
+        print(f"[OK] {species} has all accessions in top 15% features")"""
+
+#check query_id / phenotype balance
+query_id_to_phenotype = train_df.groupby('query_id')['phenotype'].value_counts().to_dict()
+print(query_id_to_phenotype)
+
+#how many nan values in train_df
+print(train_df.isnull().sum())
+
+#number of duplicate sequences
+print(train_df['sequence'].duplicated().sum())
+
+
+
+    
+    

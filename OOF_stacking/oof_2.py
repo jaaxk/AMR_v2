@@ -10,6 +10,7 @@ import argparse
 import pandas as pd
 import os
 import subprocess
+import sys
 
 
 #lists
@@ -174,7 +175,7 @@ else: #if final inference, we can run inference on each model, then average logi
     print('Running in TEST mode')
 
 
-    if not args.eval_on_full_models:
+    if not args.eval_on_full_models: #if we dont have a fold_FULL, we average logits across fold models
 
         if args.grouping == 'full':
             for model in os.listdir(args.models_base_dir):

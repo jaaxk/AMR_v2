@@ -6,8 +6,8 @@
 #SBATCH --mem 120G
 
 python -u oof_2.py \
-    --data_base_dir /gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/finetune/data/oof/run2 \
-    --models_base_dir /gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/finetune/finetuned_models/run2 \
-    --run_name run3 \
-    --grouping per_antibiotic \
+    --data_base_dir /gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/finetune/data/oof/run5 \
+    --models_base_dir /gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/finetune/finetuned_models/run5 \
+    --run_name run5 \
+    --grouping full \
     --train True

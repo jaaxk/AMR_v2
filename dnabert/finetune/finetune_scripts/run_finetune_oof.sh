@@ -14,7 +14,7 @@ source /gpfs/scratch/jvaska/miniconda3/etc/profile.d/conda.sh #for conda envs to
 conda activate dna
 
 # paths
-export DATA_DIR=$1 #this is base dir containing each fold directory, each containing train.csv, test.csv, dev.csv
+export DATA_DIR=$1 #this is base dir containing each fold directory, each containing dnabert_data/train.csv, test.csv, dev.csv
 export BASE_RUN_NAME=$2 #base run name, _{fold} will be attached
 export BASE_OUT_DIR="/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/finetune/finetuned_models/${BASE_RUN_NAME}"
 export MODEL_PATH="/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/finetune/pretrained_models/bacteria_model"
@@ -38,11 +38,12 @@ wandb login 0e16ac7c39d857e9bc3de95f06818dd4899bc8c1
 
 for FOLD in $(ls -d ${DATA_DIR}/*); do
     FOLD=$(basename ${FOLD})
+
     echo "Running finetuning for: $FOLD"
     export WANDB_NAME=${BASE_RUN_NAME}_${FOLD}
     export RUN_NAME=${BASE_RUN_NAME}_${FOLD}
     export OUT_DIR=${BASE_OUT_DIR}/${FOLD}
-    export DATA_PATH=${DATA_DIR}/${FOLD}
+    export DATA_PATH=${DATA_DIR}/${FOLD}/dnabert_data
 
     echo "Running finetuning with dataset $DATA_PATH and run name $RUN_NAME"
 

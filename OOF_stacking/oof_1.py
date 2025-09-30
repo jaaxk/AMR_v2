@@ -37,7 +37,7 @@ def main():
   parser.add_argument("--k", type=int, default=3)
   parser.add_argument("--train_metadata_path", type=str, default="/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/data_pipeline/data/metadata/training_dataset.csv")
   parser.add_argument('--full_sequence_dataset_path', type=str, default="/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/data_pipeline/datasets/sequence_based/per_antibiotic/train/full_sequence_dataset.csv")
-  parser.add_argument('--run_name', type=str, default="run1")
+  parser.add_argument('--run_name', type=str, default=None)
   parser.add_argument('--grouping', choices=['full', 'per_species', 'per_antibiotic'], default='per_antibiotic')
   args = parser.parse_args()
   
@@ -47,25 +47,26 @@ def main():
   all_accessions = list(set(pd.read_csv(args.train_metadata_path)['accession'].tolist()))
 
   # break into k folds
-  kf = KFold(n_splits=args.k, shuffle=True, random_state=42)
+  kf = KFold(n_splits=args.k, shuffle=True, random_state=84)
   folds = list(kf.split(all_accessions))
   folds.append(([i for i in range(len(all_accessions))], []))
 
   # setup output directory and lists
-  dnabert_accs_so_far = []
+  meta_accs_so_far = []
   base_out_dir = f"/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/finetune/data/oof/{args.run_name}"
   os.makedirs(base_out_dir, exist_ok=True)
   
   # main loop
+
   for i, (dnabert_indices, meta_indices) in enumerate(folds):
     if i == args.k:
       print('Starting FULL DATASET fold')
       fold_out_dir = f"{base_out_dir}/fold_FULL"
     else:
-      print(f"Starting fold {i+1}")
+      print(f"Starting fold {i}")
       fold_out_dir = f"{base_out_dir}/fold_{i}"
     os.makedirs(fold_out_dir, exist_ok=True)
-    """
+    
     
       
     # get train and val accessions for DNABERT
@@ -98,16 +99,16 @@ def main():
         f.write(f"{acc}\n")
 
     # ensure no overlap across folds
-    if train_accessions in dnabert_accs_so_far or dev_accessions in dnabert_accs_so_far:
-      raise ValueError("Overlap detected between folds")
-    dnabert_accs_so_far.extend(train_accessions)
-    dnabert_accs_so_far.extend(dev_accessions)
+    if i < args.k:
+      if set(meta_accs).intersection(meta_accs_so_far):
+        raise ValueError("Overlap detected between folds")
+      meta_accs_so_far.extend(meta_accs)
     
     # create data split with our dnabert_preprocessing.py script
     preprocessing_script_path = '../dnabert/finetune/data/dnabert_preprocessing.py' #relative path!!
     cmd = f"python {preprocessing_script_path} --balance_method stratify --out_dir {fold_out_dir}/dnabert_data \
         --full_dataset_path {args.full_sequence_dataset_path} --dev_accs_path {dev_accs_path} --train_accs_path {train_accs_path} \
-        --test_accs_path {test_accs_path} --grouping {args.grouping}" #using full models for now to save compute
+        --test_accs_path {test_accs_path} --grouping {args.grouping} --filter_features /gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/data_analysis/top_15p_features" #using full models for now to save compute
     print(cmd)
     # run command
     proc = subprocess.run(
@@ -127,7 +128,7 @@ def main():
         print(proc.stderr)
 
     # get meta dataset
-  """
+  
     meta_accs_path = f"{fold_out_dir}/meta_accs_{i}.txt"
     meta_accs = [line.strip() for line in open(meta_accs_path)]
     meta_df = pd.read_csv(args.full_sequence_dataset_path)
@@ -137,7 +138,7 @@ def main():
 
     # 
 
-  """
+  
   # finetune DNABERT on the data in fold_out_dir
   # run finetune.py script
   if args.grouping == 'full':
@@ -158,7 +159,7 @@ def main():
 
     
       
-"""
+
 
 if __name__ == "__main__":
     main()
