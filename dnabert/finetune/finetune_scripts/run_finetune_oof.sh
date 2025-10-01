@@ -29,9 +29,9 @@ export EVAL_AND_SAVE_STEPS=700
 
 # hyperparams to tune
 export LR=3e-5
-export WARMUP_STEPS=1000 #~5% of total steps
+export WARMUP_STEPS=675 #~5% of total steps if we have 270k rows
 export TRAIN_BATCH_SIZE=8 #limited by memory
-export GRADIENT_ACCUMULATION_STEPS=4 #simulate larger batch size (effective batch size = batch_size*gradient_accumulation_steps*num_gpus)
+export GRADIENT_ACCUMULATION_STEPS=2 #simulate larger batch size (effective batch size = batch_size*gradient_accumulation_steps*num_gpus)
 
 
 wandb login 0e16ac7c39d857e9bc3de95f06818dd4899bc8c1
@@ -60,7 +60,6 @@ for FOLD in $(ls -d ${DATA_DIR}/*); do
         --gradient_accumulation_steps ${GRADIENT_ACCUMULATION_STEPS} \
         --learning_rate ${LR} \
         --num_train_epochs ${EPOCHS} \
-        --fp16 \
         --save_steps ${EVAL_AND_SAVE_STEPS} \
         --output_dir ${OUT_DIR} \
         --evaluation_strategy steps \
