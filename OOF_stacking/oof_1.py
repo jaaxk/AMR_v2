@@ -111,6 +111,7 @@ def main():
         --test_accs_path {test_accs_path} --grouping {args.grouping} --filter_features /gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/data_analysis/top_15p_features" #using full models for now to save compute
     print(cmd)
     # run command
+
     proc = subprocess.run(
         cmd,
         shell=True,
@@ -145,10 +146,12 @@ def main():
     finetune_script_path = '../dnabert/finetune/finetune_scripts/run_finetune_oof.sh' #relative path!!
   elif args.grouping == 'per_antibiotic':
     finetune_script_path = '../dnabert/finetune/finetune_scripts/run_finetune_oof_perantibiotic.sh'
-  cmd = f"sbatch {finetune_script_path} {base_out_dir} {args.run_name}" #using full models for now to save compute
+  #cmd = f"sbatch {finetune_script_path} {base_out_dir} {args.run_name}" #using full models for now to save compute
+  cmd = f"./{finetune_script_path} {base_out_dir} {args.run_name}" #if running on a100, we can just run this now
   # run command
   print('RUN this command if didnt automatically run:')
   print(cmd)
+  subprocess.call('cd /gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/finetune/finetune_scripts', shell=True)
   subprocess.call(cmd, shell=True)
   print()
   print('Next: wait for finetuning to finish and then run oof_2.py')

@@ -35,14 +35,14 @@ antibiotic_mapping = {'GEN': 0,
 
 # command line arguments
 parser = argparse.ArgumentParser()
-parser.add_argument("--data_base_dir", type=str, help='for training, pass base directory containing all folds, for inference pass full test dataset (not dir)', default="/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/finetune/data/oof/run1")
+parser.add_argument("--data_base_dir", type=str, help='for training, pass base directory containing all folds, for inference pass full test dataset (not dir)', default=None)
 parser.add_argument("--models_base_dir", type=str, default="/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/finetune/finetuned_models/oof_run1")
 parser.add_argument("--run_name", type=str, default="run1")
 parser.add_argument("--train", type=bool, default=False)
 parser.add_argument("--grouping", choices=["full", "per_species", "per_antibiotic"], default="full")
 parser.add_argument("--base_dir", type=str, default="/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2", help="Base directory of entire project (AMR_v2)")
 parser.add_argument("--eval_on_full_models", action='store_true', help='models_base_dir should be path to full model(s) (containing GEN, TET, etc if per-antibiotic; containing pytorch_model.bin if full)')
-parser.add_argument("--return_logits", action='store_true', help='return logits instead of predictions')
+parser.add_argument("--return_logits", choices=["average", "sum", None], default=None, help='return logits instead of predictions')
 args = parser.parse_args()
 train = 'True' if args.train else 'False'
 
@@ -62,7 +62,7 @@ if args.train: #if were on the train set, run inference on opposite model
             model_dir = os.path.join(args.models_base_dir, fold)
 
             cmd = f"python -u {args.base_dir}/dnabert/inference/inference.py --model_path {model_dir}/best --dataset_dir {data_dir}/meta_dataset.csv \
-                --output_format random_forest --run_name {args.run_name}_{fold} --grouping {args.grouping} --train True{(' --return_logits True' if args.return_logits else '')}"
+                --output_format random_forest --run_name {args.run_name}_{fold} --grouping {args.grouping} --train True{(' --return_logits ' + args.return_logits if args.return_logits else '')}"
             subprocess.run(cmd, shell=True)
 
 
@@ -84,7 +84,7 @@ if args.train: #if were on the train set, run inference on opposite model
             model_dir = os.path.join(args.models_base_dir, fold) #this will be dir containing 'TET, ..' models
             # run inference
             cmd = f"python -u {args.base_dir}/dnabert/inference/inference.py --model_path {model_dir} --dataset_dir {per_antibiotic_meta_sets} \
-                --output_format random_forest --run_name {args.run_name}_{fold} --grouping per_antibiotic --train True{(' --return_logits True' if args.return_logits else '')}"
+                --output_format random_forest --run_name {args.run_name}_{fold} --grouping per_antibiotic --train True{(' --return_logits ' + args.return_logits if args.return_logits else '')}"
             proc = subprocess.run(
                 cmd,
                 shell=True,
@@ -180,7 +180,7 @@ else: #if final inference, we can run inference on each model, then average logi
         if args.grouping == 'full':
             for model in os.listdir(args.models_base_dir):
                 cmd = f"python {args.base_dir}/dnabert/inference/inference.py --run_name {args.run_name}_{model} --model_path {args.models_base_dir}/{model}/best --dataset_dir {args.data_base_dir} \
-                --output_format random_forest --grouping full{(' --return_logits True' if args.return_logits else '')}"
+                --output_format random_forest --grouping full{(' --return_logits ' + args.return_logits if args.return_logits else '')}"
 
                 subprocess.run(cmd, shell=True)
 
@@ -216,7 +216,7 @@ else: #if final inference, we can run inference on each model, then average logi
 
         if args.grouping=='per_antibiotic':
             cmd = f"python {args.base_dir}/dnabert/inference/inference.py --run_name {args.run_name}_testset --model_path {args.models_base_dir} --dataset_dir {args.data_base_dir} \
-                    --output_format random_forest --grouping per_antibiotic{(' --return_logits True' if args.return_logits else '')}"
+                    --output_format random_forest --grouping per_antibiotic{(' --return_logits ' + args.return_logits if args.return_logits else '')}"
 
     
 

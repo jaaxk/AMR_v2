@@ -55,7 +55,7 @@ MAX_TARGET_SEQS = 10 #for BLAST
 
 
 #sequence-based parameters
-SEQ_LENGTH = 1000
+#SEQ_LENGTH = 1000
 
 #matrix-based parameters
 BINARY_FEATURES = False
@@ -354,13 +354,17 @@ def main():
     parser.add_argument('--split', type=str, help='Path to directory containing train/test/dev accession lists (train.txt, test.txt, dev.txt)', default=None)
     parser.add_argument('--perspecies_dbgwas_dir', type=str, help='Path to directory containing significant sequences from DBGWAS', default=f'./data/dbgwas/p{DBGWAS_SIG_LEVEL}/per_species')
     parser.add_argument('--train', action='store_true')
+    parser.add_argument('--seq_length', type=int, default=1000)
+    parser.add_argument('--run_name', type=str, default=None)
     parser.add_argument('--group_only', type=str, default=None, help='give path to full sequence dataset if already created to group to new grouping')
     args = parser.parse_args()
     print(f'Arguments: {args}')
+    global SEQ_LENGTH
+    SEQ_LENGTH = args.seq_length
 
     # get base output directory
     train_test = 'train' if args.train else 'test'
-    base_output_dir = os.path.join(args.output_dir, args.model_type, args.grouping, train_test) #from here add /train or /test (official CAMDA split)
+    base_output_dir = os.path.join(args.output_dir, args.run_name, args.model_type, args.grouping, train_test) #from here add /train or /test (official CAMDA split)
 
     # parse metadata
     #read dataframes, create genus_species column from genus and species columns

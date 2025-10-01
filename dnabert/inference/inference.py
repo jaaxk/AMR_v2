@@ -172,7 +172,7 @@ def get_rf_dataset(preds_path, output_path, train, sig_seqs_path, accessions, re
             for query_id in accession_df['query_id'].unique().tolist():
                 query_id_df = accession_df[accession_df['query_id'] == query_id] #this df now only has a single query id for a single accession
                 #get number predicted resistant for each query id
-                if return_logits is not None:
+                if return_logits is None:
                     num_pred_resistant = query_id_df['pred_res'].map({0: 1, 1: 0}).sum() # need to flip because Susceptible is 1
                 elif return_logits == 'sum':
                     num_pred_resistant = query_id_df['pred_res'].sum()

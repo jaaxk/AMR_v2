@@ -1,6 +1,18 @@
 import pandas as pd
 import os
 
+species_mapping = {
+    'klebsiella_pneumoniae': 0,
+    'streptococcus_pneumoniae': 1,
+    'escherichia_coli': 2,
+    'campylobacter_jejuni': 3,
+    'salmonella_enterica': 4,
+    'neisseria_gonorrhoeae': 5,
+    'staphylococcus_aureus': 6,
+    'pseudomonas_aeruginosa': 7,
+    'acinetobacter_baumannii': 8
+}
+
 """#read full dataset
 df = pd.read_csv('../data_pipeline/datasets/sequence_based/per_species/train/full_sequence_dataset.csv')
 
@@ -183,17 +195,7 @@ import pandas as pd
 import numpy as np
 
 # Species mapping for iteration
-species_mapping = {
-    'klebsiella_pneumoniae': 0,
-    'streptococcus_pneumoniae': 1,
-    'escherichia_coli': 2,
-    'campylobacter_jejuni': 3,
-    'salmonella_enterica': 4,
-    'neisseria_gonorrhoeae': 5,
-    'staphylococcus_aureus': 6,
-    'pseudomonas_aeruginosa': 7,
-    'acinetobacter_baumannii': 8
-}
+
 
 # Paths provided
 NEW_TRAIN_ROOT = Path("/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/inference/outputs/rf_datasets/oof/run2")
@@ -701,13 +703,14 @@ if __name__ == "__main__":
     write_label_mismatches()
 """
 
-#check phenotype balance
-train_df = pd.read_csv('/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/finetune/data/oof/run5/fold_0/dnabert_data/train.csv')
+"""#check phenotype balance
+
+train_df = pd.concat([pd.read_csv('/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/finetune/data/oof/run5/fold_0/dnabert_data/train.csv'), pd.read_csv('/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/finetune/data/oof/run5/fold_0/dnabert_data/dev.csv')])
 print(train_df.head())
 print(train_df['phenotype'].value_counts())
 
 #ensure theres no accessions that are not in ./top_15p_features/{species}_top_15%_features.txt
-"""for species in ['klebsiella_pneumoniae', 'streptococcus_pneumoniae', 'escherichia_coli', 'campylobacter_jejuni', 'salmonella_enterica', 'neisseria_gonorrhoeae', 'staphylococcus_aureus', 'pseudomonas_aeruginosa', 'acinetobacter_baumannii']:
+for species in ['klebsiella_pneumoniae', 'streptococcus_pneumoniae', 'escherichia_coli', 'campylobacter_jejuni', 'salmonella_enterica', 'neisseria_gonorrhoeae', 'staphylococcus_aureus', 'pseudomonas_aeruginosa', 'acinetobacter_baumannii']:
     top_15p_features = open(f'./top_15p_features/{species}_top_15%_features.txt').readlines()
     top_15p_features = [line.strip() for line in top_15p_features]
     species_df = train_df[train_df['species'] == species]
@@ -715,7 +718,7 @@ print(train_df['phenotype'].value_counts())
     if not species_df['accession'].isin(top_15p_features).all():
         print(f"[ERROR] {species} has accessions not in top 15% features")
     else:
-        print(f"[OK] {species} has all accessions in top 15% features")"""
+        print(f"[OK] {species} has all accessions in top 15% features")
 
 #check query_id / phenotype balance
 query_id_to_phenotype = train_df.groupby('query_id')['phenotype'].value_counts().to_dict()
@@ -727,7 +730,31 @@ print(train_df.isnull().sum())
 #number of duplicate sequences
 print(train_df['sequence'].duplicated().sum())
 
+"""
+
+
+
+
+
 
 
     
+"""
+eval_results = pd.read_csv('/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/rf/eval_results/rf_models.csv')
+print(eval_results.drop(['top_n_mi_score', 'model_type', 'recall', 'max_depth', 'min_samples_leaf'], axis=1).to_dict())"""
+"""
+#show lengths of all hit count features in each species' dataset
+for species in species_mapping.keys():
+    df = pd.read_csv(f'/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/inference/outputs/rf_datasets/run5_1_trainset/{species}/{species}_full_rf_dataset.csv')
+    hit_cols = [c for c in df.columns if 'hit_count' in c]
+    print(f'{species}: {len(hit_cols)} hit count features')
+    for col in hit_cols:
+        print(f'  {col}: {df[col].sum()} hits')"""
     
+
+
+df = pd.read_csv('/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/data_pipeline/datasets/run6_1500bp/sequence_based/per_antibiotic/train/full_sequence_dataset.csv')
+print(df.head())
+print(len(df))
+df['len'] = df['sequence'].str.len()
+print(df['len'].value_counts())

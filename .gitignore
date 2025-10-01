@@ -23,3 +23,7 @@ dnabert/finetune/wandb
 dnabert/finetune/logs
 rf/res1.txt
 data_analysis/missing_accs/*
+OOF_stacking/logs/*
+OOF_stacking/res1.txt
+OOF_stacking/wandb/*
+data_pipeline/logs/*
