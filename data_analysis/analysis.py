@@ -753,8 +753,13 @@ for species in species_mapping.keys():
     
 
 
-df = pd.read_csv('/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/data_pipeline/datasets/run6_1500bp/sequence_based/per_antibiotic/train/full_sequence_dataset.csv')
+"""df = pd.read_csv('/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/data_pipeline/datasets/run6_1500bp/sequence_based/per_antibiotic/train/full_sequence_dataset.csv')
 print(df.head())
 print(len(df))
 df['len'] = df['sequence'].str.len()
-print(df['len'].value_counts())
+print(df['len'].value_counts())"""
+
+
+#dbgwas info
+df = pd.read_csv('/gpfs/scratch/jvaska/CAMDA_AMR/CAMDA_AMR/dbgwas/runs/2class_dbgwas_mixed/acinetobacter_baumannii/dbgwas_output/textualOutput/all_comps_nodes_info.tsv', sep='\t')
+print(df.head())

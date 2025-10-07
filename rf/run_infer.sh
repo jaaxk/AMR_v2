@@ -4,10 +4,12 @@
 #SBATCH --output=res.txt
 
 python -u infer_rf.py \
-    --model_name train_new_test_new_flip \
+    --model_name run6_1000bp_avglogits_oofstack \
     --grouping per_species \
     --testing_template /gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/data_pipeline/data/metadata/testing_template.csv \
-    --models_dir /gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/rf/models/rf/per_species/train_new_test_new_flip \
-    --test_dataset_dir /gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/inference/outputs/rf_datasets/run2_testset/per_antibiotic/test \
-    --out_path predictions/train_new_test_new_flip.csv \
-    --feature_type hits
+    --models_dir /gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/rf/models/oof/run6_1000bp_dnabert_avglogits_oofstack_all \
+    --test_dataset_dir /gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/inference/outputs/rf_datasets/run6_1000bp_avglogits_testset_testset \
+    --out_path predictions/run6_1000bp_avglogits_oofstack.csv \
+    --feature_type both \
+    --oof_stack \
+    --top_15pct_features /gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/data_analysis/top_15p_features

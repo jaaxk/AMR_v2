@@ -16,6 +16,7 @@ import os
 from tqdm import tqdm
 from sklearn.linear_model import LogisticRegression
 import numpy as np
+from train_rf import preprocess_df
 
 # lists/mappings
 species_list = [
@@ -125,7 +126,12 @@ def main():
     parser.add_argument('--out_path', type=str, help='Path to save filled template', default=None)
     parser.add_argument('--feature_type', type=str, choices=['dnabert', 'hits', 'both'], help='Feature type for RF models', default='both')
     parser.add_argument('--oof_stack', action='store_true', help='Whether to use OOF stacker predictions')
+    parser.add_argument('--top_15pct_features', type=str, help='Path to dir containing files with top 15pct features per species. If specified, will remove ONLY dnabert features without query_ids specified in those files', default=None)
+    parser.add_argument('--skip_accs', default=None)
+    
     args = parser.parse_args()
+    args.flip_phenotype = None
+    args.feature_plot = None
 
     if args.models_dir is None:
         args.models_dir = os.path.join('models', 'rf', args.grouping, args.model_name)
@@ -138,20 +144,21 @@ def main():
         for species in tqdm(species_list, desc='Running per-species RF inference'):
             
             df = pd.read_csv(os.path.join(args.test_dataset_dir, species, f"{species}_full_rf_dataset.csv"))
-            df = filter_feature_type(df, args.feature_type)
-            df = filter_top_n_mi(df, species, args.models_dir)
+            #df = filter_feature_type(df, args.feature_type)
+            accession_series = df['accession']
+            df = preprocess_df(df, species, args)
             if not args.oof_stack:
                 model_path = os.path.join(args.models_dir, f"{species}_rf_model.joblib")
                 model = joblib.load(model_path)
-                preds = model.predict(df.drop(['accession'], axis=1))
+                preds = model.predict(df)
 
             else:
-                preds = infer_oof(df.drop(['accession'], axis=1), species, args)
+                preds = infer_oof(df, species, args)
                 #print(type(preds))
                 #print(type(preds[0]))
                 #print(preds[0])
             assert len(preds) == len(df)
-            for acc, pred in zip(df['accession'], preds):
+            for acc, pred in zip(accession_series, preds):
                 acc_to_prediction[acc] = pred
 
         testing_template['phenotype'] = testing_template['accession'].map(acc_to_prediction)

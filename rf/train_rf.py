@@ -124,6 +124,7 @@ def preprocess_df(df, species, args, importances=None):
 
     def filter_top_15pct(df, species, args):
         """Filters DNABERT features to only include those in args.top_15pct_features/{species}_top_15%_features.txt"""
+        #print(args.top_15pct_features)
         if args.top_15pct_features is None or args.feature_type == 'per_species':
             return df
         path_to_load = os.path.join(args.top_15pct_features, f'{species}_top_15%_features.txt')
@@ -374,7 +375,10 @@ def oof_train(args, importances=None):
 
     for held_out in folds:
         train_on = ''.join(sorted([f[-1] for f in folds if f != held_out]))  # e.g. '01'
-        held_path = os.path.join(args.dataset_dir, held_out)
+        for dirname in os.listdir(args.dataset_dir):
+            #print(dirname)
+            if held_out in str(dirname):
+                held_path = os.path.join(args.dataset_dir, dirname)
         print(f"\n### OOF loop – hold {held_out}, train_on={train_on} ###")
 
         for ft in ['hits', 'dnabert']:
@@ -391,6 +395,8 @@ def oof_train(args, importances=None):
                         feature_importances[sp] = [f for f in original_feature_importances[sp] if '_hit_count' in f]
                     else:
                         feature_importances[sp] = [f for f in original_feature_importances[sp] if '_pred_resistant' in f]
+            else:
+                feature_importances=None
 
             train(args, feature_importances)
 
@@ -413,12 +419,22 @@ def oof_train(args, importances=None):
     stack_dir = os.path.join(base_out_dir, 'stacker')
     os.makedirs(stack_dir, exist_ok=True)
     for sp in species_list:
-        if original_train_on == '01':
+        if args.original_train_on!= 'all':
+
+            exclude_fold = {'01':'2', '02':'1', '12':'0'}[args.original_train_on]
+            fold_names = []
+            for dirname in os.listdir(args.dataset_dir):
+                fold=dirname.split('_')[-1]
+                if fold == exclude_fold:
+                    print(f"Skipping fold {dirname} in meta learner training")
+                else:
+                    fold_names.append('fold_'+fold)
+            
             # train meta learner on fold_0 and fold_1 for evaluation on fold_2 (eval_oof)
-            sp_pred_hits = np.concatenate([oof_preds_hits['fold_0'][sp], oof_preds_hits['fold_1'][sp]], axis=0)
-            sp_pred_dna = np.concatenate([oof_preds_dna['fold_0'][sp], oof_preds_dna['fold_1'][sp]], axis=0)
-            sp_truth = np.concatenate([oof_truth['fold_0'][sp], oof_truth['fold_1'][sp]], axis=0)
-        elif original_train_on == 'all':
+            sp_pred_hits = np.concatenate([oof_preds_hits[fold_names[0]][sp], oof_preds_hits[fold_names[1]][sp]], axis=0)
+            sp_pred_dna = np.concatenate([oof_preds_dna[fold_names[0]][sp], oof_preds_dna[fold_names[1]][sp]], axis=0)
+            sp_truth = np.concatenate([oof_truth[fold_names[0]][sp], oof_truth[fold_names[1]][sp]], axis=0)
+        elif args.original_train_on == 'all':
             # train meta learner on all folds for final evaluation (dont run eval_oof)
             sp_pred_hits = np.concatenate([oof_preds_hits['fold_0'][sp], oof_preds_hits['fold_1'][sp], oof_preds_hits['fold_2'][sp]], axis=0)
             sp_pred_dna = np.concatenate([oof_preds_dna['fold_0'][sp], oof_preds_dna['fold_1'][sp], oof_preds_dna['fold_2'][sp]], axis=0)
@@ -435,14 +451,18 @@ def oof_train(args, importances=None):
 
 
 def eval_oof(args, importances=None):
-    """Evaluate stacker on fold_2 (held-out)"""
+    """Evaluate stacker on specified hold out set (in args.original_train_on)"""
     
     if importances is not None:
         original_feature_importances = importances.copy()
   
     base_out_dir = os.path.join(args.base_dir, 'rf', 'models', 'oof', args.model_name)
-    held_out = 'fold_2'
-    held_path = os.path.join(args.dataset_dir, held_out)
+    exclude_fold = {'01':'2', '02':'1', '12':'0'}[args.original_train_on]
+    held_out = 'fold_'+exclude_fold
+    for dirname in os.listdir(args.dataset_dir):
+            #print(dirname)
+            if held_out in str(dirname):
+                held_path = os.path.join(args.dataset_dir, dirname)
     metrics = {
         'accuracy': {}
     }
@@ -459,10 +479,13 @@ def eval_oof(args, importances=None):
                     feature_importances[sp] = [f for f in original_feature_importances[sp] if '_hit_count' in f]
                 else:
                     feature_importances[sp] = [f for f in original_feature_importances[sp] if '_pred_resistant' in f]
+            else:
+                feature_importances=None
 
             
             model = joblib.load(os.path.join(base_out_dir, ft, f"exclude_{held_out}", f"{sp}_{args.model_type}_model.joblib"))
             df = pd.read_csv(os.path.join(held_path, args.dnabert_grouping, 'train', sp, f"{sp}_full_rf_dataset.csv"))
+            args.feature_type=ft
             df = preprocess_df(df, sp, args, feature_importances)
             X_inf = df.drop('ground_truth_phenotype', axis=1)
             
@@ -470,10 +493,38 @@ def eval_oof(args, importances=None):
         X_meta = np.column_stack(base_preds)
         y_true = df['ground_truth_phenotype'].values
         metrics['accuracy'][sp] = accuracy_score(y_true, stacker.predict(X_meta))
-    print('\nOOF stacker accuracy on fold_2:')
+    print(f'\nOOF stacker accuracy on {held_out}:')
     for sp,a in metrics['accuracy'].items():
         print(f"{sp:25s}: {a:.3f}")
     print(f"mean: {np.mean(list(metrics['accuracy'].values())):.3f}")
+
+
+    accuracy = np.mean(list(metrics['accuracy'].values()))
+    recall = None #np.mean(list(metrics['recall'].values()))
+    precision = None #np.mean(list(metrics['precision'].values()))
+    f1 = None #np.mean(list(metrics['f1'].values()))
+    aucroc = None #np.mean(list(metrics['aucroc'].values()))
+    neisseria_gonorrhoeae_acc = metrics['accuracy']['neisseria_gonorrhoeae']
+    staphylococcus_aureus_acc = metrics['accuracy']['staphylococcus_aureus']
+    streptococcus_pneumoniae_acc = metrics['accuracy']['streptococcus_pneumoniae']
+    salmonella_enterica_acc = metrics['accuracy']['salmonella_enterica']
+    klebsiella_pneumoniae_acc = metrics['accuracy']['klebsiella_pneumoniae']
+    escherichia_coli_acc = metrics['accuracy']['escherichia_coli']
+    pseudomonas_aeruginosa_acc = metrics['accuracy']['pseudomonas_aeruginosa']
+    acinetobacter_baumannii_acc = metrics['accuracy']['acinetobacter_baumannii']
+    campylobacter_jejuni_acc = metrics['accuracy']['campylobacter_jejuni']
+    TET_acc = np.mean([metrics['accuracy'][species] for species in antibiotic_to_species['TET']])
+    GEN_acc = np.mean([metrics['accuracy'][species] for species in antibiotic_to_species['GEN']])
+    ERY_acc = np.mean([metrics['accuracy'][species] for species in antibiotic_to_species['ERY']])
+    CAZ_acc = np.mean([metrics['accuracy'][species] for species in antibiotic_to_species['CAZ']])
+
+    df = pd.read_csv('eval_results/rf_models.csv')
+    df = df._append({'accuracy': accuracy, 'model_name': args.model_name, 'model_type': args.model_type, 'train_on': args.train_on, 'feature_type': args.feature_type, 'min_samples_leaf': args.min_samples_leaf, \
+    'max_depth': args.max_depth, 'top_n_mi_score': args.top_n_mi_score, 'recall': recall, 'precision': precision, 'f1': f1, 'aucroc': aucroc, 'neisseria_gonorrhoeae_acc': neisseria_gonorrhoeae_acc, \
+    'staphylococcus_aureus_acc': staphylococcus_aureus_acc, 'streptococcus_pneumoniae_acc': streptococcus_pneumoniae_acc, 'salmonella_enterica_acc': salmonella_enterica_acc, 'klebsiella_pneumoniae_acc': klebsiella_pneumoniae_acc,\
+    'escherichia_coli_acc': escherichia_coli_acc, 'pseudomonas_aeruginosa_acc': pseudomonas_aeruginosa_acc, 'acinetobacter_baumannii_acc': acinetobacter_baumannii_acc, 'campylobacter_jejuni_acc': campylobacter_jejuni_acc, 'TET_acc': TET_acc,\
+    'GEN_acc': GEN_acc, 'ERY_acc': ERY_acc, 'CAZ_acc': CAZ_acc}, ignore_index=True)
+    df.to_csv('eval_results/rf_models.csv', index=False)
 
     return metrics
     
@@ -490,6 +541,7 @@ def train(args, importances=None):
                 for dirname in os.listdir(args.dataset_dir):
                     fold=dirname.split('_')[-1]
                     if fold == exclude_fold:
+                        print(f"Skipping fold {dirname} in training")
                         continue
                     dfs.append(pd.read_csv(os.path.join(args.dataset_dir, dirname, args.dnabert_grouping, 'train', species, f"{species}_full_rf_dataset.csv")))
                 df = pd.concat(dfs)
@@ -674,7 +726,7 @@ def main():
     parser.add_argument('--dnabert_grouping', type=str, choices=['full', 'per_antibiotic', 'per_species'], help='Grouping for DNABERT models (per_species=9 models, per_antibiotic=4 models, full=1 model)', default='full')
     parser.add_argument('--model_name', type=str, help='Name of DNABERT model used and info about this run', default=None)
     parser.add_argument('--out_dir', type=str, help='Directory to save models', default=None)
-    parser.add_argument('--train_on', type=str, choices=['01', 'all'], help='Which FOLDs to train on', default='all')
+    parser.add_argument('--train_on', type=str, choices=['01', '02', '12', 'all'], help='Which FOLDs to train on', default='all')
     parser.add_argument('--feature_type', type=str, choices=['dnabert', 'hits', 'both'], help='Whether to use DNABERT features, hits, or both', default='both')
     parser.add_argument('--eval', action='store_true', help='Whether to evaluate models, this will eval on fold 3; train_on folds 01 should be selected', default=False)
     parser.add_argument('--base_dir', default='/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2')
@@ -693,9 +745,10 @@ def main():
     parser.add_argument('--max_depth', type=int, help='Maximum depth of the trees', default=None) #default=40)
     parser.add_argument('--min_samples_leaf', type=int, help='Minimum number of samples required to be at a leaf node', default=1)
     parser.add_argument('--top_n_mi_score', type=int, help='Number of features to keep based on mutual information score', default=None) #, default=300
-
-
+    
     args = parser.parse_args()
+    args.original_train_on = args.train_on
+
     if args.out_dir is None:
         if args.feature_plot is not None:
             args.out_dir = os.path.join(args.base_dir, 'rf', 'models', args.model_type, args.grouping, args.model_name, 'feature_plot_temp')
@@ -710,9 +763,14 @@ def main():
 
     # ----- dispatch for OOF stacking -----
     if args.oof_stack and args.feature_plot is None:
-        oof_train(args)
         if args.eval:
-            eval_oof(args)
+            for train_on in ['01', '02', '12']:
+                args.original_train_on = train_on
+                print(f'OOF train on {args.train_on}')
+                oof_train(args)
+                eval_oof(args)
+        else:
+            oof_train(args)
         return
 
     if args.tune_hyperparams:
@@ -720,12 +778,15 @@ def main():
     else:
         if args.feature_plot is not None:
             feature_plot(args)
+        elif args.eval:
+            for train_on in ['01', '02', '12']:
+                args.train_on = train_on
+                print(f"Training on {train_on}")
+                train(args)
+                eval(args)
         else:
             print('Training...')
             train(args)
-            if args.eval:
-                print('Evaluating...')
-                eval(args)
         
 
 

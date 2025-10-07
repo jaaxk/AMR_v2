@@ -38,7 +38,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--data_base_dir", type=str, help='for training, pass base directory containing all folds, for inference pass full test dataset (not dir)', default=None)
 parser.add_argument("--models_base_dir", type=str, default="/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/finetune/finetuned_models/oof_run1")
 parser.add_argument("--run_name", type=str, default="run1")
-parser.add_argument("--train", type=bool, default=False)
+parser.add_argument("--train", action='store_true', default=False)
 parser.add_argument("--grouping", choices=["full", "per_species", "per_antibiotic"], default="full")
 parser.add_argument("--base_dir", type=str, default="/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2", help="Base directory of entire project (AMR_v2)")
 parser.add_argument("--eval_on_full_models", action='store_true', help='models_base_dir should be path to full model(s) (containing GEN, TET, etc if per-antibiotic; containing pytorch_model.bin if full)')
@@ -214,9 +214,9 @@ else: #if final inference, we can run inference on each model, then average logi
         print(f'Using FULL trained model(s) at {args.models_base_dir}')
 
 
-        if args.grouping=='per_antibiotic':
-            cmd = f"python {args.base_dir}/dnabert/inference/inference.py --run_name {args.run_name}_testset --model_path {args.models_base_dir} --dataset_dir {args.data_base_dir} \
-                    --output_format random_forest --grouping per_antibiotic{(' --return_logits ' + args.return_logits if args.return_logits else '')}"
+        cmd = f"python {args.base_dir}/dnabert/inference/inference.py --run_name {args.run_name}_testset --model_path {args.models_base_dir} --dataset_dir {args.data_base_dir} \
+                    --output_format random_forest --grouping {args.grouping}{(' --return_logits ' + args.return_logits if args.return_logits else '')}"
+        subprocess.run(cmd, shell=True)
 
     
 

@@ -4,14 +4,15 @@
 #SBATCH --output=res1.txt
 
 python -u train_rf.py \
-    --model_name run5_1_featureplot_1to200 \
+    --model_name run6_1000bp_dnabert_avglogits_oofstack_all \
     --grouping per_species \
-    --train_on 01 \
+    --train_on all \
     --feature_type both \
-    --dataset_dir /gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/inference/outputs/rf_datasets/run5_1_trainset \
+    --dataset_dir /gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/inference/outputs/rf_datasets/run6_1000bp_avglogits \
+    --top_15pct_features /gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/data_analysis/top_15p_features \
     --model_type rf \
-    --feature_plot /gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/rf/models/rf/per_species/run5_1_rf_all_top15dnabert_numpredres
-    
+    --oof_stack
+
 # place script in model output directory, if it exists
 MODEL_OUTPUT_DIR=models/${model_type}/${grouping}/${model_name}
 if [ -d "${MODEL_OUTPUT_DIR}" ]; then
