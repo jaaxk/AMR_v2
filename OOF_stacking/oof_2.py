@@ -42,7 +42,7 @@ parser.add_argument("--train", action='store_true', default=False)
 parser.add_argument("--grouping", choices=["full", "per_species", "per_antibiotic"], default="full")
 parser.add_argument("--base_dir", type=str, default="/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2", help="Base directory of entire project (AMR_v2)")
 parser.add_argument("--eval_on_full_models", action='store_true', help='models_base_dir should be path to full model(s) (containing GEN, TET, etc if per-antibiotic; containing pytorch_model.bin if full)')
-parser.add_argument("--return_logits", choices=["average", "sum", None], default=None, help='return logits instead of predictions')
+parser.add_argument("--return_logits", choices=["average", "sum", 'all', None], default=None, help='return logits instead of predictions')
 args = parser.parse_args()
 train = 'True' if args.train else 'False'
 

@@ -45,6 +45,9 @@ from contextlib import redirect_stdout
 import matplotlib.pyplot as plt
 import glob
 from sklearn.linear_model import LogisticRegression
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import StandardScaler
+import torch
 
 # methods
 
@@ -129,8 +132,14 @@ def preprocess_df(df, species, args, importances=None):
             return df
         path_to_load = os.path.join(args.top_15pct_features, f'{species}_top_15%_features.txt')
         with open(path_to_load, 'r') as f:
-            dna_features_to_keep = [line.strip() for line in f]
-        dna_features_to_keep = [f.replace('_hit_count', '_pred_resistant') for f in dna_features_to_keep] #since we got these from a hits only RF, we need to change the names of the features
+            features_to_keep = [line.strip() for line in f]
+        dna_features_to_keep = [f.replace('_hit_count', '_pred_resistant') for f in features_to_keep] #since we got these from a hits only RF, we need to change the names of the features
+        #handle new feature names:
+        dna_features_to_keep = dna_features_to_keep + [f.replace('_hit_count', '_sus_sum_pred_resistant') for f in features_to_keep] + \
+        [f.replace('_hit_count', '_sus_mean_pred_resistant') for f in features_to_keep] + [f.replace('_hit_count', '_sus_std_pred_resistant') for f in features_to_keep] + \
+        [f.replace('_hit_count', '_res_sum_pred_resistant') for f in features_to_keep] + [f.replace('_hit_count', '_res_mean_pred_resistant') for f in features_to_keep] + \
+        [f.replace('_hit_count', '_res_std_pred_resistant') for f in features_to_keep]
+
         #print(f'length of dna_features_to_keep: {len(dna_features_to_keep)}')
         dna_features_to_keep = [f for f in dna_features_to_keep if f in df.columns]
         #print(f'length of dna_features_to_keep after filtering: {len(dna_features_to_keep)}')
@@ -138,13 +147,56 @@ def preprocess_df(df, species, args, importances=None):
         other_cols_to_keep = [col for col in df.columns if '_pred_resistant' not in col]
         df = df[other_cols_to_keep + dna_features_to_keep]
         return df
-        
 
-        
-        
-        
+    
 
+    def prepare_query_tensor(df):
+        import torch
+        """
+        Reorders dataframe columns so each query_id's 7 features are grouped together.
+        Returns a NumPy array ready for model input.
+        """
+        try:
+            phenotype = df['ground_truth_phenotype']
+        except ValueError:
+            print('No ground_truth_phenotype in df!')
+            phenotype=None
+        # Extract all unique query IDs from column names
+        query_ids = sorted(list(set([c.replace('_hit_count', '') for c in df.columns if '_hit_count' in c])))
 
+        # Define the expected order of feature suffixes
+        suffix_order = [
+            '_hit_count',
+            '_sus_sum_pred_resistant',
+            '_sus_mean_pred_resistant',
+            '_sus_std_pred_resistant',
+            '_res_sum_pred_resistant',
+            '_res_mean_pred_resistant',
+            '_res_std_pred_resistant'
+        ]
+
+        # Build ordered column list
+        ordered_cols = []
+        for qid in query_ids:
+            for suffix in suffix_order:
+                col_name = f"{qid}{suffix}"
+                if col_name in df.columns:
+                    ordered_cols.append(col_name)
+                else:
+                    # Handle missing columns safely (fill with zeros later)
+                    print(f"Warning: Missing {col_name}, will fill with zeros.")
+                    df[col_name] = 0
+                    ordered_cols.append(col_name)
+
+        # Create reordered DataFrame
+        df_ordered = df[ordered_cols]
+        if phenotype is not None:
+            df_ordered['ground_truth_phenotype'] = phenotype
+
+        #X_array = df_ordered.to_numpy(dtype=np.float32)
+
+        return df_ordered
+    
 
 
 
@@ -160,6 +212,37 @@ def preprocess_df(df, species, args, importances=None):
         df = feature_selection(num_features=args.num_features, df=df, species=species, args=args, importances=importances)
     #print(f'after feature selection: {df.shape}')
     #print()
+
+    #print(f'NaNs in dataset: {df.isna().sum()}')
+
+    df = df.fillna(0)
+
+    #scale logits with standardscaler
+    if args.scaler == 'standard':
+        num_features = [c for c in df.columns if '_pred_resistant' in c]
+        low_card = [c for c in df.columns if '_hit_count' in c]
+        if not os.path.exists(os.path.join(args.out_dir, species+'_stdscaler.pkl')):
+            print('No scaler found, fitting new one...')
+            scaler = ColumnTransformer([
+                ('num', StandardScaler(), num_features),
+                ('lowcard', 'passthrough', low_card)
+            ])
+            joblib.dump(scaler, os.path.join(args.out_dir, species+'_stdscaler.pkl'))
+        else:
+            print('Loading scaler...')
+            scaler = joblib.load(os.path.join(args.out_dir, species+'_stdscaler.pkl'))
+
+        scaled_array = scaler.fit_transform(df)
+        scaled_df = pd.DataFrame(scaled_array, columns=num_features + low_card, index=df.index)
+        scaled_columns = num_features + low_card  # order matches transformer definition
+        assert len(scaled_columns) == len(set(scaled_columns)), "Duplicate columns found!"
+
+        scaled_df['ground_truth_phenotype'] = df['ground_truth_phenotype']
+        print(df.columns)
+        df = scaled_df
+
+    if args.model_type=='nn':
+        df = prepare_query_tensor(df)
 
 
     return df
@@ -551,7 +634,6 @@ def train(args, importances=None):
             else:
                 raise ValueError(f"Invalid train_on value: {args.train_on}")
 
-
             df = preprocess_df(df, species, args, importances)
             X = df.drop('ground_truth_phenotype', axis=1)
             y = df['ground_truth_phenotype']
@@ -562,35 +644,82 @@ def train(args, importances=None):
             #print(X.columns)
             assert len(X) == len(y)
 
+
             # Initialize model based on requested type
             if args.model_type == 'xgb':
                 from xgboost import XGBClassifier
-                model = XGBClassifier(
-                    n_estimators=args.n_estimators if args.n_estimators is not None else 400,
-                    max_depth=args.max_depth if args.max_depth is not None else 6,
-                    learning_rate=0.05,
-                    subsample=0.8,
-                    colsample_bytree=0.8,
-                    objective='binary:logistic',
-                    eval_metric='logloss',
-                    use_label_encoder=False,
-                    random_state=42
-                )
-            else:  # Random Forest
+                model =  XGBClassifier(
+                        n_estimators=args.n_estimators,
+                        max_depth=args.max_depth,
+                        learning_rate=args.learning_rate,
+                        subsample=args.subsample,
+                        colsample_bytree=args.colsample_bytree,
+                        min_child_weight=args.min_child_weight,
+                        reg_lambda=args.reg_lambda,
+                        reg_alpha=args.reg_alpha,
+                        tree_method=args.tree_method,
+                        booster=args.booster,
+                        objective='binary:logistic',
+                        eval_metric='logloss',
+                        use_label_encoder=False,
+                        random_state=42
+                    )
+            elif args.model_type=='rf':  # Random Forest
+
                 model = RandomForestClassifier(
-                    n_estimators=args.n_estimators if args.n_estimators is not None else 100,
+                    n_estimators=args.n_estimators,
                     max_depth=args.max_depth, 
+                    min_samples_split=args.min_samples_split,
                     random_state=42,
+                    max_features=args.max_features,
+                    bootstrap=args.bootstrap,
+                    class_weight=args.class_weight,
+                    criterion=args.criterion,
                     min_samples_leaf=args.min_samples_leaf
                 )
+    
+            elif args.model_type=='lr':
+                from sklearn.linear_model import LogisticRegression
+                model = LogisticRegression(penalty='l2', random_state=42)
+            elif args.model_type == 'cb':
+                from catboost import CatBoostClassifier
+                model = CatBoostClassifier(
+                    iterations=args.iterations,
+                    learning_rate=args.learning_rate,
+                    depth=args.depth,
+                    l2_leaf_reg=args.l2_leaf_reg,
+                    subsample=args.subsample,
+                    colsample_bylevel=0.8,
+                    bootstrap_type=args.bootstrap_type,
+                    loss_function='Logloss',
+                    grow_policy=args.grow_policy,
+                    random_strength=args.random_strength,
+                    random_seed=42,
+                    verbose=100
+                )
+            elif args.model_type=='nn':
+                from models.nn.nn_model import MultiQueryNN, train_nn, predict_nn
+                device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+                num_query_ids = len(X.columns) // 7
+                model = MultiQueryNN(num_query_ids=num_query_ids)
+                model.to(device)
+                X = torch.tensor(X.to_numpy(dtype=np.float32))
+                y = torch.tensor(y.values, dtype=torch.float32).view(-1, 1)
+                model = train_nn(model, X, y, device, lr=1e-4, batch_size=32, epochs=25)
+                torch.save(model.state_dict(), os.path.join(args.out_dir, f"{species}_nn_model.pt"))
+                
+
+
+
             #print(feature_importances)
       
-            model.fit(X, y)
+            if args.model_type != 'nn':
+                model.fit(X, y)
 
-            # save model (keep same filename pattern so feature_plot works)
- 
-            model_path = os.path.join(args.out_dir, f"{species}_{args.model_type}_model.joblib")
-            joblib.dump(model, model_path)
+                # save model (keep same filename pattern so feature_plot works)
+    
+                model_path = os.path.join(args.out_dir, f"{species}_{args.model_type}_model.joblib")
+                joblib.dump(model, model_path)
 
     else:
         raise NotImplementedError(f"Grouping {args.grouping} not implemented")
@@ -612,8 +741,13 @@ def eval(args, importances=None):
     eval_on = 'fold_'+exclude_fold
 
     for species in species_list:
-        model_path = os.path.join(args.out_dir, f"{species}_{args.model_type}_model.joblib")
-        model = joblib.load(model_path)
+        if args.model_type != 'nn':
+            model_path = os.path.join(args.out_dir, f"{species}_{args.model_type}_model.joblib")
+            model = joblib.load(model_path)
+        else:
+            pass
+            
+
         for fold in os.listdir(args.dataset_dir):
             if fold.endswith(eval_on):
                 test_df = pd.read_csv(os.path.join(args.dataset_dir, fold, args.dnabert_grouping, 'train', species, f"{species}_full_rf_dataset.csv"))
@@ -622,7 +756,22 @@ def eval(args, importances=None):
         test_df = preprocess_df(test_df, species, args, importances)
         X = test_df.drop('ground_truth_phenotype', axis=1)
         
-        preds = model.predict(X)
+        if args.model_type != 'nn':
+            preds = model.predict(X)
+        else:
+            from models.nn.nn_model import MultiQueryNN, predict_nn
+            device = torch.device('cpu')  # or 'cuda' if available
+            model_path = os.path.join(args.out_dir, f"{species}_nn_model.pt")
+
+            # reconstruct model architecture
+            num_query_ids = len([c for c in X.columns if c.endswith('_hit_count')])
+            model = MultiQueryNN(num_query_ids=num_query_ids)
+            model.load_state_dict(torch.load(model_path, map_location=device))
+            model.to(device)
+            model.eval()
+            X_tensor = torch.tensor(X.to_numpy(dtype=np.float32))
+            preds = predict_nn(model, X_tensor, device)
+
         truth = test_df['ground_truth_phenotype'].values
         assert len(preds) == len(truth)
         metrics['accuracy'][species] = accuracy_score(truth, preds)
@@ -641,14 +790,15 @@ def eval(args, importances=None):
         #print()
 
     # save metrics to json
-    results_dir = os.path.join('eval_results', args.model_name)
-    os.makedirs(results_dir, exist_ok=True)
-    with open(os.path.join(results_dir, 'eval_results.json'), 'w') as f:
-        json.dump(metrics, f)
+    if not args.tune_hyperparams:
+        results_dir = os.path.join('eval_results', args.model_name)
+        os.makedirs(results_dir, exist_ok=True)
+        with open(os.path.join(results_dir, 'eval_results.json'), 'w') as f:
+            json.dump(metrics, f)
 
-    # save args to results dir
-    with open(os.path.join(results_dir, 'args.json'), 'w') as f:
-        json.dump(args.__dict__, f)
+        # save args to results dir
+        with open(os.path.join(results_dir, 'args.json'), 'w') as f:
+            json.dump(args.__dict__, f)
 
 
 
@@ -681,17 +831,53 @@ def eval(args, importances=None):
     return metrics
 
 
-def tune_hyperparams(args):
+def tune_hyperparams(args, num_iterations=50):
     """iterate through tunable hyperparams to get best model based on args.tune_metric
     writes all models tested to eval_results/rf_models.csv"""
 
+    import random
 
-    tree_params = {
-        'train_on': ['01', '02', '12'],
-        'feature_type': ['hits', 'both'],
+    #cb
+    param_grid_cb = {
+        "iterations": [300, 500],
+        "learning_rate": [0.05, 0.1],
+        "depth": [4, 6],
+        "l2_leaf_reg": [5, 9],
+        "subsample": [0.8, 1.0],
+        "bootstrap_type": ["Bernoulli"],
+        "grow_policy": ["SymmetricTree"],
+        "random_strength": [1],
     }
 
-    print(f"Tuning hyperparams with parameters: {tree_params}...")
+    #xgb
+    param_grid = {
+        "n_estimators": [100, 300],
+        "learning_rate": [0.05, 0.1],
+        "max_depth": [4, 6, 8],
+        "subsample": [0.7, 1.0],
+        "colsample_bytree": [0.6, 0.8, 1.0],
+        "min_child_weight": [1, 3],
+        "reg_lambda": [1, 5],
+        "reg_alpha": [0, 1],
+        "tree_method": ["hist"],
+        "booster": ["gbtree"],
+    }
+
+    #rf
+    param_grid_rf = {
+        "n_estimators": [100, 200, 400],
+        "max_depth": [None, 10, 20],
+        "min_samples_split": [2, 5],
+        "min_samples_leaf": [1, 2],
+        "max_features": ["sqrt", "log2", 0.5],    # limits dominance of high-cardinality features
+        "bootstrap": [True],
+        "class_weight": ["balanced"],              # safe even if slightly imbalanced in practice
+        "criterion": ["gini", "entropy"],
+    }
+
+
+
+    print(f"Tuning hyperparams with parameters: {param_grid}...")
 
     if not os.path.exists('eval_results/rf_models.csv'):
         with open('eval_results/rf_models.csv', 'w') as f:
@@ -702,14 +888,26 @@ def tune_hyperparams(args):
             'TET_acc', 'GEN_acc', 'ERY_acc', 'CAZ_acc'])
             df.to_csv('eval_results/rf_models.csv', index=False)
 
+    results_dir = f'eval_results/{args.model_name}'
+    original_model_name = args.model_name
+    os.makedirs(results_dir, exist_ok=True)
+
+    for i in tqdm(range(num_iterations)):
+        sampled_params = {k: random.choice(v) for k, v in param_grid.items()}
+        for k, v in sampled_params.items():
+            setattr(args, k, v)
+        
+        args.model_name = original_model_name + '_' + str(i)
+        
+        train(args)
+        metrics = eval(args)
+
+        #save args and accuracy
+        args.accuracy = np.mean(list(metrics['accuracy'].values()))
+        with open(results_dir+f'/{args.model_name}.json', 'w') as f:
+            json.dump(args.__dict__, f)
 
 
-    for train_on in tqdm(tree_params['train_on']):
-        for feature_type in tree_params['feature_type']:
-            args.train_on = train_on
-            args.feature_type = feature_type
-            train(args)
-            metrics = eval(args)
 
                     
             
@@ -730,7 +928,7 @@ def main():
     parser.add_argument('--feature_type', type=str, choices=['dnabert', 'hits', 'both'], help='Whether to use DNABERT features, hits, or both', default='both')
     parser.add_argument('--eval', action='store_true', help='Whether to evaluate models, this will eval on fold 3; train_on folds 01 should be selected', default=False)
     parser.add_argument('--base_dir', default='/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2')
-    parser.add_argument('--model_type', type=str, choices=['rf', 'xgb'], default='rf', help='Which model type to train (rf or xgb)')
+    parser.add_argument('--model_type', type=str, choices=['rf', 'xgb', 'lr', 'cb', 'nn'], default='rf', help='Which model type to train (rf or xgb)')
     parser.add_argument('--interleave', action='store_true', help='If true, --feature_plot must point to HITS-only models. The routine constructs an interleaved ranking where each hit feature is paired with its corresponding DNABERT feature (<sig_seq_id>_pred_resistant). This ranking is then used for ft="dnabert" (DNABERT-only names), ft="hits" (hits-only), and ft="both" (hit, dnabert, hit, dnabert …). % of features is computed w.r.t. hits count.')
     parser.add_argument('--skip_accs', type=str, help='Path to dir containing files with accessions to skip per species', default=None)
     parser.add_argument('--flip_phenotype', type=str, help='will flip phenotype for accessions in these species lists', default='/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/data_analysis/mismatches') #this was causing poor accuracy on new pipeline, so we should ALWAYS be flipping phenotype of these accs
@@ -745,6 +943,7 @@ def main():
     parser.add_argument('--max_depth', type=int, help='Maximum depth of the trees', default=None) #default=40)
     parser.add_argument('--min_samples_leaf', type=int, help='Minimum number of samples required to be at a leaf node', default=1)
     parser.add_argument('--top_n_mi_score', type=int, help='Number of features to keep based on mutual information score', default=None) #, default=300
+    parser.add_argument('--scaler', choices=['standard', None], default=None)
     
     args = parser.parse_args()
     args.original_train_on = args.train_on

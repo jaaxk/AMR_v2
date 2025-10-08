@@ -759,7 +759,113 @@ print(len(df))
 df['len'] = df['sequence'].str.len()
 print(df['len'].value_counts())"""
 
-
+"""
 #dbgwas info
 df = pd.read_csv('/gpfs/scratch/jvaska/CAMDA_AMR/CAMDA_AMR/dbgwas/runs/2class_dbgwas_mixed/acinetobacter_baumannii/dbgwas_output/textualOutput/all_comps_nodes_info.tsv', sep='\t')
 print(df.head())
+"""
+
+"""
+df = pd.read_csv('/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/inference/outputs/rf_datasets/run6_alllogits/run6_1000bp_alllogits_fold_0/full/train/acinetobacter_baumannii/acinetobacter_baumannii_full_rf_dataset.csv')
+print(f'NaNs in dataset:')
+cols = [c for c in df.columns.tolist() if 'std' in c]
+print(df[cols].isna().sum())
+print()
+cols = [c for c in df.columns.tolist() if 'mean' in c]
+print(df[cols].isna().sum())
+print()
+cols = [c for c in df.columns.tolist() if 'sum' in c]
+print(df[cols].isna().sum())
+print()"""
+"""
+#for species in species_mapping.keys():
+print('Train set duplicates:')
+df = pd.read_csv(f'/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/data_pipeline/datasets/sequence_based/per_antibiotic/train/full_sequence_dataset.csv')
+print(f'Percent dupes: {(len(df) - len(df.drop_duplicates(subset='sequence'))) / len(df)}')
+
+
+
+print()
+print('Test set dupes:')
+df = pd.read_csv('/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/data_pipeline/datasets/sequence_based/per_antibiotic/test/full_sequence_dataset.csv')
+print(f'Percent dupes: {(len(df) - len(df.drop_duplicates(subset='sequence'))) / len(df)}')
+
+"""
+
+
+import os
+import glob
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy import stats
+from tqdm import tqdm
+
+# Directory containing TSV files
+dir_path = '/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/data_pipeline/work/blast/hits/test/per_species'
+
+# List to store all third column values
+all_values = []
+
+# Get all TSV files in the directory
+tsv_files = glob.glob(os.path.join(dir_path, '*.tsv'))
+
+print(f"Found {len(tsv_files)} TSV files")
+
+# Process each TSV file
+for tsv_file in tqdm(tsv_files):
+    try:
+        with open(tsv_file, 'r') as f:
+            for line in f:
+                # Skip empty lines
+                if not line.strip():
+                    continue
+                
+                # Split by tab and get the third column (index 2)
+                columns = line.strip().split('\t')
+                if len(columns) >= 3:
+                    try:
+                        # Convert to float and append
+                        value = float(columns[2])
+                        all_values.append(value)
+                    except ValueError:
+                        # Skip if can't convert to float (e.g., header row)
+                        continue
+    except Exception as e:
+        print(f"Error processing {tsv_file}: {e}")
+
+# Convert to numpy array for easier calculations
+all_values = np.array(all_values)
+
+print(f"\nTotal values collected: {len(all_values)}")
+
+# Calculate statistics
+mean_val = np.mean(all_values)
+mode_result = stats.mode(all_values, keepdims=True)
+mode_val = mode_result.mode[0]
+std_val = np.std(all_values)
+
+print(f"\nStatistics:")
+print(f"Mean: {mean_val:.4f}")
+print(f"Mode: {mode_val:.4f}")
+print(f"Standard Deviation: {std_val:.4f}")
+print(f"Min: {np.min(all_values):.4f}")
+print(f"Max: {np.max(all_values):.4f}")
+
+# Create histogram with bin size of 0.5
+min_val = np.min(all_values)
+max_val = np.max(all_values)
+bins = np.arange(min_val, max_val + 0.5, 0.5)
+
+plt.figure(figsize=(12, 6))
+plt.hist(all_values, bins=bins, edgecolor='black', alpha=0.7)
+plt.axvline(mean_val, color='red', linestyle='--', linewidth=2, label=f'Mean: {mean_val:.4f}')
+plt.axvline(mode_val, color='green', linestyle='--', linewidth=2, label=f'Mode: {mode_val:.4f}')
+plt.xlabel('Value')
+plt.ylabel('Frequency')
+plt.title('Distribution of Third Column Values from All TSV Files')
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.savefig('tsv_column3_histogram.png', dpi=300, bbox_inches='tight')
+print("\nHistogram saved as 'tsv_column3_histogram.png'")
+plt.show()

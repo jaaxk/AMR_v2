@@ -81,12 +81,12 @@ def infer_oof(test_df, species, args):
     """gets final preds by averaging preds from all 3 xgb/rf models and passing to stacker"""
 
     # load all the models
-    dnabert_xgb1 = joblib.load(os.path.join(args.models_dir, 'dnabert', 'exclude_fold_2', f'{species}_xgb_model.joblib'))
-    dnabert_xgb2 = joblib.load(os.path.join(args.models_dir, 'dnabert', 'exclude_fold_1', f'{species}_xgb_model.joblib'))
-    dnabert_xgb3 = joblib.load(os.path.join(args.models_dir, 'dnabert', 'exclude_fold_0', f'{species}_xgb_model.joblib'))
-    hits_xgb1 = joblib.load(os.path.join(args.models_dir, 'hits', 'exclude_fold_2', f'{species}_xgb_model.joblib'))
-    hits_xgb2 = joblib.load(os.path.join(args.models_dir, 'hits', 'exclude_fold_1', f'{species}_xgb_model.joblib'))
-    hits_xgb3 = joblib.load(os.path.join(args.models_dir, 'hits', 'exclude_fold_0', f'{species}_xgb_model.joblib'))
+    dnabert_xgb1 = joblib.load(os.path.join(args.models_dir, 'dnabert', 'exclude_fold_2', f'{species}_{args.model_type}_model.joblib'))
+    dnabert_xgb2 = joblib.load(os.path.join(args.models_dir, 'dnabert', 'exclude_fold_1', f'{species}_{args.model_type}_model.joblib'))
+    dnabert_xgb3 = joblib.load(os.path.join(args.models_dir, 'dnabert', 'exclude_fold_0', f'{species}_{args.model_type}_model.joblib'))
+    hits_xgb1 = joblib.load(os.path.join(args.models_dir, 'hits', 'exclude_fold_2', f'{species}_{args.model_type}_model.joblib'))
+    hits_xgb2 = joblib.load(os.path.join(args.models_dir, 'hits', 'exclude_fold_1', f'{species}_{args.model_type}_model.joblib'))
+    hits_xgb3 = joblib.load(os.path.join(args.models_dir, 'hits', 'exclude_fold_0', f'{species}_{args.model_type}_model.joblib'))
     stacker = joblib.load(os.path.join(args.models_dir, 'stacker', f'{species}_stacker.joblib'))
 
     # get preds from all 3 models
@@ -128,6 +128,7 @@ def main():
     parser.add_argument('--oof_stack', action='store_true', help='Whether to use OOF stacker predictions')
     parser.add_argument('--top_15pct_features', type=str, help='Path to dir containing files with top 15pct features per species. If specified, will remove ONLY dnabert features without query_ids specified in those files', default=None)
     parser.add_argument('--skip_accs', default=None)
+    parser.add_argument('--model_type', choices=['rf', 'xgb'], default='rf')
     
     args = parser.parse_args()
     args.flip_phenotype = None

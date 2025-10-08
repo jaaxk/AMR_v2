@@ -27,3 +27,6 @@ OOF_stacking/logs/*
 OOF_stacking/res1.txt
 OOF_stacking/wandb/*
 data_pipeline/logs/*
+rf/res2.txt
+rf/res_xgb.txt
+rf/catboost_info/*

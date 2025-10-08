@@ -1,17 +1,17 @@
 #!/bin/bash
-#SBATCH -p hbm-long-96core
+#SBATCH -p a100-long
+#SBATCH --gres=gpu:1
 #SBATCH -t 48:00:00
 #SBATCH --output=res1.txt
 
 python -u train_rf.py \
-    --model_name run6_1000bp_dnabert_avglogits_oofstack_all \
+    --model_name run6_dnabert_alllogits_nn \
     --grouping per_species \
-    --train_on all \
+    --train_on 01 \
     --feature_type both \
-    --dataset_dir /gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/inference/outputs/rf_datasets/run6_1000bp_avglogits \
-    --top_15pct_features /gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/data_analysis/top_15p_features \
-    --model_type rf \
-    --oof_stack
+    --dataset_dir /gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/inference/outputs/rf_datasets/run6_alllogits \
+    --model_type nn \
+    --eval
 
 # place script in model output directory, if it exists
 MODEL_OUTPUT_DIR=models/${model_type}/${grouping}/${model_name}

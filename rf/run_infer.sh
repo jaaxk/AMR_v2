@@ -8,7 +8,7 @@ python -u infer_rf.py \
     --grouping per_species \
     --testing_template /gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/data_pipeline/data/metadata/testing_template.csv \
     --models_dir /gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/rf/models/oof/run6_1000bp_dnabert_avglogits_oofstack_all \
-    --test_dataset_dir /gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/inference/outputs/rf_datasets/run6_1000bp_avglogits_testset_testset \
+    --test_dataset_dir /gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/inference/outputs/rf_datasets/run6_1000bp_avglogits_testset_testset/full/test \
     --out_path predictions/run6_1000bp_avglogits_oofstack.csv \
     --feature_type both \
     --oof_stack \

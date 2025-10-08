@@ -120,19 +120,19 @@ def inference(dataset_path, preds_path, model, tokenizer, return_logits):
                 #'species': torch.tensor(species, dtype=torch.long).to(device).unsqueeze(1).to(device),
             }
             logits = model(**inputs).logits
-            if return_logits is not None:
-                preds_res = torch.softmax(logits, dim=-1).cpu().numpy()[:, 0]  # take only resistant class
-                preds_sus = torch.softmax(logits, dim=-1).cpu().numpy()[:, 1]  # take only susceptible class
-                pred_res.extend([float(x) for x in preds_res.flatten()])
-                pred_sus.extend([float(x) for x in preds_sus.flatten()])
-            else:   
-                preds = torch.argmax(logits, dim=-1).cpu().numpy()
+            #if return_logits is not None:
+            preds_res = torch.softmax(logits, dim=-1).cpu().numpy()[:, 0]  # take only resistant class
+            preds_sus = torch.softmax(logits, dim=-1).cpu().numpy()[:, 1]  # take only susceptible class
+            pred_res.extend([float(x) for x in preds_res.flatten()])
+            pred_sus.extend([float(x) for x in preds_sus.flatten()])
+            #else:   
+            #preds = torch.argmax(logits, dim=-1).cpu().numpy()
 
-                pred_res.extend([int(x) for x in preds.flatten()])
+            #pred_res.extend([int(x) for x in preds.flatten()])
 
     df['pred_res'] = pred_res
-    if return_logits is not None:
-        df['pred_sus'] = pred_sus
+    #if return_logits is not None:
+    df['pred_sus'] = pred_sus
     df.to_csv(preds_path, index=False)
 
 
@@ -146,7 +146,13 @@ def get_rf_dataset(preds_path, output_path, train, sig_seqs_path, accessions, re
     #filter preds to only include accessions in accessions list 
     df = df[df['accession'].isin(accessions)]
     hit_count_features = [f + '_hit_count' for f in features]
-    pred_resistant_features = [f + '_pred_resistant' for f in features]
+    if return_logits != 'all':
+        pred_resistant_features = [f + '_pred_resistant' for f in features]
+    else:
+        pred_resistant_features = [f + '_sus_sum_pred_resistant' for f in features] + \
+        [f + '_sus_mean_pred_resistant' for f in features] + [f + '_sus_std_pred_resistant' for f in features] + \
+        [f + '_res_sum_pred_resistant' for f in features] + [f + '_res_mean_pred_resistant' for f in features] + \
+        [f + '_res_std_pred_resistant' for f in features]
     
     
     
@@ -169,17 +175,36 @@ def get_rf_dataset(preds_path, output_path, train, sig_seqs_path, accessions, re
             #iterate through query_ids (features)
             query_id_to_hitcount = {}
             query_id_to_predresistant = {}
+            
+            queryid_to_predsus_sum = {}
+            queryid_to_predsus_mean = {}
+            queryid_to_predsus_std = {}
+            queryid_to_predres_sum = {}
+            queryid_to_predres_mean = {}
+            queryid_to_predres_std = {}
+
             for query_id in accession_df['query_id'].unique().tolist():
                 query_id_df = accession_df[accession_df['query_id'] == query_id] #this df now only has a single query id for a single accession
                 #get number predicted resistant for each query id
                 if return_logits is None:
                     num_pred_resistant = query_id_df['pred_res'].map({0: 1, 1: 0}).sum() # need to flip because Susceptible is 1
+                    query_id_to_predresistant[f'{query_id}_pred_resistant'] = num_pred_resistant
                 elif return_logits == 'sum':
                     num_pred_resistant = query_id_df['pred_res'].sum()
+                    query_id_to_predresistant[f'{query_id}_pred_resistant'] = num_pred_resistant
                 elif return_logits == 'average':
                     num_pred_resistant = query_id_df['pred_res'].mean()
+                    query_id_to_predresistant[f'{query_id}_pred_resistant'] = num_pred_resistant
+                elif return_logits == 'all':
+                    queryid_to_predsus_sum[f'{query_id}_sus_sum_pred_resistant'] = query_id_df['pred_sus'].sum()
+                    queryid_to_predsus_mean[f'{query_id}_sus_mean_pred_resistant'] = query_id_df['pred_sus'].mean()
+                    queryid_to_predsus_std[f'{query_id}_sus_std_pred_resistant'] = query_id_df['pred_sus'].std()
+                    queryid_to_predres_sum[f'{query_id}_res_sum_pred_resistant'] = query_id_df['pred_res'].sum()
+                    queryid_to_predres_mean[f'{query_id}_res_mean_pred_resistant'] = query_id_df['pred_res'].mean()
+                    queryid_to_predres_std[f'{query_id}_res_std_pred_resistant'] = query_id_df['pred_res'].std()
+
                 query_id_to_hitcount[f'{query_id}_hit_count'] = query_id_df['hit_count'].iloc[0]
-                query_id_to_predresistant[f'{query_id}_pred_resistant'] = num_pred_resistant
+                
 
             #fill feature lists to match length of header
             hit_count_features_temp = []
@@ -190,10 +215,28 @@ def get_rf_dataset(preds_path, output_path, train, sig_seqs_path, accessions, re
                 else:
                     hit_count_features_temp.append(0)
             for feature in pred_resistant_features:
-                if feature in query_id_to_predresistant.keys():
-                    pred_resistant_features_temp.append(query_id_to_predresistant[feature])
+                if return_logits != 'all':
+                    if feature in query_id_to_predresistant.keys():
+                        pred_resistant_features_temp.append(query_id_to_predresistant[feature])
+                    else:
+                        pred_resistant_features_temp.append(0)
+                
                 else:
-                    pred_resistant_features_temp.append(0)
+                    if feature in queryid_to_predsus_sum.keys():
+                        pred_resistant_features_temp.append(queryid_to_predsus_sum[feature])
+                    elif feature in queryid_to_predsus_mean.keys():
+                        pred_resistant_features_temp.append(queryid_to_predsus_mean[feature])
+                    elif feature in queryid_to_predsus_std.keys():
+                        pred_resistant_features_temp.append(queryid_to_predsus_std[feature])
+                    elif feature in queryid_to_predres_sum.keys():
+                        pred_resistant_features_temp.append(queryid_to_predres_sum[feature])
+                    elif feature in queryid_to_predres_mean.keys():
+                        pred_resistant_features_temp.append(queryid_to_predres_mean[feature])
+                    elif feature in queryid_to_predres_std.keys():
+                        pred_resistant_features_temp.append(queryid_to_predres_std[feature])
+                    else:
+                        pred_resistant_features_temp.append(0)
+
 
             #write row
             row = [accession, species, antibiotic] + hit_count_features_temp + pred_resistant_features_temp
@@ -260,7 +303,7 @@ def main():
     parser.add_argument('--split', type=bool, help='will look for dev_accs.txt and test_accs.txt to split each final dataset into train/test/dev according to split that dnabert was trained with', default=False)
     parser.add_argument('--metadata_dir', default='/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/data_pipeline/data/metadata')
     parser.add_argument('--base_dir', type=str, help='base directory that this script is in', default='/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2')
-    parser.add_argument('--return_logits', type=str, choices=['sum', 'average', None], help='Dont take argmax while filling out pred_phenos csv. Input to RF will be sum of resistant probabilities', default=None)
+    parser.add_argument('--return_logits', type=str, choices=['sum', 'average', 'std', 'all', None], help='Dont take argmax while filling out pred_phenos csv. Input to RF will be sum of resistant probabilities', default=None)
     args = parser.parse_args()
     print(f'Arguments: {args}')
     train_test = 'train' if args.train else 'test'
