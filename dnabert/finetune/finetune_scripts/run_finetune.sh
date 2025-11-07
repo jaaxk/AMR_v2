@@ -14,23 +14,23 @@ source /gpfs/scratch/jvaska/miniconda3/etc/profile.d/conda.sh #for conda envs to
 conda activate dna
 
 # paths
-export DATA_PATH="../data/dnabert_finetune_dataset_v1" #this needs to be a directory with train.csv, dev.csv, test.csv
-export RUN_NAME="full_model_species_only_v2" #name of run for wandb and output directory
+export DATA_PATH="/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/finetune/data/run9" #this needs to be a directory with train.csv, dev.csv, test.csv
+export RUN_NAME="run9_full_drop_dupes_top15p" #name of run for wandb and output directory
 export OUT_DIR="../finetuned_models/${RUN_NAME}"
 export MODEL_PATH="../pretrained_models/bacteria_model"
 
 export WANDB_NAME=${RUN_NAME}
 
 # training params
-export EPOCHS=5
+export EPOCHS=24
 export MAX_LENGTH=250 #should be 1/4 of the length of the sequences
 export num_gpu=4
 export OMP_NUM_THREADS=16
-export EVAL_AND_SAVE_STEPS=1000
+export EVAL_AND_SAVE_STEPS=700
 
 # hyperparams to tune
 export LR=3e-5
-export WARMUP_STEPS=2000 #~5% of total steps
+export WARMUP_STEPS=675 #~5% of total steps
 export TRAIN_BATCH_SIZE=8 #limited by memory
 export GRADIENT_ACCUMULATION_STEPS=4 #simulate larger batch size (effective batch size = batch_size*gradient_accumulation_steps*num_gpus)
 

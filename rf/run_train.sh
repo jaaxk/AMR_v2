@@ -1,17 +1,18 @@
 #!/bin/bash
-#SBATCH -p a100-long
-#SBATCH --gres=gpu:1
+#SBATCH -p long-96core
 #SBATCH -t 48:00:00
-#SBATCH --output=res1.txt
+#SBATCH --output=res.txt
 
 python -u train_rf.py \
-    --model_name run6_dnabert_alllogits_nn \
+    --model_name best_hyperparams_cb_all \
     --grouping per_species \
-    --train_on 01 \
+    --train_on all \
     --feature_type both \
-    --dataset_dir /gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/inference/outputs/rf_datasets/run6_alllogits \
-    --model_type nn \
-    --eval
+    --dataset_dir /gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/inference/outputs/rf_datasets/run6_1000bp_numpredres \
+    --model_type cb \
+    --top_15pct_features /gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/data_analysis/top_15p_features \
+    --load_hyperparams /gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/rf/eval_results/fig5_cb_numpredres/fig5_cb_numpredres_BEST.json
+
 
 # place script in model output directory, if it exists
 MODEL_OUTPUT_DIR=models/${model_type}/${grouping}/${model_name}

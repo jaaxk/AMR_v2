@@ -5,12 +5,12 @@
 #SBATCH --gres=gpu:1
 #SBATCH --mem 120G
 
-conda activate dna
+#conda activate dna
 
-#change model_path once we have a trained full model
 python -u inference.py \
-        --output_format random_forest \
-        --dataset_dir /gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/data_pipeline/datasets/sequence_based/per_antibiotic/test \
-        --model_path /gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/finetune/finetuned_models/run2/fold_FULL \
-        --run_name run3_testset \
-        --grouping per_antibiotic
+        --output_format consensus \
+        --dataset_dir /gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/data_pipeline/datasets/run6_1000bp/sequence_based/per_antibiotic/train/full_sequence_dataset.csv \
+        --model_path /gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/finetune/finetuned_models/run6_1000bp/fold_2/best \
+        --run_name run6_1000bp_alllogits_fold_2 \
+        --grouping full \
+        --train True

@@ -244,8 +244,48 @@ def get_rf_dataset(preds_path, output_path, train, sig_seqs_path, accessions, re
                 row.append(accession_df['phenotype'].iloc[0])
             writer.writerow(row)
 
-def get_consensus_preds(preds_path):
-    pass
+def eval_consensus(args, train_test):
+    """Evaluate DNABERT predictions alone using majority voting,
+    saves accession-level DNABERT-only consensus preds to outputs/consensus_preds/run_name.csv
+    prints metrics to console and saves to outputs/consensus_preds/consensus_evals.csv
+    1 = resistant, 0=susceptible"""
+
+    preds_path = f'{args.base_dir}/dnabert/inference/outputs/preds/{args.run_name}/full/{train_test}/full_preds.csv'
+    df = pd.read_csv(preds_path)
+    df['pred'] = (df['pred_res'] > df['pred_sus']).astype(int) #1 is resistant, 0 is susceptible (opposite of our usual convention)
+
+
+    if args.train:
+        acc_to_pred = df.groupby('accession').agg({'pred': 'mean'}) #df with accession as index and pred as column
+        acc_to_pred['pred'] = acc_to_pred['pred'].map(lambda x: 1 if x > 0.5 else 0) #if more than half are 1 (resistant), then predict resistant (1)
+        acc_to_gt = df.groupby('accession').agg({'phenotype': 'mean'})
+        acc_to_gt['phenotype'] = acc_to_gt['phenotype'].map({1: 0, 0: 1}) #flip from usual convention to res=1, sus=0
+        #print(acc_to_pred)
+        #print(acc_to_gt)
+        #make output df
+        output_df = pd.DataFrame()
+        output_df['accession'] = acc_to_pred.index
+        output_df['pred_phenotype'] = acc_to_pred['pred'].values
+        output_df['gt_phenotype'] = acc_to_gt['phenotype'].values
+        output_df.to_csv(f'{args.base_dir}/dnabert/inference/outputs/consensus_preds/{args.run_name}.csv', index=False)
+
+        #evaluate
+        num_correct = (acc_to_pred['pred'] == acc_to_gt['phenotype']).sum()
+        acc = num_correct / len(acc_to_pred)
+        print(f'Accuracy: {acc}')
+        from sklearn.metrics import confusion_matrix
+        cm = confusion_matrix(acc_to_gt['phenotype'], acc_to_pred['pred'])
+        print(f'Confusion Matrix: {cm}')
+        
+        #append to evals df
+        if not os.path.exists(f'{args.base_dir}/dnabert/inference/outputs/consensus_preds/consensus_evals.csv'):
+            evals_df = pd.DataFrame(columns=['run_name', 'accuracy', 'cm'])
+        else:
+            evals_df = pd.read_csv(f'{args.base_dir}/dnabert/inference/outputs/consensus_preds/consensus_evals.csv')
+        evals_df = evals_df._append({'run_name': args.run_name, 'accuracy': acc, 'cm': cm}, ignore_index=True)
+        evals_df.to_csv(f'{args.base_dir}/dnabert/inference/outputs/consensus_preds/consensus_evals.csv', index=False)
+
+    return acc, cm
 
         
 
@@ -335,8 +375,7 @@ def main():
                 print(f'Getting RF dataset for {species}')
                 get_rf_dataset(preds_path, output_path, args.train, os.path.join(args.sig_seqs_dir, f'{species}_sig_sequences.fasta'), accessions = species_to_accessions[species], return_logits=args.return_logits)
             elif args.output_format == 'consensus':
-                print(f'Getting consensus preds for {species}')
-                get_consensus_preds(preds_path)
+                pass
 
             if args.split:
                 split(output_path)
@@ -363,8 +402,7 @@ def main():
                     if args.split:
                         split(output_path)
             elif args.output_format == 'consensus':
-                print(f'Getting consensus preds for {antibiotic}')
-                get_consensus_preds(preds_path)
+                pass
 
     elif args.grouping == 'full':
         model, tokenizer = load_model(args.model_path)
@@ -385,9 +423,9 @@ def main():
                     split(output_path)
 
         elif args.output_format == 'consensus':
-            print(f'Getting consensus preds for full model')
-            get_consensus_preds(preds_path)
-            
+            acc, cm = eval_consensus(args, train_test)
+            print(f'Accuracy: {acc}')
+            print(f'Confusion Matrix: {cm}')
 
 
 if __name__ == "__main__":

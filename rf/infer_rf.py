@@ -128,11 +128,12 @@ def main():
     parser.add_argument('--oof_stack', action='store_true', help='Whether to use OOF stacker predictions')
     parser.add_argument('--top_15pct_features', type=str, help='Path to dir containing files with top 15pct features per species. If specified, will remove ONLY dnabert features without query_ids specified in those files', default=None)
     parser.add_argument('--skip_accs', default=None)
-    parser.add_argument('--model_type', choices=['rf', 'xgb'], default='rf')
+    parser.add_argument('--model_type', choices=['rf', 'xgb', 'cb'], default='rf')
     
     args = parser.parse_args()
     args.flip_phenotype = None
     args.feature_plot = None
+    args.scaler = None
 
     if args.models_dir is None:
         args.models_dir = os.path.join('models', 'rf', args.grouping, args.model_name)
@@ -149,7 +150,7 @@ def main():
             accession_series = df['accession']
             df = preprocess_df(df, species, args)
             if not args.oof_stack:
-                model_path = os.path.join(args.models_dir, f"{species}_rf_model.joblib")
+                model_path = os.path.join(args.models_dir, f"{species}_{args.model_type}_model.joblib")
                 model = joblib.load(model_path)
                 preds = model.predict(df)
 

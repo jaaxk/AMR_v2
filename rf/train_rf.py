@@ -624,13 +624,16 @@ def train(args, importances=None):
                 for dirname in os.listdir(args.dataset_dir):
                     fold=dirname.split('_')[-1]
                     if fold == exclude_fold:
-                        print(f"Skipping fold {dirname} in training")
+                        #print(f"Skipping fold {dirname} in training")
                         continue
                     dfs.append(pd.read_csv(os.path.join(args.dataset_dir, dirname, args.dnabert_grouping, 'train', species, f"{species}_full_rf_dataset.csv")))
                 df = pd.concat(dfs)
                 
             elif args.train_on=='all': # if all is selcted, should pass path to dir containing per-species dirs
-                df = pd.read_csv(os.path.join(args.dataset_dir, species, f"{species}_full_rf_dataset.csv"))
+                dfs = []
+                for dirname in os.listdir(args.dataset_dir):
+                    dfs.append(pd.read_csv(os.path.join(args.dataset_dir, dirname, args.dnabert_grouping, 'train', species, f"{species}_full_rf_dataset.csv")))
+                df = pd.concat(dfs)
             else:
                 raise ValueError(f"Invalid train_on value: {args.train_on}")
 
@@ -648,55 +651,95 @@ def train(args, importances=None):
             # Initialize model based on requested type
             if args.model_type == 'xgb':
                 from xgboost import XGBClassifier
-                model =  XGBClassifier(
-                        n_estimators=args.n_estimators,
-                        max_depth=args.max_depth,
-                        learning_rate=args.learning_rate,
-                        subsample=args.subsample,
-                        colsample_bytree=args.colsample_bytree,
-                        min_child_weight=args.min_child_weight,
-                        reg_lambda=args.reg_lambda,
-                        reg_alpha=args.reg_alpha,
-                        tree_method=args.tree_method,
-                        booster=args.booster,
-                        objective='binary:logistic',
-                        eval_metric='logloss',
-                        use_label_encoder=False,
-                        random_state=42
-                    )
+                if args.tune_hyperparams:
+                    model =  XGBClassifier(
+                            n_estimators=args.n_estimators,
+                            max_depth=args.max_depth,
+                            learning_rate=args.learning_rate,
+                            subsample=args.subsample,
+                            colsample_bytree=args.colsample_bytree,
+                            min_child_weight=args.min_child_weight,
+                            reg_lambda=args.reg_lambda,
+                            reg_alpha=args.reg_alpha,
+                            tree_method=args.tree_method,
+                            booster=args.booster,
+                            objective='binary:logistic',
+                            eval_metric='logloss',
+                            use_label_encoder=False,
+                            random_state=42
+                        )
+                elif args.load_hyperparams is not None:
+                    print('loading hyperparams')
+                    model =  XGBClassifier(
+                            n_estimators=hyperparam_args['n_estimators'],
+                            max_depth=hyperparam_args['max_depth'],
+                            learning_rate=hyperparam_args['learning_rate'],
+                            subsample=hyperparam_args['subsample'],
+                            colsample_bytree=hyperparam_args['colsample_bytree'],
+                            min_child_weight=hyperparam_args['min_child_weight'],
+                            reg_lambda=hyperparam_args['reg_lambda'],
+                            reg_alpha=hyperparam_args['reg_alpha'],
+                            tree_method=hyperparam_args['tree_method'],
+                            booster=hyperparam_args['booster'],
+                            objective='binary:logistic',
+                            eval_metric='logloss',
+                            use_label_encoder=False,
+                            random_state=42
+                        )
+                else:
+                    model=XGBClassifier(random_state=42)
             elif args.model_type=='rf':  # Random Forest
 
-                model = RandomForestClassifier(
-                    n_estimators=args.n_estimators,
-                    max_depth=args.max_depth, 
-                    min_samples_split=args.min_samples_split,
-                    random_state=42,
-                    max_features=args.max_features,
-                    bootstrap=args.bootstrap,
-                    class_weight=args.class_weight,
-                    criterion=args.criterion,
-                    min_samples_leaf=args.min_samples_leaf
-                )
+                if args.tune_hyperparams:
+                    model = RandomForestClassifier(
+                        n_estimators=args.n_estimators,
+                        max_depth=args.max_depth, 
+                        min_samples_split=args.min_samples_split,
+                        random_state=42,
+                        max_features=args.max_features,
+                        bootstrap=args.bootstrap,
+                        class_weight=args.class_weight,
+                        criterion=args.criterion,
+                        min_samples_leaf=args.min_samples_leaf
+                    )
+                else:
+                    model = RandomForestClassifier(random_state=42)
     
             elif args.model_type=='lr':
                 from sklearn.linear_model import LogisticRegression
-                model = LogisticRegression(penalty='l2', random_state=42)
+                model = LogisticRegression(penalty='l2', random_state=42, max_iter=1000)
             elif args.model_type == 'cb':
                 from catboost import CatBoostClassifier
-                model = CatBoostClassifier(
-                    iterations=args.iterations,
-                    learning_rate=args.learning_rate,
-                    depth=args.depth,
-                    l2_leaf_reg=args.l2_leaf_reg,
-                    subsample=args.subsample,
-                    colsample_bylevel=0.8,
-                    bootstrap_type=args.bootstrap_type,
-                    loss_function='Logloss',
-                    grow_policy=args.grow_policy,
-                    random_strength=args.random_strength,
-                    random_seed=42,
-                    verbose=100
-                )
+                if args.tune_hyperparams:
+                    model = CatBoostClassifier(
+                        iterations=args.iterations,
+                        learning_rate=args.learning_rate,
+                        depth=args.depth,
+                        l2_leaf_reg=args.l2_leaf_reg,
+                        subsample=args.subsample,
+                        colsample_bylevel=0.8,
+                        bootstrap_type=args.bootstrap_type,
+                        loss_function='Logloss',
+                        grow_policy=args.grow_policy,
+                        random_strength=args.random_strength,
+                        random_seed=42,
+                        verbose=100
+                    )
+                elif args.load_hyperparams is not None:
+                    model = CatBoostClassifier(
+                        iterations=hyperparam_args['iterations'],
+                        learning_rate=hyperparam_args['learning_rate'],
+                        depth=hyperparam_args['depth'],
+                        l2_leaf_reg=hyperparam_args['l2_leaf_reg'],
+                        subsample=hyperparam_args['subsample'],
+                        colsample_bylevel=0.8,
+                        bootstrap_type=hyperparam_args['bootstrap_type'],
+                        loss_function='Logloss',
+                        grow_policy=hyperparam_args['grow_policy'],
+                        random_strength=hyperparam_args['random_strength'],
+                        random_seed=42,
+                        verbose=100
+                    )
             elif args.model_type=='nn':
                 from models.nn.nn_model import MultiQueryNN, train_nn, predict_nn
                 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -821,59 +864,68 @@ def eval(args, importances=None):
     ERY_acc = np.mean([metrics['accuracy'][species] for species in antibiotic_to_species['ERY']])
     CAZ_acc = np.mean([metrics['accuracy'][species] for species in antibiotic_to_species['CAZ']])
 
-    df = pd.read_csv('eval_results/rf_models.csv')
-    df = df._append({'accuracy': accuracy, 'model_name': args.model_name, 'model_type': args.model_type, 'train_on': args.train_on, 'feature_type': args.feature_type, 'min_samples_leaf': args.min_samples_leaf, \
-    'max_depth': args.max_depth, 'top_n_mi_score': args.top_n_mi_score, 'recall': recall, 'precision': precision, 'f1': f1, 'aucroc': aucroc, 'neisseria_gonorrhoeae_acc': neisseria_gonorrhoeae_acc, \
-    'staphylococcus_aureus_acc': staphylococcus_aureus_acc, 'streptococcus_pneumoniae_acc': streptococcus_pneumoniae_acc, 'salmonella_enterica_acc': salmonella_enterica_acc, 'klebsiella_pneumoniae_acc': klebsiella_pneumoniae_acc,\
-    'escherichia_coli_acc': escherichia_coli_acc, 'pseudomonas_aeruginosa_acc': pseudomonas_aeruginosa_acc, 'acinetobacter_baumannii_acc': acinetobacter_baumannii_acc, 'campylobacter_jejuni_acc': campylobacter_jejuni_acc, 'TET_acc': TET_acc,\
-    'GEN_acc': GEN_acc, 'ERY_acc': ERY_acc, 'CAZ_acc': CAZ_acc}, ignore_index=True)
-    df.to_csv('eval_results/rf_models.csv', index=False)
+    try:
+        df = pd.read_csv('eval_results/rf_models.csv')
+        df = df._append({'accuracy': accuracy, 'model_name': args.model_name, 'model_type': args.model_type, 'train_on': args.train_on, 'feature_type': args.feature_type, 'min_samples_leaf': args.min_samples_leaf, \
+        'max_depth': args.max_depth, 'top_n_mi_score': args.top_n_mi_score, 'recall': recall, 'precision': precision, 'f1': f1, 'aucroc': aucroc, 'neisseria_gonorrhoeae_acc': neisseria_gonorrhoeae_acc, \
+        'staphylococcus_aureus_acc': staphylococcus_aureus_acc, 'streptococcus_pneumoniae_acc': streptococcus_pneumoniae_acc, 'salmonella_enterica_acc': salmonella_enterica_acc, 'klebsiella_pneumoniae_acc': klebsiella_pneumoniae_acc,\
+        'escherichia_coli_acc': escherichia_coli_acc, 'pseudomonas_aeruginosa_acc': pseudomonas_aeruginosa_acc, 'acinetobacter_baumannii_acc': acinetobacter_baumannii_acc, 'campylobacter_jejuni_acc': campylobacter_jejuni_acc, 'TET_acc': TET_acc,\
+        'GEN_acc': GEN_acc, 'ERY_acc': ERY_acc, 'CAZ_acc': CAZ_acc}, ignore_index=True)
+        df.to_csv('eval_results/rf_models.csv', index=False)
+    except Error as e:
+        print(f'Could not write to rf_models.csv: {e}')
+        
     return metrics
 
 
-def tune_hyperparams(args, num_iterations=50):
+def tune_hyperparams(args, num_iterations=100):
     """iterate through tunable hyperparams to get best model based on args.tune_metric
     writes all models tested to eval_results/rf_models.csv"""
 
     import random
 
     #cb
-    param_grid_cb = {
-        "iterations": [300, 500],
-        "learning_rate": [0.05, 0.1],
-        "depth": [4, 6],
-        "l2_leaf_reg": [5, 9],
-        "subsample": [0.8, 1.0],
-        "bootstrap_type": ["Bernoulli"],
-        "grow_policy": ["SymmetricTree"],
-        "random_strength": [1],
-    }
+    if args.model_type == 'cb':
+        param_grid = {
+            "iterations": [300, 500],
+            "learning_rate": [0.05, 0.1],
+            "depth": [4, 6],
+            "l2_leaf_reg": [5, 9],
+            "subsample": [0.8, 1.0],
+            "bootstrap_type": ["Bernoulli"],
+            "grow_policy": ["SymmetricTree"],
+            "random_strength": [1],
+        }
 
     #xgb
-    param_grid = {
-        "n_estimators": [100, 300],
-        "learning_rate": [0.05, 0.1],
-        "max_depth": [4, 6, 8],
-        "subsample": [0.7, 1.0],
-        "colsample_bytree": [0.6, 0.8, 1.0],
-        "min_child_weight": [1, 3],
-        "reg_lambda": [1, 5],
-        "reg_alpha": [0, 1],
-        "tree_method": ["hist"],
-        "booster": ["gbtree"],
-    }
+    elif args.model_type == 'xgb':
+        param_grid = {
+            "n_estimators": [100, 300],
+            "learning_rate": [0.05, 0.1],
+            "max_depth": [4, 6, 8],
+            "subsample": [0.7, 1.0],
+            "colsample_bytree": [0.6, 0.8, 1.0],
+            "min_child_weight": [1, 3],
+            "reg_lambda": [1, 5],
+            "reg_alpha": [0, 1],
+            "tree_method": ["hist"],
+            "booster": ["gbtree"],
+        }
 
     #rf
-    param_grid_rf = {
-        "n_estimators": [100, 200, 400],
-        "max_depth": [None, 10, 20],
-        "min_samples_split": [2, 5],
-        "min_samples_leaf": [1, 2],
-        "max_features": ["sqrt", "log2", 0.5],    # limits dominance of high-cardinality features
-        "bootstrap": [True],
-        "class_weight": ["balanced"],              # safe even if slightly imbalanced in practice
-        "criterion": ["gini", "entropy"],
-    }
+    elif args.model_type == 'rf':
+        param_grid = {
+            "n_estimators": [100, 200, 400],
+            "max_depth": [None, 10, 20],
+            "min_samples_split": [2, 5],
+            "min_samples_leaf": [1, 2, 5, 10],
+            "max_features": ["sqrt", "log2", 0.5],    # limits dominance of high-cardinality features
+            "bootstrap": [True],
+            "class_weight": ["balanced"],              # safe even if slightly imbalanced in practice
+            "criterion": ["gini", "entropy"],
+        }
+    else:
+        raise NotImplementedError(f'No param grid for model type {args.model_type}')
 
 
 
@@ -891,6 +943,8 @@ def tune_hyperparams(args, num_iterations=50):
     results_dir = f'eval_results/{args.model_name}'
     original_model_name = args.model_name
     os.makedirs(results_dir, exist_ok=True)
+    name_to_acc = {}
+    name_to_params = {}
 
     for i in tqdm(range(num_iterations)):
         sampled_params = {k: random.choice(v) for k, v in param_grid.items()}
@@ -903,9 +957,35 @@ def tune_hyperparams(args, num_iterations=50):
         metrics = eval(args)
 
         #save args and accuracy
-        args.accuracy = np.mean(list(metrics['accuracy'].values()))
+        accuracy = np.mean(list(metrics['accuracy'].values()))
+
+        name_to_acc.update({args.model_name: accuracy})
+        name_to_params.update({args.model_name: sampled_params})
+
+        args.accuracy = accuracy
         with open(results_dir+f'/{args.model_name}.json', 'w') as f:
             json.dump(args.__dict__, f)
+
+    #OOF CV on best params:
+    best_model = max(name_to_acc, key=name_to_acc.get)
+    best_params = name_to_params[best_model]
+    for k, v in best_params.items():
+        setattr(args, k, v)
+
+    args.model_name = original_model_name + '_BEST'
+    for train_on in ['01', '02', '12']:
+        args.train_on = train_on
+        print(f"Training on {train_on}")
+        train(args)
+        metrics = eval(args)
+        accuracy = np.mean(list(metrics['accuracy'].values()))
+        args.accuracy = accuracy
+        with open(results_dir+f'/{args.model_name}.json', 'w') as f:
+            json.dump(args.__dict__, f)
+
+    
+
+
 
 
 
@@ -944,9 +1024,15 @@ def main():
     parser.add_argument('--min_samples_leaf', type=int, help='Minimum number of samples required to be at a leaf node', default=1)
     parser.add_argument('--top_n_mi_score', type=int, help='Number of features to keep based on mutual information score', default=None) #, default=300
     parser.add_argument('--scaler', choices=['standard', None], default=None)
+    parser.add_argument('--load_hyperparams', type=str, help='Path to json containing arguments of best hyperparameters', default=None)
+
     
     args = parser.parse_args()
     args.original_train_on = args.train_on
+    if args.load_hyperparams is not None:
+        global hyperparam_args
+        with open(args.load_hyperparams, 'r') as f:
+            hyperparam_args = json.load(f)
 
     if args.out_dir is None:
         if args.feature_plot is not None:

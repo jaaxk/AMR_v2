@@ -108,7 +108,7 @@ def main():
     preprocessing_script_path = '../dnabert/finetune/data/dnabert_preprocessing.py' #relative path!!
     cmd = f"python {preprocessing_script_path} --balance_method stratify --out_dir {fold_out_dir}/dnabert_data \
         --full_dataset_path {args.full_sequence_dataset_path} --dev_accs_path {dev_accs_path} --train_accs_path {train_accs_path} \
-        --test_accs_path {test_accs_path} --grouping {args.grouping} --filter_features /gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/data_analysis/top_15p_features" #using full models for now to save compute
+        --test_accs_path {test_accs_path} --grouping {args.grouping} --drop_dupes"
     print(cmd)
     # run command
 

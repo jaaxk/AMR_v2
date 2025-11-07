@@ -793,6 +793,7 @@ print(f'Percent dupes: {(len(df) - len(df.drop_duplicates(subset='sequence'))) /
 """
 
 
+
 import os
 import glob
 import numpy as np
@@ -843,6 +844,8 @@ mean_val = np.mean(all_values)
 mode_result = stats.mode(all_values, keepdims=True)
 mode_val = mode_result.mode[0]
 std_val = np.std(all_values)
+num_100 = np.sum(all_values == 100)
+percent_100 = (num_100 / len(all_values)) * 100
 
 print(f"\nStatistics:")
 print(f"Mean: {mean_val:.4f}")
@@ -850,11 +853,14 @@ print(f"Mode: {mode_val:.4f}")
 print(f"Standard Deviation: {std_val:.4f}")
 print(f"Min: {np.min(all_values):.4f}")
 print(f"Max: {np.max(all_values):.4f}")
+print(f'percent100 = {percent_100}')
+
 
 # Create histogram with bin size of 0.5
 min_val = np.min(all_values)
 max_val = np.max(all_values)
 bins = np.arange(min_val, max_val + 0.5, 0.5)
+
 
 plt.figure(figsize=(12, 6))
 plt.hist(all_values, bins=bins, edgecolor='black', alpha=0.7)
@@ -867,5 +873,51 @@ plt.legend()
 plt.grid(True, alpha=0.3)
 plt.tight_layout()
 plt.savefig('tsv_column3_histogram.png', dpi=300, bbox_inches='tight')
+
+# Save all values to a file
+#np.savetxt('all_values.txt', all_values, fmt='%.4f')
+
 print("\nHistogram saved as 'tsv_column3_histogram.png'")
 plt.show()
+
+
+"""
+for species in species_mapping.keys():
+    print(species)
+    df = pd.read_csv(f'/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/inference/outputs/rf_datasets/run5_1_trainset/run5_fold_0/full/train/{species}/{species}_full_rf_dataset.csv')
+    hit_cols = [c for c in df.columns if 'hit_count' in c]
+    print(df[hit_cols].shape)
+"""
+"""
+
+df = pd.read_csv('/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/finetune/data/oof/run6_1000bp/fold_1/dnabert_data/train.csv')
+print(len(df))
+print(df['phenotype'].value_counts(normalize=True))
+"""
+
+"""
+df = pd.read_csv('/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/finetune/data/oof/run7/fold_0/dnabert_data/train.csv')
+print(f'Percent dupes: {(len(df) - len(df.drop_duplicates(subset='sequence'))) / len(df)}')
+print(len(df))
+print(df['phenotype'].value_counts())
+"""
+"""
+data = {}
+for species in species_mapping.keys():
+    df = pd.read_csv(f'/gpfs/scratch/jvaska/CAMDA_AMR/CAMDA_AMR/dbgwas/runs/2class_dbgwas_filtered/{species}/dbgwas_output/textualOutput/all_comps_nodes_info.tsv', sep='\t', index_col=False)
+    #print(df.head(2))
+    #print(df['Significant?'].value_counts())
+    print(species)
+    print(df[df['p-value'] < 0.05]['EstEffect'].map(lambda x: -1 if x < 0 else 1).value_counts())
+    data[species] = {'Res': int(df[df['p-value'] < 0.05]['EstEffect'].map(lambda x: -1 if x < 0 else 1).value_counts()[-1]), 'Sus': int(df[df['p-value'] < 0.05]['EstEffect'].map(lambda x: -1 if x < 0 else 1).value_counts()[1] if 1 in df[df['p-value'] < 0.05]['EstEffect'].map(lambda x: -1 if x < 0 else 1).value_counts().index else 0)}
+
+print(data)
+"""
+"""
+df = pd.read_csv('/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/data_pipeline/datasets/run8_70pct/sequence_based/per_antibiotic/train/full_sequence_dataset.csv')
+print(len(df))
+print(len(df.drop_duplicates(subset='sequence')))
+print(df.drop_duplicates(subset='sequence')['phenotype'].value_counts())
+#print(df['phenotype'].value_counts())
+#print(df.drop_duplicates(subset='sequence')['phenotype'].value_counts())
+"""

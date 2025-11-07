@@ -48,7 +48,7 @@ Additional parameters listed below, but should remain relatively constant and on
 ## parameters: keep these relatively constant for consistency
 
 #universal parameters for blast
-BLAST_IDENTITY = 80
+#BLAST_IDENTITY = 80
 LEAKAGE = True #should only set to False to prevent data leakage when running an abalation study on spcecies/antibiotic features on full/per-antibiotic models
 DBGWAS_SIG_LEVEL = str(0.05) #THIS IS JUST TO FIND APPROPRIATE FILES, we do NOT filter sequences in this script, this should be done in DBGWAS script
 MAX_TARGET_SEQS = 10 #for BLAST
@@ -158,7 +158,7 @@ def group_sig_seqs(grouping, output_dir, perspecies_dir): #NOT YET TESTED
         raise ValueError(f'Invalid grouping: {grouping}')
 
 
-def get_hits(accessions_list, assemblies_dir, species_to_accessions, dbgwas_dir, grouping, train_test):
+def get_hits(accessions_list, assemblies_dir, species_to_accessions, dbgwas_dir, grouping, train_test, args):
     #runs BLAST to align sequences in dbgwas_dir to assemblies
     #if leakage is True (default), aligns assemblies to their species-specific features
     #if leakage is False, aligns to all sig seqs (if grouping is full), or to all sig seqs in antibiotic grouping (if grouping is per_antibiotic)
@@ -167,7 +167,9 @@ def get_hits(accessions_list, assemblies_dir, species_to_accessions, dbgwas_dir,
         for accession in tqdm(accessions, desc=f'Running BLAST for {species}'):
                 assembly_path = os.path.join(assemblies_dir, f'{accession}.fasta')
                 db_dir = os.path.join(db_base_dir, accession, accession) #make db in subdirectory of accession name
+                os.makedirs(hits_base_dir, exist_ok=True)
                 hits_file = os.path.join(hits_base_dir, f'{accession}_hits.tsv')
+
                 if not os.path.exists(hits_file):
                     if not os.path.exists(db_dir):
                         cmd = f'makeblastdb -in {assembly_path} -dbtype nucl -out {db_dir}'
@@ -177,10 +179,11 @@ def get_hits(accessions_list, assemblies_dir, species_to_accessions, dbgwas_dir,
                         f'-max_target_seqs {MAX_TARGET_SEQS} -outfmt "6 qseqid sseqid pident length '
                         f'qstart qend sstart send sstrand bitscore" -perc_identity {BLAST_IDENTITY} '
                         f'-out {hits_file}')
+                    print(hits_file)
                     subprocess.run(cmd, shell=True)
 
     db_base_dir = f'work/blast/dbs/{train_test}'
-    hits_base_dir = f'work/blast/hits/{train_test}'
+    hits_base_dir = f'work/blast/hits/{train_test}/{args.run_name}'
     os.makedirs(db_base_dir, exist_ok=True)
     os.makedirs(hits_base_dir, exist_ok=True)
 
@@ -216,7 +219,7 @@ def get_hits(accessions_list, assemblies_dir, species_to_accessions, dbgwas_dir,
 
                 run_blast()
 
-def generate_sequence_dataset(accession_list, output_dir, grouping, train, accession_to_species, accession_to_antibiotic, accession_to_phenotype, assemblies_dir, train_test):
+def generate_sequence_dataset(accession_list, output_dir, grouping, train, accession_to_species, accession_to_antibiotic, accession_to_phenotype, assemblies_dir, train_test, args):
     #generates full csv dataset with the following columns:
     #sequence, accession, query_id, hit_count, species, antibiotic, and (if train =True) phenotype
     #labels will be mapped to numerical value according to universal mappings
@@ -226,6 +229,7 @@ def generate_sequence_dataset(accession_list, output_dir, grouping, train, acces
         #get universal SEQ_LENGTH flanking regions around each hit
         #read assembly file
         assembly_path = os.path.join(assemblies_dir, f'{accession}.fasta')
+        #print(f'assembly path: {assembly_path}')
         contigs = {}
         #print(f'accession: {accession}')
         #print(f'sseqids: {set(sseqids)}')
@@ -239,6 +243,9 @@ def generate_sequence_dataset(accession_list, output_dir, grouping, train, acces
         #print(f'contig ids: {contigs.keys()}')
         sequences = []
         for sseqid, sstart, send in zip(sseqids, sstarts, sends):
+            if sseqid not in contigs:
+                print(f'WARNING: Contig not found for sseqid: {sseqid} for accession: {accession}')
+                continue
             midpoint = (int(sstart) + int(send)) // 2
             contig = contigs[sseqid]
             flanking_region = contig[max(0, midpoint - SEQ_LENGTH//2) : min(len(contig), midpoint + SEQ_LENGTH//2)] #get region around midpoint of blast hit, make sure to not go out of bounds of contig length
@@ -274,7 +281,7 @@ def generate_sequence_dataset(accession_list, output_dir, grouping, train, acces
             writer.writerow(['sequence', 'accession', 'query_id', 'hit_count', 'species', 'antibiotic'])
         #iterate through accession list, find hit file, get query_id, hit_count, flanking regions (sequence), and map accession to species and antibiotic
         for accession in tqdm(accession_list, desc='Generating sequence dataset'):
-            hit_file = os.path.join('work', 'blast', 'hits', train_test, 'per_species', f'{accession}_hits.tsv')
+            hit_file = os.path.join('work', 'blast', 'hits', train_test, args.run_name, 'per_species', f'{accession}_hits.tsv')
             hit_counts = {} #hit counts for each query_id
             sequences = []
             sseqids = []
@@ -297,6 +304,7 @@ def generate_sequence_dataset(accession_list, output_dir, grouping, train, acces
             if train:
                 phenotype = label_map[accession_to_phenotype[accession]]
 
+            #print(f'hit file: {hit_file}')
             sequences = get_flanking_regions(accession, sseqids, sstarts, sends)
             if not sequences: #if no sequences, we need to add something so that the accession stays in the set
                 sequences.append(get_random_seq(accession))
@@ -355,16 +363,19 @@ def main():
     parser.add_argument('--perspecies_dbgwas_dir', type=str, help='Path to directory containing significant sequences from DBGWAS', default=f'./data/dbgwas/p{DBGWAS_SIG_LEVEL}/per_species')
     parser.add_argument('--train', action='store_true')
     parser.add_argument('--seq_length', type=int, default=1000)
-    parser.add_argument('--run_name', type=str, default=None)
     parser.add_argument('--group_only', type=str, default=None, help='give path to full sequence dataset if already created to group to new grouping')
+    parser.add_argument('--run_name', type=str, default=None)
+    parser.add_argument('--blast_identity', type=float, default=80)
     args = parser.parse_args()
     print(f'Arguments: {args}')
     global SEQ_LENGTH
     SEQ_LENGTH = args.seq_length
+    global BLAST_IDENTITY
+    BLAST_IDENTITY = args.blast_identity
 
     # get base output directory
     train_test = 'train' if args.train else 'test'
-    base_output_dir = os.path.join(args.output_dir, args.run_name, args.model_type, args.grouping, train_test) #from here add /train or /test (official CAMDA split)
+    base_output_dir = os.path.join(args.output_dir, args.run_name, args.model_type, args.grouping, train_test)
 
     # parse metadata
     #read dataframes, create genus_species column from genus and species columns
@@ -408,12 +419,12 @@ def main():
     #aligns sequences in dbgwas_dir to assemblies
     #normally aligns assemblies to their species-specific features, but if LEAKAGE is False, takes args.grouping and aligns to all sequences in dbgwas_dir
     #output {accession}_hits.tsv files in work/blast/hits/species_specific/{accession}_hits.tsv by default, unless LEAKAGE is False
-    get_hits(accessions_list=accessions, assemblies_dir=args.assemblies_dir, species_to_accessions=species_to_accessions, dbgwas_dir=dbgwas_dir, grouping=args.grouping, train_test=train_test)
+    get_hits(accessions_list=accessions, assemblies_dir=args.assemblies_dir, species_to_accessions=species_to_accessions, dbgwas_dir=dbgwas_dir, grouping=args.grouping, train_test=train_test, args=args)
     
     # get datasets
     #run generate_matrix() for matrix-based models and generate_sequence_dataset() for sequence-based models
     if args.model_type == 'sequence_based':
-        generate_sequence_dataset(accession_list=accessions, output_dir=base_output_dir, grouping=args.grouping, train=args.train, accession_to_species=accession_to_species, accession_to_antibiotic=accession_to_antibiotic, accession_to_phenotype=accession_to_phenotype, assemblies_dir=args.assemblies_dir, train_test=train_test)
+        generate_sequence_dataset(accession_list=accessions, output_dir=base_output_dir, grouping=args.grouping, train=args.train, accession_to_species=accession_to_species, accession_to_antibiotic=accession_to_antibiotic, accession_to_phenotype=accession_to_phenotype, assemblies_dir=args.assemblies_dir, train_test=train_test, args=args)
     elif args.model_type == 'matrix_based':
         generate_matrix_dataset()
 
