@@ -792,7 +792,7 @@ print(f'Percent dupes: {(len(df) - len(df.drop_duplicates(subset='sequence'))) /
 
 """
 
-
+"""
 
 import os
 import glob
@@ -805,7 +805,8 @@ from tqdm import tqdm
 dir_path = '/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/data_pipeline/work/blast/hits/test/per_species'
 
 # List to store all third column values
-all_values = []
+percids = []
+query_ids = []
 
 # Get all TSV files in the directory
 tsv_files = glob.glob(os.path.join(dir_path, '*.tsv'))
@@ -826,8 +827,10 @@ for tsv_file in tqdm(tsv_files):
                 if len(columns) >= 3:
                     try:
                         # Convert to float and append
-                        value = float(columns[2])
-                        all_values.append(value)
+                        percid = float(columns[2])
+                        percids.append(percid)
+                        queryid = columns[0]
+                        query_ids.append(queryid)
                     except ValueError:
                         # Skip if can't convert to float (e.g., header row)
                         continue
@@ -835,9 +838,16 @@ for tsv_file in tqdm(tsv_files):
         print(f"Error processing {tsv_file}: {e}")
 
 # Convert to numpy array for easier calculations
-all_values = np.array(all_values)
+percids = np.array(percids)
+query_ids = np.array(query_ids)
 
-print(f"\nTotal values collected: {len(all_values)}")
+#make df with query_id and percid
+percids_df = pd.DataFrame({'query_id': query_ids, 'avg_perc_id': percids})
+#get average percid for each query_id
+percids_df = percids_df.groupby('query_id').mean().reset_index()
+percids_df.to_csv('percids_df.csv', index=False)
+
+
 
 # Calculate statistics
 mean_val = np.mean(all_values)
@@ -846,6 +856,7 @@ mode_val = mode_result.mode[0]
 std_val = np.std(all_values)
 num_100 = np.sum(all_values == 100)
 percent_100 = (num_100 / len(all_values)) * 100
+
 
 print(f"\nStatistics:")
 print(f"Mean: {mean_val:.4f}")
@@ -879,7 +890,7 @@ plt.savefig('tsv_column3_histogram.png', dpi=300, bbox_inches='tight')
 
 print("\nHistogram saved as 'tsv_column3_histogram.png'")
 plt.show()
-
+"""
 
 """
 for species in species_mapping.keys():
@@ -921,3 +932,236 @@ print(df.drop_duplicates(subset='sequence')['phenotype'].value_counts())
 #print(df['phenotype'].value_counts())
 #print(df.drop_duplicates(subset='sequence')['phenotype'].value_counts())
 """
+"""
+from sklearn.metrics import f1_score
+from sklearn.metrics import roc_auc_score
+
+f1_threshold = .75
+
+def calculate_f1(group):
+    f1_sus = f1_score(group['phenotype'], group['pred'], pos_label=1, zero_division=0)
+    f1_res = f1_score(group['phenotype'], group['pred'], pos_label=0, zero_division=0)
+    macro_f1 = (f1_sus + f1_res) / 2
+    return macro_f1
+
+#get accuracy for each gene (query_id) from max of pred_res and pred_sus logits columns and grount truth 'phenotype' column, where 'phenotype' has res=0 and sus=1
+seq_preds_df = pd.concat([pd.read_csv('/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/inference/outputs/preds/run6_1000bp_alllogits_fold_0/full/train/full_preds.csv'), pd.read_csv('/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/inference/outputs/preds/run6_1000bp_alllogits_fold_1/full/train/full_preds.csv'), pd.read_csv('/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/inference/outputs/preds/run6_1000bp_alllogits_fold_2/full/train/full_preds.csv')])
+
+seq_preds_df['pred'] = (seq_preds_df['pred_res'] < seq_preds_df['pred_sus']).astype(int) #1 is sus, 0 is res
+f1_by_query = seq_preds_df.groupby('query_id').apply(calculate_f1).reset_index(name='f1_score')
+f1_by_query = f1_by_query.sort_values('f1_score', ascending=False)
+
+count_by_query = seq_preds_df['query_id'].value_counts().reset_index()
+count_by_query.columns = ['query_id', 'sample_count']
+
+result = pd.merge(f1_by_query, count_by_query, on='query_id')
+
+print("Top 10 query_ids by prediction f1:")
+print(result.head(20))
+
+high_acc_df = result[result['f1_score'] >= f1_threshold]
+print(f"Number of query_ids with >= {f1_threshold} f1 score:", len(high_acc_df))
+print('Number query_ids with >0.9 f1 score:', len(result[result['f1_score'] > 0.9]))
+
+print(f'Sample count stats for query_ids with >= {f1_threshold} f1 score:')
+print(high_acc_df['sample_count'].describe())
+print()
+print(f'Average phenotype and prediction for query_ids with >= {f1_threshold} f1 score:')
+print(seq_preds_df[seq_preds_df['query_id'].isin(high_acc_df['query_id'])].groupby('query_id').agg({'phenotype': 'mean', 'pred': 'mean'}))
+
+print()
+
+#save all query_ids with >= f1_threshold f1 score to a plain text file
+with open('top75_f1_queryids.txt', 'w') as f:
+    for query_id in high_acc_df['query_id']:
+        f.write(f'{query_id}\n')
+
+"""
+"""
+
+#get RF feature importances:
+
+dfs = []
+import joblib
+import numpy as np
+models_dir = '/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/rf/models/rf/per_species/run11_NOFILTER_ALL'
+for model_file in os.listdir(models_dir):
+    if model_file.endswith('.joblib'):
+        model_path = os.path.join(models_dir, model_file)
+        model = joblib.load(model_path)
+        feature_importances = model.feature_importances_
+        feature_names = model.feature_names_in_
+        print(feature_names)
+        query_ids = list(set([feature_name.split('_', 2)[0] + '_' + feature_name.split('_', 2)[1] for feature_name in feature_names]))
+        hit_count_importances = []
+        pred_resistant_importances = []
+        for query_id in query_ids:
+            #for each query_id, get corresponding hit count and pred resistant importances
+            if f'{query_id}_hit_count' in feature_names:
+                #print(f'{query_id}_hit_count')
+                hit_count_importances.append(feature_importances[np.where(feature_names == f'{query_id}_hit_count')[0][0]])
+            else:
+                hit_count_importances.append(None)
+            if f'{query_id}_res_int_pred_resistant' in feature_names:
+                #print(f'{query_id}_res_int_pred_resistant')
+                pred_resistant_importances.append(feature_importances[np.where(feature_names == f'{query_id}_res_int_pred_resistant')[0][0]])
+            else:
+                pred_resistant_importances.append(None)
+            
+        df = pd.DataFrame({'query_id': query_ids,
+                           'hit_count_rf_importance': hit_count_importances,
+                           'pred_resistant_rf_importance': pred_resistant_importances})
+        #normalize importances to max hit count importance per-species
+        df['hit_count_rf_importance'] = df['hit_count_rf_importance'] / df['hit_count_rf_importance'].max()
+        df['pred_resistant_rf_importance'] = df['pred_resistant_rf_importance'] / df['hit_count_rf_importance'].max()
+        
+        dfs.append(df)
+
+
+importances_df = pd.concat(dfs, axis=0)
+print(importances_df.head(20))
+
+print(importances_df.sort_values('hit_count_rf_importance', ascending=False).head(20))
+
+
+#get ratio of duplicate seqs
+
+# *****THIS IS HOW WE GOT ROC VALUES FOR CANDIDATE GENES
+#calculate ROC AUC for each query_id for dnabert preds and for hit counts. Get list of query_ids that aucroc(dnabert) > aucroc(hit counts)
+from sklearn.metrics import roc_auc_score
+from sklearn.metrics import f1_score
+
+def safe_auc(y_true, y_score): #we need an agnostic auc, because sometimes more hits means less resistant, and sometimes more hits means more resistant
+    # Skip if constant feature or single-class labels
+    if len(np.unique(y_score)) == 1 or len(np.unique(y_true)) == 1:
+        return 0.5
+    auc = roc_auc_score(y_true, y_score)
+    return max(auc, 1 - auc)  # make direction-agnostic
+
+def calculate_f1(group):
+    f1_sus = f1_score(group['phenotype'], group['pred'], pos_label=1, zero_division=0)
+    f1_res = f1_score(group['phenotype'], group['pred'], pos_label=0, zero_division=0)
+    macro_f1 = (f1_sus + f1_res) / 2
+    return macro_f1
+
+seq_preds_df = pd.concat([pd.read_csv('/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/inference/outputs/preds/run6_1000bp_alllogits_fold_0/full/train/full_preds.csv'), pd.read_csv('/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/inference/outputs/preds/run6_1000bp_alllogits_fold_1/full/train/full_preds.csv'), pd.read_csv('/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/inference/outputs/preds/run6_1000bp_alllogits_fold_2/full/train/full_preds.csv')])
+seq_preds_df['pred'] = (seq_preds_df['pred_res'] < seq_preds_df['pred_sus']).astype(int) #1 is sus, 0 is res *if using integer preds (otherwise skip this and use pred_res or pred_sus)
+
+roc_auc_dnabert = seq_preds_df.groupby('query_id').apply(lambda x: roc_auc_score(x['phenotype'], x['pred_sus'])).reset_index(name='roc_auc_dnabert')
+ratio_res = seq_preds_df.groupby('query_id').apply(lambda x: (x['phenotype'].value_counts()[0] / len(x)) if len(x['phenotype'].value_counts()) == 2 else 0).reset_index(name='ratio_res_sus') #ratio of resistant to susceptible, closer to 1 = even, <1 = more sus,  >1 = more res
+num_res = seq_preds_df.groupby('query_id').apply(lambda x: x['phenotype'].value_counts()[0] if len(x['phenotype'].value_counts()) == 2 else 0).reset_index(name='num_res')
+num_sus = seq_preds_df.groupby('query_id').apply(lambda x: x['phenotype'].value_counts()[1] if len(x['phenotype'].value_counts()) == 2 else 0).reset_index(name='num_sus')
+counts = seq_preds_df.groupby('query_id').apply(lambda x: len(x)).reset_index(name='counts')
+accuracies = seq_preds_df.groupby('query_id').apply(lambda x: (x['pred'] == x['phenotype']).mean()).reset_index(name='accuracy')
+macro_f1s = seq_preds_df.groupby('query_id').apply(lambda x: calculate_f1(x)).reset_index(name='macro_f1')
+res_f1s = seq_preds_df.groupby('query_id').apply(lambda x: f1_score(x['phenotype'], x['pred'], pos_label=0, zero_division=0)).reset_index(name='res_f1')
+sus_f1s = seq_preds_df.groupby('query_id').apply(lambda x: f1_score(x['phenotype'], x['pred'], pos_label=1, zero_division=0)).reset_index(name='sus_f1')
+percids_df = pd.read_csv('percids_df.csv')
+
+
+#get ratio of duplicate seqs within each group
+
+dup_ratio = seq_preds_df.groupby('query_id').apply(lambda x: (x['sequence'].duplicated().sum() / len(x))).reset_index(name='dup_ratio')
+
+merged_df = pd.merge(roc_auc_dnabert, ratio_res, on='query_id', how='left')
+#merged_df = pd.merge(merged_df, macro_f1s, on='query_id', how='left')
+merged_df = pd.merge(merged_df, res_f1s, on='query_id', how='left')
+merged_df = pd.merge(merged_df, sus_f1s, on='query_id', how='left')
+merged_df = pd.merge(merged_df, accuracies, on='query_id', how='left')
+merged_df = pd.merge(merged_df, counts, on='query_id', how='left')
+merged_df = pd.merge(merged_df, num_res, on='query_id', how='left')
+merged_df = pd.merge(merged_df, num_sus, on='query_id', how='left')
+merged_df = pd.merge(merged_df, dup_ratio, on='query_id', how='left')
+merged_df = pd.merge(merged_df, percids_df, on='query_id', how='left')
+merged_df = pd.merge(merged_df, importances_df, on='query_id', how='left')
+
+merged_df.to_csv('gene_analysis.csv', index=False)
+
+print(merged_df.sort_values('roc_auc_dnabert', ascending=False).head(20))
+print(merged_df['roc_auc_dnabert'].describe())
+
+print()
+
+print(merged_df.sort_values('pred_resistant_rf_importance', ascending=False).head(20))
+roc_thresh = 0.7
+#get list of query_ids with aucroc(dnabert) > roc_thresh
+high_auc_query_ids = roc_auc_dnabert[roc_auc_dnabert['roc_auc_dnabert'] > roc_thresh]['query_id'].tolist()
+print(f'Number of query_ids with aucroc(dnabert) > {roc_thresh}: {len(high_auc_query_ids)}')
+#print(high_auc_query_ids)
+#to txt file
+#with open('high_auc_query_ids.txt', 'w') as f:
+#    for query_id in high_auc_query_ids:
+#        f.write(f'{query_id}\n')
+
+#roc_auc_hit_count = seq_preds_df.groupby('query_id').apply(lambda x: safe_auc(x['phenotype'], x['hit_count'])).reset_index(name='roc_auc_hit_count')
+
+#merge
+#merged_df = pd.merge(roc_auc_dnabert, roc_auc_hit_count, on='query_id')
+
+#merged_df['auc_diff'] = merged_df['roc_auc_dnabert'] - merged_df['roc_auc_hit_count']
+
+#print(merged_df.sort_values('auc_diff', ascending=False).head(20))
+
+#how many auc_diff positive and how many negative
+#merged_df['direction'] = merged_df['auc_diff'].apply(lambda x: 'positive' if x > 0 else 'negative')
+#print(merged_df['direction'].value_counts())
+
+"""
+
+"""
+# **** NOW LETS ANALYZE RESULTS AND GET THE GENES THAT INCREASE RF ACCURACY THE MOST
+
+acc_threshold = .015
+numpredres_df = pd.read_csv("/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/rf/scripts/results/numpredres_results.csv")
+alllogits_df = pd.read_csv("/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/rf/scripts/results/alllogits_results.csv")
+
+numpredres_df['dtype'] = 'numpredres'
+alllogits_df['dtype'] = 'alllogits'
+
+combined_df = pd.concat([numpredres_df, alllogits_df])
+combined_df = combined_df[combined_df['accuracy_difference'] > acc_threshold] #filter for genes that increase accuracy by acc_threshold or more
+#get top gene from each species
+#combined_df = combined_df.sort_values(by="accuracy_difference", ascending=False).drop_duplicates(subset='species', keep='first')
+
+combined_df = combined_df.sort_values(by="accuracy_difference", ascending=False).drop_duplicates(subset='query_id', keep='first')
+
+print(combined_df.head(20))
+print(combined_df['accuracy_difference'].describe())
+print(combined_df['species'].value_counts())
+print(len(combined_df))
+
+combined_df.to_csv('high_acc_genes.csv', index=False)
+
+"""
+
+#get preds
+preds_path = '/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/rf/eval_results/hitsonly_80pct'
+preds = pd.concat([pd.read_csv(f'{preds_path}/fold_1_preds.csv'), pd.read_csv(f'{preds_path}/fold_2_preds.csv'), pd.read_csv(f'{preds_path}/fold_0_preds.csv')])
+false_positives = preds[(preds['true'] == 1) & (preds['pred'] == 0)]
+accs = false_positives['accession']
+
+print(f'num false positive accs: {len(accs)}')
+
+#concat all matrixes
+base_path = '/gpfs/scratch/jvaska/CAMDA_AMR/AMR_v2/dnabert/inference/outputs/rf_datasets/run6_1000bp_numpredres'
+dfs = []
+for fold in range(3):
+    for species in species_mapping.keys():
+        df = pd.read_csv(f'{base_path}/run6_1000bp_fold_{fold}/full/train/{species}/{species}_full_rf_dataset.csv')
+        dfs.append(df)
+full_df = pd.concat(dfs)
+hit_cols = [col for col in full_df.columns if 'hit_count' in col]
+hit_cols.extend(['accession', 'species', 'ground_truth_phenotype'])
+full_df = full_df[hit_cols]
+full_df = full_df[full_df['accession'].isin(accs)]
+print(f'num false positive accs in full df: {len(full_df)}')
+
+#count up query_ids (column) counts
+#sum across column axis
+col_sums = full_df.drop(columns=['accession', 'species', 'ground_truth_phenotype']).sum(axis=0)
+print(col_sums)
+
+#save col_sums to csv
+col_sums.to_csv('qids_by_cm/false_positive_counts.csv')
+
+#full_df.to_csv('full_sequence_dataset.csv', index=False)

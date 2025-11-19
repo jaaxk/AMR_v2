@@ -783,6 +783,8 @@ def eval(args, importances=None):
     exclude_fold = {'01':'2', '02':'1', '12':'0'}[args.train_on]
     eval_on = 'fold_'+exclude_fold
 
+    pred_dfs = []
+
     for species in species_list:
         if args.model_type != 'nn':
             model_path = os.path.join(args.out_dir, f"{species}_{args.model_type}_model.joblib")
@@ -796,6 +798,7 @@ def eval(args, importances=None):
                 test_df = pd.read_csv(os.path.join(args.dataset_dir, fold, args.dnabert_grouping, 'train', species, f"{species}_full_rf_dataset.csv"))
                 break
         print(f'Evaluating on dataset: {args.dataset_dir}/{fold}/{args.dnabert_grouping}/train/{species}/{species}_full_rf_dataset.csv')
+        accessions = test_df['accession'].values
         test_df = preprocess_df(test_df, species, args, importances)
         X = test_df.drop('ground_truth_phenotype', axis=1)
         
@@ -822,6 +825,9 @@ def eval(args, importances=None):
         metrics['recall'][species] = recall_score(truth, preds)
         metrics['f1'][species] = f1_score(truth, preds)
         metrics['aucroc'][species] = roc_auc_score(truth, preds)
+
+        pred_df = pd.DataFrame({'accession': accessions, 'pred': preds, 'true': truth})
+        pred_dfs.append(pred_df)
 
     
     # report metrics
@@ -874,6 +880,11 @@ def eval(args, importances=None):
         df.to_csv('eval_results/rf_models.csv', index=False)
     except Error as e:
         print(f'Could not write to rf_models.csv: {e}')
+
+    #save csv of accession, pred, true
+    pred_df = pd.concat(pred_dfs)
+    os.makedirs(f'eval_results/{args.model_name}', exist_ok=True)
+    pred_df.to_csv(f'eval_results/{args.model_name}/{eval_on}_preds.csv', index=False)
         
     return metrics
 
