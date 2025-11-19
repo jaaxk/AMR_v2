@@ -30,3 +30,9 @@ data_pipeline/logs/*
 rf/res2.txt
 rf/res_xgb.txt
 rf/catboost_info/*
+data_analysis/gene_analysis/
+data_pipeline/scripts/run12_100pct/
+data_pipeline/scripts/run12_90pctid/
+data_pipeline/scripts/run6_80pctid/
+dnabert/slurm-1354650.out
+rf/logs/
